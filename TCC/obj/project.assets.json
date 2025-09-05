@@ -14,9 +14,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\erick\\OneDrive\\Documentos\\GitHub\\TCC\\TCC\\TCC.csproj",
-      "projectName": "TCC",
-      "projectPath": "C:\\Users\\erick\\OneDrive\\Documentos\\GitHub\\TCC\\TCC\\TCC.csproj",
+      "projectUniqueName": "C:\\Users\\erick\\OneDrive\\Documentos\\GitHub\\TCC\\TCC\\Professor.csproj",
+      "projectName": "Professor",
+      "projectPath": "C:\\Users\\erick\\OneDrive\\Documentos\\GitHub\\TCC\\TCC\\Professor.csproj",
       "packagesPath": "C:\\Users\\erick\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\erick\\OneDrive\\Documentos\\GitHub\\TCC\\TCC\\obj\\",
       "projectStyle": "PackageReference",
@@ -75,7 +75,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36301.6 d17.14
+VisualStudioVersion = 17.14.36301.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCC", "TCC\TCC.csproj", "{83B9C236-790C-4995-8F92-398516040E3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Professor", "TCC\Professor.csproj", "{83B9C236-790C-4995-8F92-398516040E3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aluno", "Aluno\Aluno.csproj", "{08B224DA-5E27-48C8-A357-ABAD9BFA15DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{83B9C236-790C-4995-8F92-398516040E3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83B9C236-790C-4995-8F92-398516040E3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83B9C236-790C-4995-8F92-398516040E3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08B224DA-5E27-48C8-A357-ABAD9BFA15DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08B224DA-5E27-48C8-A357-ABAD9BFA15DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08B224DA-5E27-48C8-A357-ABAD9BFA15DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08B224DA-5E27-48C8-A357-ABAD9BFA15DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
