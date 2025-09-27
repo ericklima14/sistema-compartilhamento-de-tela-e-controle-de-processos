@@ -1,6 +1,6 @@
 ﻿namespace Professor
 {
-    partial class Form1
+    partial class FormProfessor
     {
         /// <summary>
         ///  Required designer variable.
@@ -36,6 +36,9 @@
             label1 = new Label();
             lstAlunosConectados = new ListBox();
             lblEnviarMsg = new Label();
+            btnListarProcessos = new Button();
+            lblProcessosAluno = new Label();
+            clbProcessos = new CheckedListBox();
             SuspendLayout();
             // 
             // btnIniciarServidor
@@ -88,7 +91,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(604, 92);
+            label1.Location = new Point(615, 92);
             label1.Name = "label1";
             label1.Size = new Size(110, 15);
             label1.TabIndex = 5;
@@ -101,8 +104,10 @@
             lstAlunosConectados.ItemHeight = 15;
             lstAlunosConectados.Location = new Point(582, 125);
             lstAlunosConectados.Name = "lstAlunosConectados";
-            lstAlunosConectados.Size = new Size(163, 109);
+            lstAlunosConectados.Size = new Size(180, 154);
             lstAlunosConectados.TabIndex = 6;
+            lstAlunosConectados.SelectedIndexChanged += lstAlunosConectados_SelectedIndexChanged;
+            lstAlunosConectados.Leave += lstAlunosConectados_Leave;
             // 
             // lblEnviarMsg
             // 
@@ -113,11 +118,44 @@
             lblEnviarMsg.TabIndex = 7;
             lblEnviarMsg.Text = "Enviar Mensagem";
             // 
-            // Form1
+            // btnListarProcessos
+            // 
+            btnListarProcessos.Location = new Point(604, 297);
+            btnListarProcessos.Name = "btnListarProcessos";
+            btnListarProcessos.Size = new Size(140, 41);
+            btnListarProcessos.TabIndex = 8;
+            btnListarProcessos.Text = "Listar Processos";
+            btnListarProcessos.UseVisualStyleBackColor = true;
+            btnListarProcessos.Visible = false;
+            btnListarProcessos.Click += btnListarProcessos_Click;
+            // 
+            // lblProcessosAluno
+            // 
+            lblProcessosAluno.AutoSize = true;
+            lblProcessosAluno.Location = new Point(914, 92);
+            lblProcessosAluno.Name = "lblProcessosAluno";
+            lblProcessosAluno.Size = new Size(112, 15);
+            lblProcessosAluno.TabIndex = 9;
+            lblProcessosAluno.Text = "Processos do aluno:";
+            lblProcessosAluno.Visible = false;
+            // 
+            // clbProcessos
+            // 
+            clbProcessos.FormattingEnabled = true;
+            clbProcessos.Location = new Point(879, 125);
+            clbProcessos.Name = "clbProcessos";
+            clbProcessos.Size = new Size(192, 148);
+            clbProcessos.TabIndex = 10;
+            clbProcessos.Visible = false;
+            // 
+            // FormProfessor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1146, 571);
+            Controls.Add(clbProcessos);
+            Controls.Add(lblProcessosAluno);
+            Controls.Add(btnListarProcessos);
             Controls.Add(lblEnviarMsg);
             Controls.Add(lstAlunosConectados);
             Controls.Add(label1);
@@ -126,7 +164,7 @@
             Controls.Add(txtMensagem);
             Controls.Add(lstLog);
             Controls.Add(btnIniciarServidor);
-            Name = "Form1";
+            Name = "FormProfessor";
             Text = "Form1";
             ResumeLayout(false);
             PerformLayout();
@@ -142,5 +180,8 @@
         private Label label1;
         private ListBox lstAlunosConectados;
         private Label lblEnviarMsg;
+        private Button btnListarProcessos;
+        private Label lblProcessosAluno;
+        private CheckedListBox clbProcessos;
     }
 }

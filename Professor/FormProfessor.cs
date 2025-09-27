@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace Professor
 {
-    public partial class Form1 : Form
+    public partial class FormProfessor : Form
     {
         private TcpListener listener;
         private Dictionary<TcpClient, string> clients = new Dictionary<TcpClient, string>();
 
-        public Form1()
+        public FormProfessor()
         {
             InitializeComponent();
         }
@@ -30,12 +30,14 @@ namespace Professor
 
             while (true)
             {
-                try {
+                try
+                {
                     TcpClient client = await listener.AcceptTcpClientAsync();
-                    
-                    await Task.Run(() => HandleClientAsync(client));
+
+                    Task.Run(() => HandleClientAsync(client));
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     AtualizarLog($"Erro ao aceitar conexão: {ex.Message}");
                 }
             }
@@ -76,11 +78,14 @@ namespace Professor
                     await BroadcastMessage(broadcastMessage, client);
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
 
             }
-            finally {
-                lock (client) { 
+            finally
+            {
+                lock (client)
+                {
                     clients.Remove(client);
                 }
 
@@ -101,7 +106,8 @@ namespace Professor
                 clientsParaEnviar = clients.Keys.ToList();
             }
 
-            foreach(var client in clientsParaEnviar){
+            foreach (var client in clientsParaEnviar)
+            {
                 if (client != sender)
                 {
                     try
@@ -124,10 +130,10 @@ namespace Professor
             while (totalBytesLidos < buffer.Length)
             {
                 int bytesLidos = await stream.ReadAsync(buffer, totalBytesLidos, buffer.Length - totalBytesLidos);
-               
-                if (bytesLidos == 0) 
+
+                if (bytesLidos == 0)
                     throw new IOException("Conexão perdida.");
-                
+
                 totalBytesLidos += bytesLidos;
             }
         }
@@ -136,10 +142,11 @@ namespace Professor
         {
             if (lstLog.InvokeRequired)
             {
-                lstLog.Invoke(new Action(() => {
+                lstLog.Invoke(new Action(() =>
+                {
                     lstLog.Items.Add(mensagem);
                     lstLog.TopIndex = lstLog.Items.Count - 1;
-                 }));
+                }));
             }
             else
             {
@@ -163,7 +170,9 @@ namespace Professor
                         }
                     }
                 }));
-            } else {
+            }
+            else
+            {
                 lstAlunosConectados.Items.Clear();
                 lock (clients)
                 {
@@ -184,6 +193,32 @@ namespace Professor
                 await BroadcastMessage(message);
                 txtMensagem.Clear();
             }
+        }
+
+        private void lstAlunosConectados_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lstAlunosConectados.SelectedItem != null)
+            {
+                btnListarProcessos.Visible = true;
+            }
+            else
+            {
+                btnListarProcessos.Visible = false;
+            }
+        }
+
+        private void lstAlunosConectados_Leave(object sender, EventArgs e)
+        {
+            if (!btnListarProcessos.Focused)
+                lstAlunosConectados.SelectedItem = null;
+        }
+
+        private void btnListarProcessos_Click(object sender, EventArgs e)
+        {
+            lblProcessosAluno.Visible = true;
+            clbProcessos.Visible = true;
+
+            lblProcessosAluno.Text = $"Processos do aluno: {lstAlunosConectados.SelectedItem}";
         }
     }
 }

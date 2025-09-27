@@ -1,6 +1,6 @@
 ﻿namespace Aluno
 {
-    partial class Form1
+    partial class FormAluno
     {
         /// <summary>
         ///  Required designer variable.

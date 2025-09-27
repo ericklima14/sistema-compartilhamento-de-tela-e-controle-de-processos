@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 namespace Aluno
 {
-    public partial class Form1 : Form
+    public partial class FormAluno : Form
     {
         private TcpClient client;
         private NetworkStream stream;
 
-        public Form1()
+        public FormAluno()
         {
             InitializeComponent();
         }
