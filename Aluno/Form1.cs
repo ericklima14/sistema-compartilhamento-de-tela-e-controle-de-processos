@@ -1,19 +1,19 @@
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Aluno
 {
     public partial class Form1 : Form
     {
         private TcpClient client;
-        private StreamWriter writer;
-        private StreamReader reader;
+        private NetworkStream stream;
 
         public Form1()
         {
             InitializeComponent();
         }
 
-        private void btnConectar_Click(object sender, EventArgs e)
+        private async void btnConectar_Click(object sender, EventArgs e)
         {
             try
             {
@@ -21,19 +21,13 @@ namespace Aluno
                 int port = 8080;
 
                 client = new TcpClient();
-                client.Connect(ip, port);
-
-                NetworkStream stream = client.GetStream();
-                reader = new StreamReader(stream);
-                writer = new StreamWriter(stream)
-                {
-                    AutoFlush = true
-                };
+                await client.ConnectAsync(ip, port);
+                stream = client.GetStream();
 
                 btnConectar.Enabled = false;
                 AtualizarLog("Conectado ao Professor");
 
-                Task.Run(() => ReceberMensagem());
+                await Task.Run(() => ReceberMensagem());
             }
             catch (Exception ex)
             {
@@ -47,15 +41,35 @@ namespace Aluno
             {
                 try
                 {
-                    string msg = await reader.ReadLineAsync();
+                    byte[] lengthBuffer = new byte[4];
+                    int totalBytesLidos = 0;
 
-                    if (msg != null)
-                    {
-                        AtualizarLog($"Professor: {msg}");
+                    while (totalBytesLidos < lengthBuffer.Length){
+                        int bytesLidos = await stream.ReadAsync(lengthBuffer, totalBytesLidos, lengthBuffer.Length - totalBytesLidos);
+                        if (bytesLidos == 0)
+                            throw new IOException("Conexao Perdida");
+                        totalBytesLidos += bytesLidos;
                     }
+
+                    int messageLength = BitConverter.ToInt32(lengthBuffer, 0);
+
+                    byte[] compressedMessage = new byte[messageLength];
+                    totalBytesLidos = 0;
+
+                    while (totalBytesLidos < compressedMessage.Length)
+                    {
+                        int bytesLidos = await stream.ReadAsync(compressedMessage, totalBytesLidos, compressedMessage.Length - totalBytesLidos);
+                        if (bytesLidos == 0)
+                            throw new IOException("Conexao Perdida");
+                        totalBytesLidos += bytesLidos;
+                    }
+
+                    string mensagem = CompressionHelper.Decompress(compressedMessage);
+                    AtualizarLog($"Professor: {mensagem}");
                 }
                 catch (Exception)
                 {
+                    AtualizarLog("Conexão perdida.");
                     break;
                 }
             }
@@ -74,11 +88,18 @@ namespace Aluno
 
         }
 
-        private void btnEnviar_Click(object sender, EventArgs e)
+        private async void btnEnviar_Click(object sender, EventArgs e)
         {
-            if(writer != null && !string.IsNullOrEmpty(txtMensagem.Text))
+            if(stream != null && !string.IsNullOrEmpty(txtMensagem.Text))
             {
-                writer.WriteLine(txtMensagem.Text);
+                byte[] compressedMessage = CompressionHelper.Compress(txtMensagem.Text);
+
+                byte[] lengthMessage = BitConverter.GetBytes(compressedMessage.Length);
+
+                await stream.WriteAsync(lengthMessage, 0, lengthMessage.Length);
+
+                await stream.WriteAsync(compressedMessage, 0, compressedMessage.Length);
+
                 AtualizarLog($"Aluno: {txtMensagem.Text}");
                 txtMensagem.Clear();
             }

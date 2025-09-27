@@ -1,4 +1,4 @@
-namespace TCC
+namespace Professor
 {
     internal static class Program
     {
