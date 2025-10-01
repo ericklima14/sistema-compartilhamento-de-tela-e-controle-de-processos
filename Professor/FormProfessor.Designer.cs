@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             btnIniciarServidor = new Button();
             lstLog = new ListBox();
             txtMensagem = new TextBox();
@@ -38,7 +39,9 @@
             lblEnviarMsg = new Label();
             btnListarProcessos = new Button();
             lblProcessosAluno = new Label();
-            clbProcessos = new CheckedListBox();
+            lvProcessos = new ListView();
+            headerPrograma = new ColumnHeader();
+            imageListProcessos = new ImageList(components);
             SuspendLayout();
             // 
             // btnIniciarServidor
@@ -139,21 +142,36 @@
             lblProcessosAluno.Text = "Processos do aluno:";
             lblProcessosAluno.Visible = false;
             // 
-            // clbProcessos
+            // lvProcessos
             // 
-            clbProcessos.FormattingEnabled = true;
-            clbProcessos.Location = new Point(879, 125);
-            clbProcessos.Name = "clbProcessos";
-            clbProcessos.Size = new Size(192, 148);
-            clbProcessos.TabIndex = 10;
-            clbProcessos.Visible = false;
+            lvProcessos.CheckBoxes = true;
+            lvProcessos.Columns.AddRange(new ColumnHeader[] { headerPrograma });
+            lvProcessos.FullRowSelect = true;
+            lvProcessos.Location = new Point(870, 116);
+            lvProcessos.Name = "lvProcessos";
+            lvProcessos.Size = new Size(210, 178);
+            lvProcessos.SmallImageList = imageListProcessos;
+            lvProcessos.TabIndex = 10;
+            lvProcessos.UseCompatibleStateImageBehavior = false;
+            lvProcessos.View = View.Details;
+            // 
+            // headerPrograma
+            // 
+            headerPrograma.Text = "Programa";
+            headerPrograma.Width = 250;
+            // 
+            // imageListProcessos
+            // 
+            imageListProcessos.ColorDepth = ColorDepth.Depth32Bit;
+            imageListProcessos.ImageSize = new Size(16, 16);
+            imageListProcessos.TransparentColor = Color.Transparent;
             // 
             // FormProfessor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1146, 571);
-            Controls.Add(clbProcessos);
+            Controls.Add(lvProcessos);
             Controls.Add(lblProcessosAluno);
             Controls.Add(btnListarProcessos);
             Controls.Add(lblEnviarMsg);
@@ -182,6 +200,8 @@
         private Label lblEnviarMsg;
         private Button btnListarProcessos;
         private Label lblProcessosAluno;
-        private CheckedListBox clbProcessos;
+        private ListView lvProcessos;
+        private ColumnHeader headerPrograma;
+        private ImageList imageListProcessos;
     }
 }

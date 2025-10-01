@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             label1 = new Label();
             txtIpProfessor = new TextBox();
             btnConectar = new Button();
             lstBox = new ListBox();
             txtMensagem = new TextBox();
             btnEnviar = new Button();
+            processTimer = new System.Windows.Forms.Timer(components);
             SuspendLayout();
             // 
             // label1
@@ -89,7 +91,12 @@
             btnEnviar.UseVisualStyleBackColor = true;
             btnEnviar.Click += btnEnviar_Click;
             // 
-            // Form1
+            // processTimer
+            // 
+            processTimer.Interval = 3000;
+            processTimer.Tick += processTimer_Tick;
+            // 
+            // FormAluno
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -100,7 +107,7 @@
             Controls.Add(btnConectar);
             Controls.Add(txtIpProfessor);
             Controls.Add(label1);
-            Name = "Form1";
+            Name = "FormAluno";
             Text = "Form1";
             ResumeLayout(false);
             PerformLayout();
@@ -114,5 +121,6 @@
         private ListBox lstBox;
         private TextBox txtMensagem;
         private Button btnEnviar;
+        private System.Windows.Forms.Timer processTimer;
     }
 }

@@ -8,7 +8,8 @@ namespace Professor
     public partial class FormProfessor : Form
     {
         private TcpListener listener;
-        private Dictionary<TcpClient, string> clients = new Dictionary<TcpClient, string>();
+        private readonly Dictionary<TcpClient, string> clients = new Dictionary<TcpClient, string>();
+        private string _alunoAtual = null;
 
         public FormProfessor()
         {
@@ -47,12 +48,10 @@ namespace Professor
         private async Task HandleClientAsync(TcpClient client)
         {
             string clientIdentifier = client.Client.RemoteEndPoint.ToString(); ;
-            NetworkStream stream = null;
+            NetworkStream stream = client.GetStream(); ;
 
             try
             {
-                stream = client.GetStream();
-
                 //usado para que duas threads nao escrevam ao mesmo tempo
                 lock (client)
                 {
@@ -72,10 +71,22 @@ namespace Professor
                     await ReadTotalBytesAsync(stream, compressedMessage);
 
                     string mensagem = CompressionHelper.Decompress(compressedMessage);
-                    AtualizarLog($"[{clientIdentifier}]: {mensagem}");
 
-                    string broadcastMessage = $"[{clientIdentifier}]: {mensagem}";
-                    await BroadcastMessage(broadcastMessage, client);
+                    if (mensagem.StartsWith("RSP_PROCESS_LIST|"))
+                    {
+                        if (clientIdentifier == _alunoAtual)
+                        {
+                            string payload = mensagem.Substring("RSP_PROCESS_LIST|".Length);
+                            string[] processNames = payload.Split('|');
+                            AtualizarListaProcessos(processNames);
+                        }
+                    } 
+                    else
+                    {
+                        string broadcastMessage = $"[{clientIdentifier}]: {mensagem}";
+                        AtualizarLog(broadcastMessage);
+                        await BroadcastMessage(broadcastMessage, client);
+                    }
                 }
             }
             catch (Exception ex)
@@ -95,6 +106,63 @@ namespace Professor
             }
         }
 
+        private void AtualizarListaProcessos(string[] processItems)
+        {
+            this.Invoke(new Action(() =>
+            {
+                int topItemIndex = 0;
+                if (lvProcessos.TopItem != null)
+                    topItemIndex = lvProcessos.TopItem.Index;
+                
+
+                lvProcessos.BeginUpdate();
+                lvProcessos.Items.Clear();
+                imageListProcessos.Images.Clear();
+
+                imageListProcessos.Images.Add(SystemIcons.Application);
+
+                foreach(var item in processItems)
+                {
+                    if (string.IsNullOrEmpty(item)) 
+                        continue;
+
+                    string[] parts = item.Split(";");
+                    if (parts.Length < 2)
+                        continue;
+
+                    string processName = parts[0];
+                    string processPathIcon = parts[1];
+                    int iconIndex = 0;
+
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(processPathIcon))
+                        {
+                            Icon icon = Icon.ExtractAssociatedIcon(processPathIcon);
+                            if (icon != null)
+                            {
+                                imageListProcessos.Images.Add(icon);
+                                iconIndex = imageListProcessos.Images.Count - 1;
+                            }
+
+                        }
+                    } catch { 
+                        
+                    }
+
+                    ListViewItem listItem = new ListViewItem(processName, iconIndex);
+                    lvProcessos.Items.Add(listItem);
+                }
+
+                lvProcessos.EndUpdate();
+
+                if(lvProcessos.Items.Count > topItemIndex)
+                {
+                    lvProcessos.EnsureVisible(topItemIndex);
+                }
+            }));
+        }
+
         private async Task BroadcastMessage(string message, TcpClient sender = null)
         {
             byte[] compressedMessage = CompressionHelper.Compress(message);
@@ -110,16 +178,7 @@ namespace Professor
             {
                 if (client != sender)
                 {
-                    try
-                    {
-                        NetworkStream stream = client.GetStream();
-                        await stream.WriteAsync(lengthBuffer, 0, lengthBuffer.Length);
-                        await stream.WriteAsync(compressedMessage, 0, compressedMessage.Length);
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
+                    await SendMessageAsync(client, message);
                 }
             }
         }
@@ -207,18 +266,89 @@ namespace Professor
             }
         }
 
+        //TODO: Fazer a verificacao para que o botao seja o proximo a ser clicado, e assim desselecionar os dois
         private void lstAlunosConectados_Leave(object sender, EventArgs e)
         {
             if (!btnListarProcessos.Focused)
                 lstAlunosConectados.SelectedItem = null;
         }
 
-        private void btnListarProcessos_Click(object sender, EventArgs e)
+        private async Task SendMessageAsync(TcpClient client, string message)
         {
+            if (client != null && client.Connected)
+            {
+                try
+                {
+                    NetworkStream stream = client.GetStream();
+                    byte[] compressedMessage = CompressionHelper.Compress(message);
+                    byte[] lengthBuffer = BitConverter.GetBytes(compressedMessage.Length);
+                    await stream.WriteAsync(lengthBuffer, 0, lengthBuffer.Length);
+                    await stream.WriteAsync(compressedMessage, 0, compressedMessage.Length);
+                }
+                catch (Exception ex)
+                {
+                    AtualizarLog($"Erro ao enviar mensagem para {clients[client]}: {ex.Message}");
+                }
+            }
+        }
+
+        private async void btnListarProcessos_Click(object sender, EventArgs e)
+        {
+            if (lstAlunosConectados.SelectedItem == null)
+            {
+                MessageBox.Show("Por favor, selecione um aluno na lista.", "Nenhum Aluno Selecionado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             lblProcessosAluno.Visible = true;
-            clbProcessos.Visible = true;
+            lvProcessos.Visible = true;
 
             lblProcessosAluno.Text = $"Processos do aluno: {lstAlunosConectados.SelectedItem}";
+
+            string selectedIdentifier = lstAlunosConectados.SelectedItem.ToString();
+            TcpClient targetClient = null;
+            TcpClient oldClient = null;
+
+            lock (clients)
+            {
+                targetClient = clients.FirstOrDefault(kvp => kvp.Value == selectedIdentifier).Key;
+
+                if(_alunoAtual != null)
+                    oldClient = clients.FirstOrDefault(kvp => kvp.Value == _alunoAtual).Key;
+            }
+
+            if (targetClient == null)
+            {
+                MessageBox.Show("Não foi possível encontrar o cliente selecionado. Ele pode ter se desconectado.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (selectedIdentifier == _alunoAtual)
+            {
+                await SendMessageAsync(targetClient, "CMD_STOP_MONITORING");
+                AtualizarLog($"Monitoramento de processos parado para {selectedIdentifier}.");
+                _alunoAtual = null;
+                btnListarProcessos.Text = "Iniciar Monitoramento";
+                lvProcessos.Items.Clear();
+            }
+            else
+            {
+                if (_alunoAtual != null)
+                {
+                    if (oldClient != null)
+                    {
+                        await SendMessageAsync(oldClient, "CMD_STOP_MONITORING");
+                        AtualizarLog($"Monitoramento de processos parado para {_alunoAtual}.");
+                    }
+                }
+
+                await SendMessageAsync(targetClient, "CMD_START_MONITORING");
+                AtualizarLog($"Iniciando monitoramento de processos para {selectedIdentifier}...");
+                _alunoAtual = selectedIdentifier;
+                btnListarProcessos.Text = "Parar Monitoramento";
+            }
+
+           
         }
     }
 }
