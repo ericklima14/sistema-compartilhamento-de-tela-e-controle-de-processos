@@ -110,6 +110,11 @@ namespace Professor
         {
             this.Invoke(new Action(() =>
             {
+                // Antes de limpar a lista, salva os nomes de todos os processos que estão marcados.
+                var checkedProcessNames = new HashSet<string>(
+                    lvProcessos.CheckedItems.Cast<ListViewItem>().Select(item => item.Text)
+                );
+
                 int topItemIndex = 0;
                 if (lvProcessos.TopItem != null)
                     topItemIndex = lvProcessos.TopItem.Index;
@@ -153,6 +158,12 @@ namespace Professor
                     }
 
                     ListViewItem listItem = new ListViewItem(processName, iconIndex);
+
+                    if (checkedProcessNames.Contains(processName))
+                    {
+                        listItem.Checked = true;
+                    }
+
                     lvProcessos.Items.Add(listItem);
                 }
 
@@ -356,29 +367,29 @@ namespace Professor
         private async void btnMatarProcesso_Click(object sender, EventArgs e)
         {
 
-            if (_alunoAtual == null || lvProcessos.SelectedItems.Count == 0)
+            if (_alunoAtual == null || lvProcessos.CheckedItems.Count == 0)
             {
                 MessageBox.Show("Por favor, inicie o monitoramento de um aluno e selecione um processo na lista para matar.", "Ação Inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
-            string nomeProcesso = lvProcessos.SelectedItems[0].Text;
 
             TcpClient targetClient = null;
             lock (clients)
             {
                 targetClient = clients.FirstOrDefault(kvp => kvp.Value == _alunoAtual).Key;
             }
-
             if (targetClient == null)
             {
                 MessageBox.Show("O aluno selecionado parece ter se desconectado. Não é possível enviar o comando.", "Erro de Conexão", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            string mensagem = $"CMD_KILL_PROCESS|{nomeProcesso}";
+            var nomesProcessos = lvProcessos.CheckedItems.Cast<ListViewItem>().Select(item => item.Text);
+            string payload = string.Join("|", nomesProcessos);
+
+            string mensagem = $"CMD_KILL_PROCESSES|{payload}";
             await SendMessageAsync(targetClient, mensagem);
-            AtualizarLog($"Comando para matar o processo '{nomeProcesso}' enviado para o aluno {_alunoAtual}.");
+            AtualizarLog($"Comando para matar os processos [{payload}] enviado para o aluno {_alunoAtual}.");
         }
     }
 }

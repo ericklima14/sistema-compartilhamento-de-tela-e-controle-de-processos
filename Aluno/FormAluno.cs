@@ -64,32 +64,9 @@ namespace Aluno
                             processTimer.Stop();
                         }));
                     }
-                    else if (mensagem.StartsWith("CMD_KILL_PROCESS|"))
+                    else if (mensagem.StartsWith("CMD_KILL_PROCESSES"))
                     {
-                        string nomeProcesso = mensagem.Substring("CMD_KILL_PROCESS|".Length);
-                        AtualizarLog($"Recebido comando para finalizar o processo: {nomeProcesso}");
-
-                        try
-                        {
-                            Process[] processes = Process.GetProcessesByName(nomeProcesso);
-
-                            if (processes.Length > 0)
-                            {
-                                foreach (Process process in processes)
-                                {
-                                    process.Kill();
-                                    AtualizarLog($"Processo '{nomeProcesso}' (ID: {process.Id}) finalizado com sucesso.");
-                                }
-                            }
-                            else
-                            {
-                                AtualizarLog($"Processo '{nomeProcesso}' não foi encontrado em execução.");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            AtualizarLog($"Erro ao tentar matar o processo '{nomeProcesso}': {ex.Message}");
-                        }
+                        MatarProcessos(mensagem);
                     }
                     else
                     {
@@ -186,6 +163,43 @@ namespace Aluno
                 Console.WriteLine("Processo que nao pode ser acessado");
             }
             
+        }
+
+        private void MatarProcessos(string comando)
+        {
+            string payload = comando.Substring("CMD_KILL_PROCESSES|".Length);
+
+            AtualizarLog($"Recebido comando para finalizar os processos: '{payload}'.");
+
+            string[] nomesProcessos = payload.Split('|');
+
+            foreach (string nome in nomesProcessos)
+            {
+                if (string.IsNullOrWhiteSpace(nome))
+                    continue;
+
+                try
+                {
+                    Process[] processesToKill = Process.GetProcessesByName(nome);
+
+                    if (processesToKill.Length > 0)
+                    {
+                        foreach (Process process in processesToKill)
+                        {
+                            process.Kill();
+                            AtualizarLog($"Processo '{nome}' (ID: {process.Id}) finalizado com sucesso.");
+                        }
+                    }
+                    else
+                    {
+                        AtualizarLog($"Processo '{nome}' não foi encontrado em execução.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AtualizarLog($"Erro ao tentar finalizar '{nome}': {ex.Message}");
+                }
+            }
         }
     }
 }
