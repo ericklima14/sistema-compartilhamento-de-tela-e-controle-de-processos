@@ -71,7 +71,7 @@
             lstBox.ItemHeight = 15;
             lstBox.Location = new Point(325, 109);
             lstBox.Name = "lstBox";
-            lstBox.Size = new Size(120, 94);
+            lstBox.Size = new Size(376, 94);
             lstBox.TabIndex = 3;
             // 
             // txtMensagem

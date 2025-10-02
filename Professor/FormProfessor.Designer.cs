@@ -42,6 +42,7 @@
             lvProcessos = new ListView();
             headerPrograma = new ColumnHeader();
             imageListProcessos = new ImageList(components);
+            btnMatarProcesso = new Button();
             SuspendLayout();
             // 
             // btnIniciarServidor
@@ -166,11 +167,22 @@
             imageListProcessos.ImageSize = new Size(16, 16);
             imageListProcessos.TransparentColor = Color.Transparent;
             // 
+            // btnMatarProcesso
+            // 
+            btnMatarProcesso.Location = new Point(904, 311);
+            btnMatarProcesso.Name = "btnMatarProcesso";
+            btnMatarProcesso.Size = new Size(140, 41);
+            btnMatarProcesso.TabIndex = 11;
+            btnMatarProcesso.Text = "Matar Processo";
+            btnMatarProcesso.UseVisualStyleBackColor = true;
+            btnMatarProcesso.Click += btnMatarProcesso_Click;
+            // 
             // FormProfessor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1146, 571);
+            Controls.Add(btnMatarProcesso);
             Controls.Add(lvProcessos);
             Controls.Add(lblProcessosAluno);
             Controls.Add(btnListarProcessos);
@@ -203,5 +215,6 @@
         private ListView lvProcessos;
         private ColumnHeader headerPrograma;
         private ImageList imageListProcessos;
+        private Button btnMatarProcesso;
     }
 }

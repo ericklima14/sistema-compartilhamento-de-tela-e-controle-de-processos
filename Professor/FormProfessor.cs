@@ -80,7 +80,7 @@ namespace Professor
                             string[] processNames = payload.Split('|');
                             AtualizarListaProcessos(processNames);
                         }
-                    } 
+                    }
                     else
                     {
                         string broadcastMessage = $"[{clientIdentifier}]: {mensagem}";
@@ -113,7 +113,7 @@ namespace Professor
                 int topItemIndex = 0;
                 if (lvProcessos.TopItem != null)
                     topItemIndex = lvProcessos.TopItem.Index;
-                
+
 
                 lvProcessos.BeginUpdate();
                 lvProcessos.Items.Clear();
@@ -121,9 +121,9 @@ namespace Professor
 
                 imageListProcessos.Images.Add(SystemIcons.Application);
 
-                foreach(var item in processItems)
+                foreach (var item in processItems)
                 {
-                    if (string.IsNullOrEmpty(item)) 
+                    if (string.IsNullOrEmpty(item))
                         continue;
 
                     string[] parts = item.Split(";");
@@ -146,8 +146,10 @@ namespace Professor
                             }
 
                         }
-                    } catch { 
-                        
+                    }
+                    catch
+                    {
+
                     }
 
                     ListViewItem listItem = new ListViewItem(processName, iconIndex);
@@ -156,7 +158,7 @@ namespace Professor
 
                 lvProcessos.EndUpdate();
 
-                if(lvProcessos.Items.Count > topItemIndex)
+                if (lvProcessos.Items.Count > topItemIndex)
                 {
                     lvProcessos.EnsureVisible(topItemIndex);
                 }
@@ -313,7 +315,7 @@ namespace Professor
             {
                 targetClient = clients.FirstOrDefault(kvp => kvp.Value == selectedIdentifier).Key;
 
-                if(_alunoAtual != null)
+                if (_alunoAtual != null)
                     oldClient = clients.FirstOrDefault(kvp => kvp.Value == _alunoAtual).Key;
             }
 
@@ -348,7 +350,35 @@ namespace Professor
                 btnListarProcessos.Text = "Parar Monitoramento";
             }
 
-           
+
+        }
+
+        private async void btnMatarProcesso_Click(object sender, EventArgs e)
+        {
+
+            if (_alunoAtual == null || lvProcessos.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Por favor, inicie o monitoramento de um aluno e selecione um processo na lista para matar.", "Ação Inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string nomeProcesso = lvProcessos.SelectedItems[0].Text;
+
+            TcpClient targetClient = null;
+            lock (clients)
+            {
+                targetClient = clients.FirstOrDefault(kvp => kvp.Value == _alunoAtual).Key;
+            }
+
+            if (targetClient == null)
+            {
+                MessageBox.Show("O aluno selecionado parece ter se desconectado. Não é possível enviar o comando.", "Erro de Conexão", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            string mensagem = $"CMD_KILL_PROCESS|{nomeProcesso}";
+            await SendMessageAsync(targetClient, mensagem);
+            AtualizarLog($"Comando para matar o processo '{nomeProcesso}' enviado para o aluno {_alunoAtual}.");
         }
     }
 }

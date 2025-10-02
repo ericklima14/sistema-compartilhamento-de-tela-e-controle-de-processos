@@ -64,6 +64,33 @@ namespace Aluno
                             processTimer.Stop();
                         }));
                     }
+                    else if (mensagem.StartsWith("CMD_KILL_PROCESS|"))
+                    {
+                        string nomeProcesso = mensagem.Substring("CMD_KILL_PROCESS|".Length);
+                        AtualizarLog($"Recebido comando para finalizar o processo: {nomeProcesso}");
+
+                        try
+                        {
+                            Process[] processes = Process.GetProcessesByName(nomeProcesso);
+
+                            if (processes.Length > 0)
+                            {
+                                foreach (Process process in processes)
+                                {
+                                    process.Kill();
+                                    AtualizarLog($"Processo '{nomeProcesso}' (ID: {process.Id}) finalizado com sucesso.");
+                                }
+                            }
+                            else
+                            {
+                                AtualizarLog($"Processo '{nomeProcesso}' não foi encontrado em execução.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            AtualizarLog($"Erro ao tentar matar o processo '{nomeProcesso}': {ex.Message}");
+                        }
+                    }
                     else
                     {
                         AtualizarLog(mensagem);
