@@ -10,6 +10,8 @@ namespace Professor
         private TcpListener listener;
         private readonly Dictionary<TcpClient, string> clients = new Dictionary<TcpClient, string>();
         private string _alunoAtual = null;
+        private List<string> _processosBloqueados = new List<string>();
+        private Dictionary<string, string> _caminhosDeIcone = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         public FormProfessor()
         {
@@ -61,6 +63,13 @@ namespace Professor
                 AtualizarLog($"Novo aluno conectado: {clientIdentifier}");
                 AtualizarListaAlunos();
 
+                if(_processosBloqueados.Count > 0)
+                {
+                    string payload = string.Join("|", _processosBloqueados);
+                    await SendMessageAsync(client, "CMD_UPDATE_BLOCKLIST|" + payload);
+                    AtualizarLog($"Enviando lista de bloqueio atual para {clientIdentifier}.");
+                }
+
                 while (client.Connected)
                 {
                     byte[] lengthBuffer = new byte[4];
@@ -110,7 +119,6 @@ namespace Professor
         {
             this.Invoke(new Action(() =>
             {
-                // Antes de limpar a lista, salva os nomes de todos os processos que estão marcados.
                 var checkedProcessNames = new HashSet<string>(
                     lvProcessos.CheckedItems.Cast<ListViewItem>().Select(item => item.Text)
                 );
@@ -119,47 +127,52 @@ namespace Professor
                 if (lvProcessos.TopItem != null)
                     topItemIndex = lvProcessos.TopItem.Index;
 
-
                 lvProcessos.BeginUpdate();
                 lvProcessos.Items.Clear();
                 imageListProcessos.Images.Clear();
 
                 imageListProcessos.Images.Add(SystemIcons.Application);
 
+                var iconCacheLocal = new Dictionary<string, int>();
+
                 foreach (var item in processItems)
                 {
                     if (string.IsNullOrEmpty(item))
                         continue;
 
-                    string[] parts = item.Split(";");
-                    if (parts.Length < 2)
-                        continue;
-
-                    string processName = parts[0];
-                    string processPathIcon = parts[1];
                     int iconIndex = 0;
 
-                    try
+                    if (iconCacheLocal.ContainsKey(item))
                     {
-                        if (!string.IsNullOrEmpty(processPathIcon))
+                        iconIndex = iconCacheLocal[item];
+                    } 
+                    else
+                    {
+                        if (_caminhosDeIcone.ContainsKey(item))
                         {
-                            Icon icon = Icon.ExtractAssociatedIcon(processPathIcon);
-                            if (icon != null)
+                            string caminhoIconeLocal = _caminhosDeIcone[item];
+
+                            try
                             {
-                                imageListProcessos.Images.Add(icon);
-                                iconIndex = imageListProcessos.Images.Count - 1;
+                                Icon icon = Icon.ExtractAssociatedIcon(caminhoIconeLocal);
+                                if (icon != null)
+                                {
+                                    imageListProcessos.Images.Add(icon);
+                                    iconIndex = imageListProcessos.Images.Count - 1;
+                                }
                             }
+                            catch
+                            {
 
+                            }
                         }
-                    }
-                    catch
-                    {
 
-                    }
+                        iconCacheLocal[item] = iconIndex;
+                    } 
 
-                    ListViewItem listItem = new ListViewItem(processName, iconIndex);
+                    ListViewItem listItem = new ListViewItem(item, iconIndex);
 
-                    if (checkedProcessNames.Contains(processName))
+                    if (checkedProcessNames.Contains(item))
                     {
                         listItem.Checked = true;
                     }
@@ -178,9 +191,6 @@ namespace Professor
 
         private async Task BroadcastMessage(string message, TcpClient sender = null)
         {
-            byte[] compressedMessage = CompressionHelper.Compress(message);
-            byte[] lengthBuffer = BitConverter.GetBytes(compressedMessage.Length);
-
             List<TcpClient> clientsParaEnviar;
             lock (clients)
             {
@@ -384,12 +394,59 @@ namespace Professor
                 return;
             }
 
-            var nomesProcessos = lvProcessos.CheckedItems.Cast<ListViewItem>().Select(item => item.Text);
+            var nomesProcessos = lvProcessos.CheckedItems.Cast<ListViewItem>().Select(item => item.Text).ToList();
             string payload = string.Join("|", nomesProcessos);
 
             string mensagem = $"CMD_KILL_PROCESSES|{payload}";
             await SendMessageAsync(targetClient, mensagem);
             AtualizarLog($"Comando para matar os processos [{payload}] enviado para o aluno {_alunoAtual}.");
+
+            bool listaMudou = false;
+
+            foreach (var nome in nomesProcessos) {
+                if (!_processosBloqueados.Contains(nome, StringComparer.OrdinalIgnoreCase)) {
+                    _processosBloqueados.Add(nome);
+                    listaMudou = true;
+                }
+            }
+
+            if (listaMudou) {
+                AtualizarLog($"Processos [{payload}] adicionados à lista de bloqueio global.");
+                string blocklistPayload = string.Join("|", _processosBloqueados);
+
+                await BroadcastMessage("CMD_UPDATE_BLOCKLIST|" + blocklistPayload);
+            }
+        }
+
+        private void lblListaProcessos_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void btnGerenciarBloqueios_Click(object sender, EventArgs e)
+        {
+            using (FormGerenciarBloqueio formBloqueio = new FormGerenciarBloqueio(_processosBloqueados))
+            {
+                if(formBloqueio.ShowDialog() == DialogResult.OK)
+                {
+                    _processosBloqueados = formBloqueio.ListaBloqueioFinal;
+
+                    _caminhosDeIcone.Clear();
+
+                    foreach (var programa in formBloqueio.ProgramasEncontrados)
+                    {
+                        if (!_caminhosDeIcone.ContainsKey(programa.NomeProcesso))
+                        {
+                            _caminhosDeIcone.Add(programa.NomeProcesso, programa.CaminhoIcone);
+                        }
+                    }
+
+                    AtualizarLog("Lista de bloqueio foi atualizada");
+
+                    string payload = string.Join("|", _processosBloqueados);
+                    await BroadcastMessage("CMD_UPDATE_BLOCKLIST|" + payload);
+                }
+            }
         }
     }
 }

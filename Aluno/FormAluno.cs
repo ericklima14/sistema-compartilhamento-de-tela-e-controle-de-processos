@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Management;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
@@ -8,6 +9,8 @@ namespace Aluno
     {
         private TcpClient client;
         private NetworkStream stream;
+        private List<string> processosBloqueados = new List<string>();
+        private ManagementEventWatcher wmiWatcher;
 
         public FormAluno()
         {
@@ -36,6 +39,107 @@ namespace Aluno
             }
         }
 
+        private void IniciarVigiaDeProcessos()
+        {
+            try
+            {
+                string query = "SELECT * FROM __InstanceCreationEvent WITHIN 1 WHERE TargetInstance ISA 'Win32_Process'";
+                wmiWatcher = new ManagementEventWatcher(new WqlEventQuery(query));
+
+                wmiWatcher.EventArrived += ProcessoIniciado_EventArrived;
+
+                wmiWatcher.Start();
+                AtualizarLog("Vigia de processos em tempo real ATIVADO");
+
+                MatarProcessosInciais();    
+            } catch (Exception ex)
+            {
+                AtualizarLog($"Erro ao iniciar o vigia de processos: {ex.Message}");
+            }
+        }
+
+        private void MatarProcessosInciais()
+        {
+            foreach(var nome in processosBloqueados)
+            {
+                try
+                {
+                    Process[] processesToKill = Process.GetProcessesByName(nome);
+
+                    if (processesToKill.Length > 0)
+                    {
+                        foreach (Process process in processesToKill)
+                        {
+                            process.Kill();
+                            AtualizarLog($"Processo '{nome}' (ID: {process.Id}) finalizado com sucesso.");
+                        }
+                    }
+                    else
+                    {
+                        AtualizarLog($"Processo '{nome}' não foi encontrado em execução.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AtualizarLog($"Erro ao tentar finalizar '{nome}': {ex.Message}");
+                }
+            }
+        }
+
+        private void PararVigiaDeProcessos()
+        {
+            if(wmiWatcher != null)
+            {
+                wmiWatcher.Stop();
+                wmiWatcher.Dispose();
+                wmiWatcher = null;
+                AtualizarLog("Vigia de processos em tempo real DESATIVADO");
+            }
+        }
+
+        private void ProcessoIniciado_EventArrived(object sender, EventArrivedEventArgs e)
+        {
+            try
+            {
+                string nomeProcesso = ((ManagementBaseObject)e.NewEvent["TargetInstance"])["Name"].ToString();
+
+                AtualizarLog($"[DEBUG] Novo processo detectado: {nomeProcesso}");
+
+                if (processosBloqueados.Contains(nomeProcesso.Replace(".exe", ""), StringComparer.OrdinalIgnoreCase)) {
+                    AtualizarLog($"Processo proibido '{nomeProcesso}' detectado instantaneamente");
+
+                    string nome = nomeProcesso.Replace(".exe", "");
+
+                    try
+                    {
+                        Process[] processesToKill = Process.GetProcessesByName(nome);
+
+                        if (processesToKill.Length > 0)
+                        {
+                            foreach (Process process in processesToKill)
+                            {
+                                process.Kill();
+                                AtualizarLog($"Processo '{nome}' (ID: {process.Id}) finalizado com sucesso.");
+                            }
+                        }
+                        else
+                        {
+                            AtualizarLog($"Processo '{nome}' não foi encontrado em execução.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AtualizarLog($"Erro ao tentar finalizar '{nome}': {ex.Message}");
+                    }
+                  
+                }
+            } 
+            catch (Exception ex)
+            {
+                AtualizarLog($"Erro no evento do vigia: {ex.Message}");
+            }
+        }
+         
         private async Task ReceberMensagem()
         {
             while (client.Connected)
@@ -50,10 +154,22 @@ namespace Aluno
 
                     string mensagem = CompressionHelper.Decompress(compressedMessage);
 
-                    if (mensagem == "CMD_START_MONITORING")
+                    if (mensagem.StartsWith("CMD_UPDATE_BLOCKLIST|")) 
+                    {
+                        string payload = mensagem.Substring("CMD_UPDATE_BLOCKLIST|".Length);
+                        processosBloqueados = new List<string>(payload.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
+                        AtualizarLog($"Lista de bloqueio atualizada. Fiscalização ativada.");
+
+                        if (wmiWatcher == null)
+                        {
+                            this.Invoke(new Action(() => IniciarVigiaDeProcessos()));
+                        }
+                    }
+                    else if (mensagem == "CMD_START_MONITORING")
                     {
                         this.Invoke(new Action(() => {
                             AtualizarLog("Professor iniciou o monitoramento de processos.");
+                            IniciarVigiaDeProcessos();
                             processTimer.Start();
                         }));
                     }
@@ -64,7 +180,7 @@ namespace Aluno
                             processTimer.Stop();
                         }));
                     }
-                    else if (mensagem.StartsWith("CMD_KILL_PROCESSES"))
+                    else if (mensagem.StartsWith("CMD_KILL_PROCESSES|"))
                     {
                         MatarProcessos(mensagem);
                     }
@@ -77,7 +193,10 @@ namespace Aluno
                 {
                     AtualizarLog("Conexão perdida.");
                     if (processTimer.Enabled) 
-                        this.Invoke(new Action(() => processTimer.Stop()));
+                        this.Invoke(new Action(() => {
+                            PararVigiaDeProcessos();
+                            processTimer.Stop();
+                        }));
                     
                     break;
                 }
@@ -90,6 +209,7 @@ namespace Aluno
             {
                 byte[] compressedMessage = CompressionHelper.Compress(message);
                 byte[] lengthBuffer = BitConverter.GetBytes(compressedMessage.Length);
+
                 await stream.WriteAsync(lengthBuffer, 0, lengthBuffer.Length);
                 await stream.WriteAsync(compressedMessage, 0, compressedMessage.Length);
             }
@@ -138,26 +258,12 @@ namespace Aluno
                 //var processNames = Process.GetProcesses().Select(p => p.ProcessName).Distinct().OrderBy(name => name);
                 var processNames = Process.GetProcesses()
                                           .Where(p => !string.IsNullOrEmpty(p.MainWindowTitle))
-                                          .Select(p => {
-                                              string processPath = null;
-                                              try
-                                              {
-                                                  if (p.MainModule != null)
-                                                  {
-                                                      processPath = p.MainModule.FileName;
-                                                  }
-                                              }
-                                              catch
-                                              {
-                                                  Console.WriteLine("Imagem que nao pode ser acessada");
-                                              }
-                                              return new { Name = p.ProcessName, Path = processPath };
-                                          })
+                                          .Select(p => p.ProcessName )
                                           .Distinct()
-                                          .OrderBy(p => p.Name);
+                                          .OrderBy(name => name);
 
 
-                string responsePayload = string.Join("|", processNames.Select(p => $"{p.Name};{p.Path}"));
+                string responsePayload = string.Join("|", processNames);
                 await SendMessageAsync("RSP_PROCESS_LIST|" + responsePayload);
             } catch {
                 Console.WriteLine("Processo que nao pode ser acessado");

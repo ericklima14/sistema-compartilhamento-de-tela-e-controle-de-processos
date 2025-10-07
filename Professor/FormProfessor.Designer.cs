@@ -43,6 +43,11 @@
             headerPrograma = new ColumnHeader();
             imageListProcessos = new ImageList(components);
             btnMatarProcesso = new Button();
+            lvListaProcessosBloq = new ListView();
+            columnPrograma = new ColumnHeader();
+            lblListaProcessos = new Label();
+            btnRetirarProcesso = new Button();
+            btnGerenciarBloqueios = new Button();
             SuspendLayout();
             // 
             // btnIniciarServidor
@@ -68,14 +73,14 @@
             // 
             // txtMensagem
             // 
-            txtMensagem.Location = new Point(317, 173);
+            txtMensagem.Location = new Point(317, 125);
             txtMensagem.Name = "txtMensagem";
             txtMensagem.Size = new Size(174, 23);
             txtMensagem.TabIndex = 2;
             // 
             // btnEnviar
             // 
-            btnEnviar.Location = new Point(334, 226);
+            btnEnviar.Location = new Point(334, 178);
             btnEnviar.Name = "btnEnviar";
             btnEnviar.Size = new Size(143, 33);
             btnEnviar.TabIndex = 3;
@@ -95,7 +100,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(615, 92);
+            label1.Location = new Point(616, 60);
             label1.Name = "label1";
             label1.Size = new Size(110, 15);
             label1.TabIndex = 5;
@@ -106,7 +111,7 @@
             lstAlunosConectados.FormattingEnabled = true;
             lstAlunosConectados.HorizontalScrollbar = true;
             lstAlunosConectados.ItemHeight = 15;
-            lstAlunosConectados.Location = new Point(582, 125);
+            lstAlunosConectados.Location = new Point(583, 93);
             lstAlunosConectados.Name = "lstAlunosConectados";
             lstAlunosConectados.Size = new Size(180, 154);
             lstAlunosConectados.TabIndex = 6;
@@ -116,7 +121,7 @@
             // lblEnviarMsg
             // 
             lblEnviarMsg.AutoSize = true;
-            lblEnviarMsg.Location = new Point(352, 141);
+            lblEnviarMsg.Location = new Point(352, 93);
             lblEnviarMsg.Name = "lblEnviarMsg";
             lblEnviarMsg.Size = new Size(101, 15);
             lblEnviarMsg.TabIndex = 7;
@@ -124,7 +129,7 @@
             // 
             // btnListarProcessos
             // 
-            btnListarProcessos.Location = new Point(604, 297);
+            btnListarProcessos.Location = new Point(605, 265);
             btnListarProcessos.Name = "btnListarProcessos";
             btnListarProcessos.Size = new Size(140, 41);
             btnListarProcessos.TabIndex = 8;
@@ -136,7 +141,7 @@
             // lblProcessosAluno
             // 
             lblProcessosAluno.AutoSize = true;
-            lblProcessosAluno.Location = new Point(914, 92);
+            lblProcessosAluno.Location = new Point(917, 57);
             lblProcessosAluno.Name = "lblProcessosAluno";
             lblProcessosAluno.Size = new Size(112, 15);
             lblProcessosAluno.TabIndex = 9;
@@ -148,7 +153,7 @@
             lvProcessos.CheckBoxes = true;
             lvProcessos.Columns.AddRange(new ColumnHeader[] { headerPrograma });
             lvProcessos.FullRowSelect = true;
-            lvProcessos.Location = new Point(870, 116);
+            lvProcessos.Location = new Point(873, 81);
             lvProcessos.Name = "lvProcessos";
             lvProcessos.Size = new Size(210, 178);
             lvProcessos.SmallImageList = imageListProcessos;
@@ -169,7 +174,7 @@
             // 
             // btnMatarProcesso
             // 
-            btnMatarProcesso.Location = new Point(904, 311);
+            btnMatarProcesso.Location = new Point(907, 276);
             btnMatarProcesso.Name = "btnMatarProcesso";
             btnMatarProcesso.Size = new Size(140, 41);
             btnMatarProcesso.TabIndex = 11;
@@ -177,11 +182,62 @@
             btnMatarProcesso.UseVisualStyleBackColor = true;
             btnMatarProcesso.Click += btnMatarProcesso_Click;
             // 
+            // lvListaProcessosBloq
+            // 
+            lvListaProcessosBloq.CheckBoxes = true;
+            lvListaProcessosBloq.Columns.AddRange(new ColumnHeader[] { columnPrograma });
+            lvListaProcessosBloq.FullRowSelect = true;
+            lvListaProcessosBloq.Location = new Point(300, 300);
+            lvListaProcessosBloq.Name = "lvListaProcessosBloq";
+            lvListaProcessosBloq.Size = new Size(191, 176);
+            lvListaProcessosBloq.SmallImageList = imageListProcessos;
+            lvListaProcessosBloq.TabIndex = 12;
+            lvListaProcessosBloq.UseCompatibleStateImageBehavior = false;
+            lvListaProcessosBloq.View = View.Details;
+            // 
+            // columnPrograma
+            // 
+            columnPrograma.Text = "Programas";
+            columnPrograma.Width = 250;
+            // 
+            // lblListaProcessos
+            // 
+            lblListaProcessos.AutoSize = true;
+            lblListaProcessos.Location = new Point(317, 273);
+            lblListaProcessos.Name = "lblListaProcessos";
+            lblListaProcessos.Size = new Size(167, 15);
+            lblListaProcessos.TabIndex = 13;
+            lblListaProcessos.Text = "Lista de Processos Bloqueados";
+            lblListaProcessos.Click += lblListaProcessos_Click;
+            // 
+            // btnRetirarProcesso
+            // 
+            btnRetirarProcesso.Location = new Point(334, 501);
+            btnRetirarProcesso.Name = "btnRetirarProcesso";
+            btnRetirarProcesso.Size = new Size(128, 39);
+            btnRetirarProcesso.TabIndex = 14;
+            btnRetirarProcesso.Text = "Retirar Processo";
+            btnRetirarProcesso.UseVisualStyleBackColor = true;
+            // 
+            // btnGerenciarBloqueios
+            // 
+            btnGerenciarBloqueios.Location = new Point(683, 400);
+            btnGerenciarBloqueios.Name = "btnGerenciarBloqueios";
+            btnGerenciarBloqueios.Size = new Size(172, 51);
+            btnGerenciarBloqueios.TabIndex = 15;
+            btnGerenciarBloqueios.Text = "Gerenciar Bloqueios";
+            btnGerenciarBloqueios.UseVisualStyleBackColor = true;
+            btnGerenciarBloqueios.Click += btnGerenciarBloqueios_Click;
+            // 
             // FormProfessor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1146, 571);
+            ClientSize = new Size(1146, 574);
+            Controls.Add(btnGerenciarBloqueios);
+            Controls.Add(btnRetirarProcesso);
+            Controls.Add(lblListaProcessos);
+            Controls.Add(lvListaProcessosBloq);
             Controls.Add(btnMatarProcesso);
             Controls.Add(lvProcessos);
             Controls.Add(lblProcessosAluno);
@@ -216,5 +272,11 @@
         private ColumnHeader headerPrograma;
         private ImageList imageListProcessos;
         private Button btnMatarProcesso;
+        private ListView lvListaProcessosBloq;
+        private Label lblListaProcessos;
+        private ColumnHeader columnPrograma;
+        private ImageList imageListProcessosBloq;
+        private Button btnRetirarProcesso;
+        private Button btnGerenciarBloqueios;
     }
 }
