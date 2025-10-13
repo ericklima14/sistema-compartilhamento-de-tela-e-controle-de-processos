@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="ZstdSharp.Port" Version="0.8.6" />
+	<PackageReference Include="FFMpegCore" Version="5.2.0" />
   </ItemGroup>
 
 </Project>
