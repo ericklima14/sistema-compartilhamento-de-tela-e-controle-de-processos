@@ -6,7 +6,10 @@ namespace Professor
     public partial class FormProfessor : Form
     {
         private CancellationTokenSource? _cancellationTokenSource;
+        private Task? _ffmpegTask;
+        private Process? _ffmpegProcess;
         private string? _sdpFilePath;
+        private bool _isClosing = false; // Flag para controlar o fechamento ordenado
 
         public FormProfessor()
         {
@@ -14,77 +17,128 @@ namespace Professor
             btnStopStream.Enabled = false;
         }
 
-        private async void btnStartStream_Click(object sender, EventArgs e)
+        private void btnStartStream_Click(object sender, EventArgs e)
         {
             string receiverIp = "127.0.0.1";
             int receiverPort = 1234;
 
+            _sdpFilePath = Path.Combine(Path.GetTempPath(), "professor_stream.sdp");
+            DeleteSdpFile();
+
             btnStartStream.Enabled = false;
             btnStopStream.Enabled = true;
-
             this.Text = "Transmitindo...";
-
             _cancellationTokenSource = new CancellationTokenSource();
 
             try
             {
-                // Define um caminho temporário para o arquivo SDP que o FFmpeg irá criar.
-                _sdpFilePath = Path.Combine(Path.GetTempPath(), "stream.sdp");
+                string ffmpegArguments = string.Join(" ",
+                    "-f gdigrab",
+                    "-framerate 30",
+                    "-i desktop",
+                    "-c:v libx264",
+                    "-b:v 6000k",
+                    "-preset ultrafast",
+                    "-tune zerolatency",
+                    "-an",
+                    "-f rtp",
+                    $"-sdp_file \"{_sdpFilePath}\"",
+                    $"rtp://{receiverIp}:{receiverPort}"
+                );
+                
+                Debug.WriteLine($"Argumentos do FFMpeg: {ffmpegArguments}");
 
-                await FFMpegArguments
-                    // Entrada: ffmpeg -f gdigrab -framerate 30 -i desktop
-                    .FromFileInput("desktop", verifyExists: false, options => options
-                        .ForceFormat("gdigrab")
-                        .WithFramerate(30))
+                _ffmpegProcess = new Process();
+                _ffmpegProcess.StartInfo.FileName = "ffmpeg.exe";
+                _ffmpegProcess.StartInfo.Arguments = ffmpegArguments;
+                _ffmpegProcess.StartInfo.UseShellExecute = false;
+                _ffmpegProcess.StartInfo.CreateNoWindow = true;
+                _ffmpegProcess.StartInfo.RedirectStandardError = true;
 
-                    // Saída: -c:v h264_nvenc -preset p5 -b:v 6M -an -f rtp rtp://... -sdp_file ...
-                    .OutputToUrl($"rtp://{receiverIp}:{receiverPort}", options => options
-
-                        // --- OPÇÃO 1 (RECOMENDADA): Usar encoder de hardware da NVIDIA (NVENC) ---
-                        //.WithVideoCodec("h264_nvenc")
-                        //.WithVideoBitrate(6000) // -b:v 6M (6000 kbps)
-                        //.WithCustomArgument("-preset p5") // Preset de performance/qualidade para NVENC
-
-                         // --- OPÇÃO 2 (ALTERNATIVA): Se não tiver GPU NVIDIA, use o encoder da CPU ---
-                         .WithVideoCodec("libx264")
-                         .WithVideoBitrate(6000)
-                         .WithCustomArgument("-preset ultrafast -tune zerolatency") // Otimizado para baixa latência
-
-                        .WithAudioBitrate(0) // Equivalente a -an
-                        .WithCustomArgument($"-sdp_file \"{_sdpFilePath}\"") // Gera o arquivo SDP
-                        .ForceFormat("rtp"))
-                    .CancellableThrough(_cancellationTokenSource.Token)
-                    .ProcessAsynchronously(true);
-
-                if (!_cancellationTokenSource.IsCancellationRequested)
+                _ffmpegProcess.ErrorDataReceived += (s, args) =>
                 {
-                    MessageBox.Show("Transmissão finalizada.", "Info");
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                Debug.WriteLine("Transmissão cancelada pelo usuário.");
+                    if (!string.IsNullOrWhiteSpace(args.Data))
+                    {
+                        Debug.WriteLine($"[FFMpeg] {args.Data}");
+                    }
+                };
+
+                _ffmpegTask = Task.Run(() =>
+                {
+                    _ffmpegProcess.Start();
+                    _ffmpegProcess.BeginErrorReadLine();
+                    _ffmpegProcess.WaitForExit();
+                    _cancellationTokenSource?.Token.ThrowIfCancellationRequested();
+                }, _cancellationTokenSource.Token);
+
+                _ffmpegTask.ContinueWith(task =>
+                {
+                    if (this.IsDisposed) return; // Verificação de segurança adicional
+                    
+                    if (InvokeRequired)
+                    {
+                        try
+                        {
+                            Invoke(new Action(() => CleanupAfterStream(task)));
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            Debug.WriteLine("Formulário já foi descartado, limpeza da UI ignorada.");
+                        }
+                    }
+                    else
+                    {
+                        CleanupAfterStream(task);
+                    }
+                });
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao iniciar a transmissão: {ex.Message}", "Erro");
+                MessageBox.Show($"Falha ao configurar o FFMpeg: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                CleanupAfterStream(Task.FromException(ex));
             }
-            finally
-            {
-                // Restaura o estado inicial da interface
-                btnStartStream.Enabled = true;
-                btnStopStream.Enabled = false;
-                this.Text = "Professor App";
-                _cancellationTokenSource?.Dispose();
-                _cancellationTokenSource = null;
+        }
+        
+        private void CleanupAfterStream(Task task)
+        {
+            // Restaura o estado da UI
+            btnStartStream.Enabled = true;
+            btnStopStream.Enabled = false;
+            this.Text = "Professor App";
 
-                // Apaga o arquivo SDP temporário que o FFmpeg criou
-                DeleteSdpFile();
+            // Limpa os recursos
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+            _ffmpegTask = null;
+            _ffmpegProcess?.Dispose();
+            _ffmpegProcess = null;
+
+            DeleteSdpFile();
+
+            // --- LÓGICA DE FECHAMENTO SEGURO ---
+            // Se o formulário estava esperando o FFMpeg terminar para fechar,
+            // agora é a hora de fechar de verdade.
+            if (_isClosing)
+            {
+                this.Close();
             }
         }
 
         private void btnStopStream_Click(object sender, EventArgs e)
         {
+            if (_ffmpegProcess != null && !_ffmpegProcess.HasExited)
+            {
+                try
+                {
+                    _ffmpegProcess.Kill(true); 
+                    Debug.WriteLine("Processo FFmpeg encerrado forçadamente.");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Não foi possível encerrar o processo FFmpeg: {ex.Message}");
+                }
+            }
+
             if (_cancellationTokenSource != null && !_cancellationTokenSource.IsCancellationRequested)
             {
                 _cancellationTokenSource.Cancel();
@@ -93,8 +147,21 @@ namespace Professor
 
         private void FormProfessor_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Garante que o processo FFmpeg será finalizado ao fechar o form
-            btnStopStream_Click(sender, e);
+            // --- LÓGICA DE FECHAMENTO SEGURO ---
+            // Verifica se a transmissão ainda está ativa.
+            if (_ffmpegTask != null && !_ffmpegTask.IsCompleted)
+            {
+                // Impede que o formulário feche agora.
+                e.Cancel = true; 
+                _isClosing = true; // Marca que queremos fechar assim que possível.
+
+                // Desabilita a interface para evitar cliques duplos.
+                this.Enabled = false; 
+
+                // Inicia o processo de parada. A limpeza (`CleanupAfterStream`)
+                // será chamada no final, e ela irá chamar `this.Close()` novamente.
+                btnStopStream_Click(sender, e);
+            }
         }
 
         private void DeleteSdpFile()
@@ -104,7 +171,7 @@ namespace Professor
                 if (_sdpFilePath != null && File.Exists(_sdpFilePath))
                 {
                     File.Delete(_sdpFilePath);
-                    Debug.WriteLine("Arquivo SDP temporário apagado.");
+                    Debug.WriteLine("Arquivo SDP do professor apagado.");
                 }
             }
             catch (Exception ex)
@@ -114,3 +181,4 @@ namespace Professor
         }
     }
 }
+

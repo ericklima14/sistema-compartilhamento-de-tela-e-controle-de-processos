@@ -51,16 +51,18 @@
             btnStopStream.TabIndex = 1;
             btnStopStream.Text = "Parar Transmissão";
             btnStopStream.UseVisualStyleBackColor = true;
+            btnStopStream.Click += btnStopStream_Click;
             // 
-            // Form1
+            // FormProfessor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(btnStopStream);
             Controls.Add(btnStartStream);
-            Name = "Form1";
+            Name = "FormProfessor";
             Text = "Form1";
+            FormClosing += FormProfessor_FormClosing;
             ResumeLayout(false);
         }
 
