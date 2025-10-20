@@ -36,7 +36,8 @@
             txtMensagem = new TextBox();
             btnEnviar = new Button();
             processTimer = new System.Windows.Forms.Timer(components);
-            btnAssistirVideo = new Button();
+            videoView = new LibVLCSharp.WinForms.VideoView();
+            ((System.ComponentModel.ISupportInitialize)videoView).BeginInit();
             SuspendLayout();
             // 
             // label1
@@ -97,21 +98,22 @@
             processTimer.Interval = 3000;
             processTimer.Tick += processTimer_Tick;
             // 
-            // btnAssistirVideo
+            // videoView
             // 
-            btnAssistirVideo.Location = new Point(28, 271);
-            btnAssistirVideo.Name = "btnAssistirVideo";
-            btnAssistirVideo.Size = new Size(155, 40);
-            btnAssistirVideo.TabIndex = 6;
-            btnAssistirVideo.Text = "Assistir transmissão";
-            btnAssistirVideo.UseVisualStyleBackColor = true;
+            videoView.BackColor = Color.Black;
+            videoView.Location = new Point(259, 156);
+            videoView.MediaPlayer = null;
+            videoView.Name = "videoView";
+            videoView.Size = new Size(487, 286);
+            videoView.TabIndex = 7;
+            videoView.Text = "videoView1";
             // 
             // FormAluno
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(823, 470);
-            Controls.Add(btnAssistirVideo);
+            Controls.Add(videoView);
             Controls.Add(btnEnviar);
             Controls.Add(txtMensagem);
             Controls.Add(lstBox);
@@ -120,6 +122,7 @@
             Controls.Add(label1);
             Name = "FormAluno";
             Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)videoView).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -133,6 +136,6 @@
         private TextBox txtMensagem;
         private Button btnEnviar;
         private System.Windows.Forms.Timer processTimer;
-        private Button btnAssistirVideo;
+        private LibVLCSharp.WinForms.VideoView videoView;
     }
 }

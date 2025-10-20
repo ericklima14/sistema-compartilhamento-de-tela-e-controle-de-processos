@@ -48,6 +48,8 @@
             lblListaProcessos = new Label();
             btnRetirarProcesso = new Button();
             btnGerenciarBloqueios = new Button();
+            btnStartStream = new Button();
+            btnStopStream = new Button();
             SuspendLayout();
             // 
             // btnIniciarServidor
@@ -229,11 +231,33 @@
             btnGerenciarBloqueios.UseVisualStyleBackColor = true;
             btnGerenciarBloqueios.Click += btnGerenciarBloqueios_Click;
             // 
+            // btnStartStream
+            // 
+            btnStartStream.Location = new Point(64, 330);
+            btnStartStream.Name = "btnStartStream";
+            btnStartStream.Size = new Size(159, 36);
+            btnStartStream.TabIndex = 16;
+            btnStartStream.Text = "Iniciar Transmissão";
+            btnStartStream.UseVisualStyleBackColor = true;
+            btnStartStream.Click += btnStartStream_Click;
+            // 
+            // btnStopStream
+            // 
+            btnStopStream.Location = new Point(64, 381);
+            btnStopStream.Name = "btnStopStream";
+            btnStopStream.Size = new Size(159, 36);
+            btnStopStream.TabIndex = 17;
+            btnStopStream.Text = "Parar Transmissão";
+            btnStopStream.UseVisualStyleBackColor = true;
+            btnStopStream.Click += btnStopStream_Click;
+            // 
             // FormProfessor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1146, 574);
+            Controls.Add(btnStopStream);
+            Controls.Add(btnStartStream);
             Controls.Add(btnGerenciarBloqueios);
             Controls.Add(btnRetirarProcesso);
             Controls.Add(lblListaProcessos);
@@ -278,5 +302,7 @@
         private ImageList imageListProcessosBloq;
         private Button btnRetirarProcesso;
         private Button btnGerenciarBloqueios;
+        private Button btnStartStream;
+        private Button btnStopStream;
     }
 }
