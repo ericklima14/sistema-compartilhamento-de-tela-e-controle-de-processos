@@ -466,9 +466,6 @@ namespace Professor
             string receiverIp = "127.0.0.1";
             int receiverPort = 1234;
 
-            _sdpFilePath = Path.Combine(Path.GetTempPath(), "professor_stream.sdp");
-            DeleteSdpFile();
-
             btnStartStream.Enabled = false;
             btnStopStream.Enabled = true;
             this.Text = "Transmitindo...";
@@ -486,7 +483,6 @@ namespace Professor
                     "-tune zerolatency",
                     "-an",
                     "-f rtp",
-                    $"-sdp_file \"{_sdpFilePath}\"",
                     $"rtp://{receiverIp}:{receiverPort}"
                 );
 
@@ -557,8 +553,6 @@ namespace Professor
             _ffmpegProcess?.Dispose();
             _ffmpegProcess = null;
 
-            DeleteSdpFile();
-
             // --- LÓGICA DE FECHAMENTO SEGURO ---
             // Se o formulário estava esperando o FFMpeg terminar para fechar,
             // agora é a hora de fechar de verdade.
@@ -605,22 +599,6 @@ namespace Professor
                 // Inicia o processo de parada. A limpeza (`CleanupAfterStream`)
                 // será chamada no final, e ela irá chamar `this.Close()` novamente.
                 btnStopStream_Click(sender, e);
-            }
-        }
-
-        private void DeleteSdpFile()
-        {
-            try
-            {
-                if (_sdpFilePath != null && File.Exists(_sdpFilePath))
-                {
-                    File.Delete(_sdpFilePath);
-                    Debug.WriteLine("Arquivo SDP do professor apagado.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Não foi possível apagar o arquivo SDP: {ex.Message}");
             }
         }
     }
