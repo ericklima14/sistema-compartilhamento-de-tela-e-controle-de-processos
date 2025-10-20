@@ -1,6 +1,5 @@
 using LibVLCSharp.Shared;
 using System.Diagnostics;
-using System.IO;
 
 namespace Aluno
 {
@@ -8,14 +7,13 @@ namespace Aluno
     {
         private LibVLC _libVLC;
         private MediaPlayer _mediaPlayer;
-        private string? _sdpFilePath;
+        private string? _sdpFilePath; // O caminho para o nosso arquivo SDP temporário
 
         public FormAluno()
         {
             InitializeComponent();
             Core.Initialize();
 
-            // Logs detalhados
             _libVLC = new LibVLC("--verbose=2");
             _libVLC.Log += Vlc_Log;
 
@@ -31,29 +29,30 @@ namespace Aluno
 
         private void FormAluno_Load(object? sender, EventArgs e)
         {
-            // O Professor é quem deve gerar o arquivo SDP, pois ele contém
-            // detalhes da sessão de streaming que só ele conhece.
-            // Para este teste, vamos assumir que o arquivo já existe no caminho esperado.
-            
-            // O caminho deve ser o mesmo usado na aplicação do Professor.
-            _sdpFilePath = Path.Combine(Path.GetTempPath(), "stream.sdp");
+            // --- SOLUÇÃO HÍBRIDA: SDP Hardcoded, Carregado via Arquivo Temporário ---
 
-            // A maneira mais robusta de abrir um arquivo local no LibVLCSharp é usando
-            // um objeto Uri com o esquema "file://". Isso resolve ambiguidades e
-            // permite que o VLC use seus módulos de acesso a arquivos corretamente.
+            // 1. Definimos o conteúdo do arquivo SDP diretamente em uma string.
+            string sdpContent = @"
+v=0
+o=- 0 0 IN IP4 127.0.0.1
+s=No Name
+c=IN IP4 127.0.0.1
+t=0 0
+a=tool:libavformat 62.4.101
+m=video 1234 RTP/AVP 96
+b=AS:6000
+a=framerate:30
+a=rtpmap:96 H264/90000
+a=fmtp:96 packetization-mode=1
+".Trim();
 
-            // Verificamos se o arquivo existe antes de tentar abri-lo.
-            // Isso evita erros se o Professor ainda não iniciou a transmissão.
-            if (!File.Exists(_sdpFilePath))
-            {
-                this.Text = $"Aguardando o arquivo SDP em: {_sdpFilePath}";
-                MessageBox.Show($"O arquivo de stream '{_sdpFilePath}' não foi encontrado.\n\nPor favor, inicie a transmissão no sistema do Professor primeiro.", "Aguardando Transmissão", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+            // 2. Criamos um arquivo temporário para armazenar nosso SDP.
+            //    Isso torna a aplicação autônoma, sem depender de um arquivo externo.
+            _sdpFilePath = Path.Combine(Path.GetTempPath(), "aluno_stream.sdp");
+            File.WriteAllText(_sdpFilePath, sdpContent);
 
-            // Criamos a mídia a partir da URI do arquivo.
-            // Não adicionamos nenhuma opção extra. O VLC é inteligente o suficiente
-            // para identificar a extensão .sdp e usar o demuxer correto.
+            // 3. Criamos a mídia a partir da URI do arquivo local.
+            //    Este é o método mais compatível e robusto para o LibVLC.
             var media = new Media(_libVLC, new Uri(_sdpFilePath));
             
             _mediaPlayer.Play(media);
@@ -67,7 +66,20 @@ namespace Aluno
             _mediaPlayer.Stop();
             _mediaPlayer.Dispose();
             _libVLC.Dispose();
-            // O aluno não deve apagar o arquivo, pois ele é gerado pelo professor.
+
+            // Limpeza: Apagamos o arquivo SDP temporário que criamos.
+            try
+            {
+                if (_sdpFilePath != null && File.Exists(_sdpFilePath))
+                {
+                    File.Delete(_sdpFilePath);
+                    Debug.WriteLine("Arquivo SDP temporário do aluno apagado.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Não foi possível apagar o arquivo SDP do aluno: {ex.Message}");
+            }
         }
     }
 }
