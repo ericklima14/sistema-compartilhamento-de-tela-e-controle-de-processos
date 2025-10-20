@@ -36,12 +36,13 @@
             txtMensagem = new TextBox();
             btnEnviar = new Button();
             processTimer = new System.Windows.Forms.Timer(components);
+            btnAssistirVideo = new Button();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(100, 81);
+            label1.Location = new Point(28, 37);
             label1.Name = "label1";
             label1.Size = new Size(86, 15);
             label1.TabIndex = 0;
@@ -49,7 +50,7 @@
             // 
             // txtIpProfessor
             // 
-            txtIpProfessor.Location = new Point(100, 109);
+            txtIpProfessor.Location = new Point(28, 65);
             txtIpProfessor.Name = "txtIpProfessor";
             txtIpProfessor.Size = new Size(120, 23);
             txtIpProfessor.TabIndex = 1;
@@ -57,7 +58,7 @@
             // 
             // btnConectar
             // 
-            btnConectar.Location = new Point(100, 153);
+            btnConectar.Location = new Point(28, 109);
             btnConectar.Name = "btnConectar";
             btnConectar.Size = new Size(120, 34);
             btnConectar.TabIndex = 2;
@@ -69,21 +70,21 @@
             // 
             lstBox.FormattingEnabled = true;
             lstBox.ItemHeight = 15;
-            lstBox.Location = new Point(325, 109);
+            lstBox.Location = new Point(243, 26);
             lstBox.Name = "lstBox";
             lstBox.Size = new Size(376, 94);
             lstBox.TabIndex = 3;
             // 
             // txtMensagem
             // 
-            txtMensagem.Location = new Point(325, 235);
+            txtMensagem.Location = new Point(655, 48);
             txtMensagem.Name = "txtMensagem";
             txtMensagem.Size = new Size(120, 23);
             txtMensagem.TabIndex = 4;
             // 
             // btnEnviar
             // 
-            btnEnviar.Location = new Point(340, 277);
+            btnEnviar.Location = new Point(670, 90);
             btnEnviar.Name = "btnEnviar";
             btnEnviar.Size = new Size(95, 30);
             btnEnviar.TabIndex = 5;
@@ -96,11 +97,21 @@
             processTimer.Interval = 3000;
             processTimer.Tick += processTimer_Tick;
             // 
+            // btnAssistirVideo
+            // 
+            btnAssistirVideo.Location = new Point(28, 271);
+            btnAssistirVideo.Name = "btnAssistirVideo";
+            btnAssistirVideo.Size = new Size(155, 40);
+            btnAssistirVideo.TabIndex = 6;
+            btnAssistirVideo.Text = "Assistir transmissão";
+            btnAssistirVideo.UseVisualStyleBackColor = true;
+            // 
             // FormAluno
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(823, 470);
+            Controls.Add(btnAssistirVideo);
             Controls.Add(btnEnviar);
             Controls.Add(txtMensagem);
             Controls.Add(lstBox);
@@ -122,5 +133,6 @@
         private TextBox txtMensagem;
         private Button btnEnviar;
         private System.Windows.Forms.Timer processTimer;
+        private Button btnAssistirVideo;
     }
 }
