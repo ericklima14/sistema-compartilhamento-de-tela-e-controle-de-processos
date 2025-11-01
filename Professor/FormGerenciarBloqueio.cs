@@ -147,7 +147,7 @@ namespace Professor
                     nomeProcesso = Path.GetFileNameWithoutExtension(uninstallString.Split(new[] { ".exe" }, StringSplitOptions.None)[0]);
                 }
                 catch (Exception ex)
-                { 
+                {
                     Console.Write($"Não foi possivel extrair o nome do processo. Erro: {ex}");
                 }
             }
