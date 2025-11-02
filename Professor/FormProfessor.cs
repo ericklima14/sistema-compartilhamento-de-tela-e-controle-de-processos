@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
 
 namespace Professor
 {
@@ -460,7 +461,7 @@ namespace Professor
 
         private void btnStartStream_Click(object sender, EventArgs e)
         {
-            string receiverIp = "127.0.0.1";
+            string receiverIp = txtIpReciever.Text;
             int receiverPort = 1234;
 
             btnStartStream.Enabled = false;
@@ -470,6 +471,19 @@ namespace Professor
 
             try
             {
+                // Usando ffmpeg self-contained.
+                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                string ffmpegPath = Path.Combine(baseDirectory, "ffmpeg.exe");
+
+                if (!File.Exists(ffmpegPath))
+                {
+                    MessageBox.Show($"O arquivo 'ffmpeg.exe' não foi encontrado no diretório da aplicação: {baseDirectory}",
+                                    "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    CleanupAfterStream(Task.FromException(new FileNotFoundException("ffmpeg.exe não encontrado")));
+                    return;
+                }
+
                 string ffmpegArguments = string.Join(" ",
                     "-f gdigrab",
                     "-framerate 30",
@@ -486,7 +500,7 @@ namespace Professor
                 Debug.WriteLine($"Argumentos do FFMpeg: {ffmpegArguments}");
 
                 _ffmpegProcess = new Process();
-                _ffmpegProcess.StartInfo.FileName = "ffmpeg.exe";
+                _ffmpegProcess.StartInfo.FileName = ffmpegPath;
                 _ffmpegProcess.StartInfo.Arguments = ffmpegArguments;
                 _ffmpegProcess.StartInfo.UseShellExecute = false;
                 _ffmpegProcess.StartInfo.CreateNoWindow = true;

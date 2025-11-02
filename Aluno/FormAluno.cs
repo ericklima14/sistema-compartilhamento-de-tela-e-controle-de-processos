@@ -39,16 +39,19 @@ namespace Aluno
             Debug.WriteLine($"[VLC] {e.Level}: {e.Message} (em {e.Module})");
         }
 
+        // #TODO: mudar a logica de OnLoad pra algo mais refinado, como transmissao so iniciar quando ja conectado no servidor tcp.
         private void FormAluno_Load(object? sender, EventArgs e)
         {
+            string ipAluno = "127.0.0.1";
+
             // --- SOLUÇÃO HÍBRIDA: SDP Hardcoded, Carregado via Arquivo Temporário ---
 
             // 1. Definimos o conteúdo do arquivo SDP diretamente em uma string.
-            string sdpContent = @"
+            string sdpContent = $@"
 v=0
-o=- 0 0 IN IP4 127.0.0.1
+o=- 0 0 IN IP4 {ipAluno}
 s=No Name
-c=IN IP4 127.0.0.1
+c=IN IP4 {ipAluno}
 t=0 0
 a=tool:libavformat 62.4.101
 m=video 1234 RTP/AVP 96

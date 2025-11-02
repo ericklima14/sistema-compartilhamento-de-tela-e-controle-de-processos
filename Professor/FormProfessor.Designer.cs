@@ -50,11 +50,13 @@
             btnGerenciarBloqueios = new Button();
             btnStartStream = new Button();
             btnStopStream = new Button();
+            txtIpReciever = new TextBox();
+            lblTransmissaoAula = new Label();
             SuspendLayout();
             // 
             // btnIniciarServidor
             // 
-            btnIniciarServidor.Location = new Point(83, 249);
+            btnIniciarServidor.Location = new Point(83, 198);
             btnIniciarServidor.Name = "btnIniciarServidor";
             btnIniciarServidor.Size = new Size(120, 45);
             btnIniciarServidor.TabIndex = 0;
@@ -67,7 +69,7 @@
             lstLog.FormattingEnabled = true;
             lstLog.HorizontalScrollbar = true;
             lstLog.ItemHeight = 15;
-            lstLog.Location = new Point(64, 125);
+            lstLog.Location = new Point(64, 74);
             lstLog.Name = "lstLog";
             lstLog.RightToLeft = RightToLeft.No;
             lstLog.Size = new Size(159, 109);
@@ -75,14 +77,14 @@
             // 
             // txtMensagem
             // 
-            txtMensagem.Location = new Point(317, 125);
+            txtMensagem.Location = new Point(328, 97);
             txtMensagem.Name = "txtMensagem";
             txtMensagem.Size = new Size(174, 23);
             txtMensagem.TabIndex = 2;
             // 
             // btnEnviar
             // 
-            btnEnviar.Location = new Point(334, 178);
+            btnEnviar.Location = new Point(345, 150);
             btnEnviar.Name = "btnEnviar";
             btnEnviar.Size = new Size(143, 33);
             btnEnviar.TabIndex = 3;
@@ -93,7 +95,7 @@
             // lblMensagens
             // 
             lblMensagens.AutoSize = true;
-            lblMensagens.Location = new Point(83, 92);
+            lblMensagens.Location = new Point(83, 41);
             lblMensagens.Name = "lblMensagens";
             lblMensagens.Size = new Size(114, 15);
             lblMensagens.TabIndex = 4;
@@ -102,7 +104,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(616, 60);
+            label1.Location = new Point(612, 39);
             label1.Name = "label1";
             label1.Size = new Size(110, 15);
             label1.TabIndex = 5;
@@ -113,7 +115,7 @@
             lstAlunosConectados.FormattingEnabled = true;
             lstAlunosConectados.HorizontalScrollbar = true;
             lstAlunosConectados.ItemHeight = 15;
-            lstAlunosConectados.Location = new Point(583, 93);
+            lstAlunosConectados.Location = new Point(579, 72);
             lstAlunosConectados.Name = "lstAlunosConectados";
             lstAlunosConectados.Size = new Size(180, 154);
             lstAlunosConectados.TabIndex = 6;
@@ -123,7 +125,7 @@
             // lblEnviarMsg
             // 
             lblEnviarMsg.AutoSize = true;
-            lblEnviarMsg.Location = new Point(352, 93);
+            lblEnviarMsg.Location = new Point(363, 65);
             lblEnviarMsg.Name = "lblEnviarMsg";
             lblEnviarMsg.Size = new Size(101, 15);
             lblEnviarMsg.TabIndex = 7;
@@ -131,7 +133,7 @@
             // 
             // btnListarProcessos
             // 
-            btnListarProcessos.Location = new Point(605, 265);
+            btnListarProcessos.Location = new Point(601, 244);
             btnListarProcessos.Name = "btnListarProcessos";
             btnListarProcessos.Size = new Size(140, 41);
             btnListarProcessos.TabIndex = 8;
@@ -143,7 +145,7 @@
             // lblProcessosAluno
             // 
             lblProcessosAluno.AutoSize = true;
-            lblProcessosAluno.Location = new Point(917, 57);
+            lblProcessosAluno.Location = new Point(891, 39);
             lblProcessosAluno.Name = "lblProcessosAluno";
             lblProcessosAluno.Size = new Size(112, 15);
             lblProcessosAluno.TabIndex = 9;
@@ -155,7 +157,7 @@
             lvProcessos.CheckBoxes = true;
             lvProcessos.Columns.AddRange(new ColumnHeader[] { headerPrograma });
             lvProcessos.FullRowSelect = true;
-            lvProcessos.Location = new Point(873, 81);
+            lvProcessos.Location = new Point(847, 63);
             lvProcessos.Name = "lvProcessos";
             lvProcessos.Size = new Size(210, 178);
             lvProcessos.SmallImageList = imageListProcessos;
@@ -176,7 +178,7 @@
             // 
             // btnMatarProcesso
             // 
-            btnMatarProcesso.Location = new Point(907, 276);
+            btnMatarProcesso.Location = new Point(881, 258);
             btnMatarProcesso.Name = "btnMatarProcesso";
             btnMatarProcesso.Size = new Size(140, 41);
             btnMatarProcesso.TabIndex = 11;
@@ -189,7 +191,7 @@
             lvListaProcessosBloq.CheckBoxes = true;
             lvListaProcessosBloq.Columns.AddRange(new ColumnHeader[] { columnPrograma });
             lvListaProcessosBloq.FullRowSelect = true;
-            lvListaProcessosBloq.Location = new Point(300, 300);
+            lvListaProcessosBloq.Location = new Point(318, 275);
             lvListaProcessosBloq.Name = "lvListaProcessosBloq";
             lvListaProcessosBloq.Size = new Size(191, 176);
             lvListaProcessosBloq.SmallImageList = imageListProcessos;
@@ -205,7 +207,7 @@
             // lblListaProcessos
             // 
             lblListaProcessos.AutoSize = true;
-            lblListaProcessos.Location = new Point(317, 273);
+            lblListaProcessos.Location = new Point(335, 248);
             lblListaProcessos.Name = "lblListaProcessos";
             lblListaProcessos.Size = new Size(167, 15);
             lblListaProcessos.TabIndex = 13;
@@ -214,7 +216,7 @@
             // 
             // btnRetirarProcesso
             // 
-            btnRetirarProcesso.Location = new Point(334, 501);
+            btnRetirarProcesso.Location = new Point(352, 476);
             btnRetirarProcesso.Name = "btnRetirarProcesso";
             btnRetirarProcesso.Size = new Size(128, 39);
             btnRetirarProcesso.TabIndex = 14;
@@ -233,7 +235,7 @@
             // 
             // btnStartStream
             // 
-            btnStartStream.Location = new Point(64, 330);
+            btnStartStream.Location = new Point(64, 409);
             btnStartStream.Name = "btnStartStream";
             btnStartStream.Size = new Size(159, 36);
             btnStartStream.TabIndex = 16;
@@ -243,7 +245,7 @@
             // 
             // btnStopStream
             // 
-            btnStopStream.Location = new Point(64, 381);
+            btnStopStream.Location = new Point(64, 451);
             btnStopStream.Name = "btnStopStream";
             btnStopStream.Size = new Size(159, 36);
             btnStopStream.TabIndex = 17;
@@ -251,11 +253,30 @@
             btnStopStream.UseVisualStyleBackColor = true;
             btnStopStream.Click += btnStopStream_Click;
             // 
+            // txtIpReciever
+            // 
+            txtIpReciever.Location = new Point(64, 380);
+            txtIpReciever.Name = "txtIpReciever";
+            txtIpReciever.Size = new Size(159, 23);
+            txtIpReciever.TabIndex = 18;
+            txtIpReciever.Text = "127.0.0.1";
+            // 
+            // lblTransmissaoAula
+            // 
+            lblTransmissaoAula.AutoSize = true;
+            lblTransmissaoAula.Location = new Point(64, 351);
+            lblTransmissaoAula.Name = "lblTransmissaoAula";
+            lblTransmissaoAula.Size = new Size(149, 15);
+            lblTransmissaoAula.TabIndex = 19;
+            lblTransmissaoAula.Text = "Transmissão de Aula (beta)";
+            // 
             // FormProfessor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1146, 574);
+            Controls.Add(lblTransmissaoAula);
+            Controls.Add(txtIpReciever);
             Controls.Add(btnStopStream);
             Controls.Add(btnStartStream);
             Controls.Add(btnGerenciarBloqueios);
@@ -304,5 +325,7 @@
         private Button btnGerenciarBloqueios;
         private Button btnStartStream;
         private Button btnStopStream;
+        private TextBox txtIpReciever;
+        private Label lblTransmissaoAula;
     }
 }
