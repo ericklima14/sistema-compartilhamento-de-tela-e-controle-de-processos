@@ -38,7 +38,8 @@ namespace Professor
 
         private void btnModoAvaliacao_Click(object sender, EventArgs e)
         {
-            var formProfessor = new FormGerenciarBloqueio();
+            var formProfessor = new FormGerenciarBloqueio(ProcessosManager.Instance.ProcessosBloqueados.ToList(), 
+                FormGerenciarBloqueio.ModoGerenciamento.FluxoInicial);
             formProfessor.Show();
             this.Hide();
         }

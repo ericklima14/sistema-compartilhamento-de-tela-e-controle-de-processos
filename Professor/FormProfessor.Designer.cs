@@ -29,14 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            btnIniciarServidor = new Button();
-            lstLog = new ListBox();
-            txtMensagem = new TextBox();
-            btnEnviar = new Button();
-            lblMensagens = new Label();
             label1 = new Label();
             lstAlunosConectados = new ListBox();
-            lblEnviarMsg = new Label();
             btnListarProcessos = new Button();
             lblProcessosAluno = new Label();
             lvProcessos = new ListView();
@@ -48,54 +42,13 @@
             btnStopStream = new Button();
             txtIpReciever = new TextBox();
             lblTransmissaoAula = new Label();
+            videoView1 = new LibVLCSharp.WinForms.VideoView();
+            videoView2 = new LibVLCSharp.WinForms.VideoView();
+            lblMensagens = new Label();
+            lstLog = new ListBox();
+            ((System.ComponentModel.ISupportInitialize)videoView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)videoView2).BeginInit();
             SuspendLayout();
-            // 
-            // btnIniciarServidor
-            // 
-            btnIniciarServidor.Location = new Point(83, 198);
-            btnIniciarServidor.Name = "btnIniciarServidor";
-            btnIniciarServidor.Size = new Size(120, 45);
-            btnIniciarServidor.TabIndex = 0;
-            btnIniciarServidor.Text = "Iniciar Servidor";
-            btnIniciarServidor.UseVisualStyleBackColor = true;
-            btnIniciarServidor.Click += btnIniciarServidor_Click;
-            // 
-            // lstLog
-            // 
-            lstLog.FormattingEnabled = true;
-            lstLog.HorizontalScrollbar = true;
-            lstLog.ItemHeight = 15;
-            lstLog.Location = new Point(64, 74);
-            lstLog.Name = "lstLog";
-            lstLog.RightToLeft = RightToLeft.No;
-            lstLog.Size = new Size(159, 109);
-            lstLog.TabIndex = 1;
-            // 
-            // txtMensagem
-            // 
-            txtMensagem.Location = new Point(328, 97);
-            txtMensagem.Name = "txtMensagem";
-            txtMensagem.Size = new Size(174, 23);
-            txtMensagem.TabIndex = 2;
-            // 
-            // btnEnviar
-            // 
-            btnEnviar.Location = new Point(345, 150);
-            btnEnviar.Name = "btnEnviar";
-            btnEnviar.Size = new Size(143, 33);
-            btnEnviar.TabIndex = 3;
-            btnEnviar.Text = "Enviar";
-            btnEnviar.UseVisualStyleBackColor = true;
-            btnEnviar.Click += btnEnviar_Click;
-            // 
-            // lblMensagens
-            // 
-            lblMensagens.AutoSize = true;
-            lblMensagens.Location = new Point(83, 41);
-            lblMensagens.Name = "lblMensagens";
-            lblMensagens.Size = new Size(114, 15);
-            lblMensagens.TabIndex = 4;
-            lblMensagens.Text = "Caixa de Mensagens";
             // 
             // label1
             // 
@@ -116,16 +69,6 @@
             lstAlunosConectados.Size = new Size(180, 154);
             lstAlunosConectados.TabIndex = 6;
             lstAlunosConectados.SelectedIndexChanged += lstAlunosConectados_SelectedIndexChanged;
-            lstAlunosConectados.Leave += lstAlunosConectados_Leave;
-            // 
-            // lblEnviarMsg
-            // 
-            lblEnviarMsg.AutoSize = true;
-            lblEnviarMsg.Location = new Point(363, 65);
-            lblEnviarMsg.Name = "lblEnviarMsg";
-            lblEnviarMsg.Size = new Size(101, 15);
-            lblEnviarMsg.TabIndex = 7;
-            lblEnviarMsg.Text = "Enviar Mensagem";
             // 
             // btnListarProcessos
             // 
@@ -184,7 +127,7 @@
             // 
             // btnGerenciarBloqueios
             // 
-            btnGerenciarBloqueios.Location = new Point(330, 297);
+            btnGerenciarBloqueios.Location = new Point(362, 495);
             btnGerenciarBloqueios.Name = "btnGerenciarBloqueios";
             btnGerenciarBloqueios.Size = new Size(172, 51);
             btnGerenciarBloqueios.TabIndex = 15;
@@ -194,27 +137,25 @@
             // 
             // btnStartStream
             // 
-            btnStartStream.Location = new Point(64, 409);
+            btnStartStream.Location = new Point(385, 82);
             btnStartStream.Name = "btnStartStream";
             btnStartStream.Size = new Size(159, 36);
             btnStartStream.TabIndex = 16;
             btnStartStream.Text = "Iniciar Transmissão";
             btnStartStream.UseVisualStyleBackColor = true;
-            btnStartStream.Click += btnStartStream_Click;
             // 
             // btnStopStream
             // 
-            btnStopStream.Location = new Point(64, 451);
+            btnStopStream.Location = new Point(385, 124);
             btnStopStream.Name = "btnStopStream";
             btnStopStream.Size = new Size(159, 36);
             btnStopStream.TabIndex = 17;
             btnStopStream.Text = "Parar Transmissão";
             btnStopStream.UseVisualStyleBackColor = true;
-            btnStopStream.Click += btnStopStream_Click;
             // 
             // txtIpReciever
             // 
-            txtIpReciever.Location = new Point(64, 380);
+            txtIpReciever.Location = new Point(385, 53);
             txtIpReciever.Name = "txtIpReciever";
             txtIpReciever.Size = new Size(159, 23);
             txtIpReciever.TabIndex = 18;
@@ -223,17 +164,61 @@
             // lblTransmissaoAula
             // 
             lblTransmissaoAula.AutoSize = true;
-            lblTransmissaoAula.Location = new Point(64, 351);
+            lblTransmissaoAula.Location = new Point(385, 24);
             lblTransmissaoAula.Name = "lblTransmissaoAula";
             lblTransmissaoAula.Size = new Size(149, 15);
             lblTransmissaoAula.TabIndex = 19;
             lblTransmissaoAula.Text = "Transmissão de Aula (beta)";
+            // 
+            // videoView1
+            // 
+            videoView1.BackColor = Color.Black;
+            videoView1.Location = new Point(237, 247);
+            videoView1.MediaPlayer = null;
+            videoView1.Name = "videoView1";
+            videoView1.Size = new Size(177, 124);
+            videoView1.TabIndex = 20;
+            videoView1.Text = "videoView1";
+            // 
+            // videoView2
+            // 
+            videoView2.BackColor = Color.Black;
+            videoView2.Location = new Point(484, 247);
+            videoView2.MediaPlayer = null;
+            videoView2.Name = "videoView2";
+            videoView2.Size = new Size(177, 124);
+            videoView2.TabIndex = 21;
+            videoView2.Text = "videoView2";
+            // 
+            // lblMensagens
+            // 
+            lblMensagens.AutoSize = true;
+            lblMensagens.Location = new Point(732, 24);
+            lblMensagens.Name = "lblMensagens";
+            lblMensagens.Size = new Size(114, 15);
+            lblMensagens.TabIndex = 23;
+            lblMensagens.Text = "Caixa de Mensagens";
+            // 
+            // lstLog
+            // 
+            lstLog.FormattingEnabled = true;
+            lstLog.HorizontalScrollbar = true;
+            lstLog.ItemHeight = 15;
+            lstLog.Location = new Point(713, 57);
+            lstLog.Name = "lstLog";
+            lstLog.RightToLeft = RightToLeft.No;
+            lstLog.Size = new Size(159, 109);
+            lstLog.TabIndex = 22;
             // 
             // FormProfessor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1146, 574);
+            Controls.Add(lblMensagens);
+            Controls.Add(lstLog);
+            Controls.Add(videoView2);
+            Controls.Add(videoView1);
             Controls.Add(lblTransmissaoAula);
             Controls.Add(txtIpReciever);
             Controls.Add(btnStopStream);
@@ -243,30 +228,19 @@
             Controls.Add(lvProcessos);
             Controls.Add(lblProcessosAluno);
             Controls.Add(btnListarProcessos);
-            Controls.Add(lblEnviarMsg);
             Controls.Add(lstAlunosConectados);
             Controls.Add(label1);
-            Controls.Add(lblMensagens);
-            Controls.Add(btnEnviar);
-            Controls.Add(txtMensagem);
-            Controls.Add(lstLog);
-            Controls.Add(btnIniciarServidor);
             Name = "FormProfessor";
             Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)videoView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)videoView2).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-
-        private Button btnIniciarServidor;
-        private ListBox lstLog;
-        private TextBox txtMensagem;
-        private Button btnEnviar;
-        private Label lblMensagens;
         private Label label1;
         private ListBox lstAlunosConectados;
-        private Label lblEnviarMsg;
         private Button btnListarProcessos;
         private Label lblProcessosAluno;
         private ListView lvProcessos;
@@ -279,5 +253,9 @@
         private Button btnStopStream;
         private TextBox txtIpReciever;
         private Label lblTransmissaoAula;
+        private LibVLCSharp.WinForms.VideoView videoView1;
+        private LibVLCSharp.WinForms.VideoView videoView2;
+        private Label lblMensagens;
+        private ListBox lstLog;
     }
 }

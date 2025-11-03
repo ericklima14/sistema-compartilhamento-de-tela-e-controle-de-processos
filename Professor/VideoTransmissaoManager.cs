@@ -17,7 +17,7 @@ namespace Professor
         private Process _ffmpegProcess;
 
         private bool _isClosing = false;
-        public event Action<string> LogAtualizado;0
+        public event Action<string> LogAtualizado;
         public event Action<bool> StatusStreamAtualizado;
 
         private VideoTransmissaoManager() { }
@@ -36,6 +36,18 @@ namespace Professor
 
             try
             {
+                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                string ffmpegPath = Path.Combine(baseDirectory, "ffmpeg.exe");
+
+                if (!File.Exists(ffmpegPath))
+                {
+                    MessageBox.Show($"O arquivo 'ffmpeg.exe' não foi encontrado no diretório da aplicação: {baseDirectory}",
+                                    "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    FinalizarStream(Task.FromException(new FileNotFoundException("ffmpeg.exe não encontrado")));
+                    return;
+                }
+
                 string ffmpegArguments = string.Join(" ",
                     "-f gdigrab",
                     "-framerate 30",
@@ -54,7 +66,7 @@ namespace Professor
                 {
                     StartInfo =
                     {
-                        FileName = "ffmpeg.exe",
+                        FileName = ffmpegPath,
                         Arguments = ffmpegArguments,
                         UseShellExecute = false,
                         CreateNoWindow = true,

@@ -6,6 +6,12 @@ namespace Professor
 {
     public partial class FormGerenciarBloqueio : Form
     {
+        public enum ModoGerenciamento
+        {
+            FluxoInicial,
+            EdicaoProcessos
+        }
+
         public class ProgramaInstalado
         {
             public string Nome { get; set; }
@@ -13,13 +19,35 @@ namespace Professor
             public string CaminhoIcone { get; set; }
         }
 
+        private ModoGerenciamento Modo { get; set; }
         public List<string> ListaBloqueioFinal { get; private set; }
         public List<ProgramaInstalado> ProgramasEncontrados { get; private set; }
 
-        public FormGerenciarBloqueio()
+        public FormGerenciarBloqueio(List<string> listaProcessos, ModoGerenciamento modo = ModoGerenciamento.EdicaoProcessos)
         {
             InitializeComponent();
-            ListaBloqueioFinal = new List<string>();
+            ListaBloqueioFinal = new List<string>(listaProcessos);
+            Modo = modo;
+            ConfigurarBotoes();
+        }
+
+        private void ConfigurarBotoes()
+        {
+            btnOk.Visible = btnCancelar.Visible = btnProximo.Visible = false;
+
+            if (Modo == ModoGerenciamento.FluxoInicial)
+            {
+                btnProximo.Visible = true;
+                this.Text = "Configurar Bloqueios (Obrigatório)";
+                this.AcceptButton = btnProximo;
+            }
+            else
+            {
+                btnOk.Visible = btnCancelar.Visible = true;
+                this.Text = "Gerenciar Bloqueios";
+                this.AcceptButton = btnOk;
+                this.CancelButton = btnCancelar;
+            }
         }
 
         private void FormGerenciarBloqueio_Load(object sender, EventArgs e)
@@ -182,18 +210,31 @@ namespace Professor
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            ListaBloqueioFinal = lvBloqueados.Items.Cast<ListViewItem>()
-                .Select(item => item.Tag.ToString())
-                .ToList();
-
+            SalvarListaBloqueio();
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
 
-        private void Cancelar_Click(object sender, EventArgs e)
+        private void btnCancelar_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void SalvarListaBloqueio()
+        {
+            ListaBloqueioFinal = lvBloqueados.Items
+                .Cast<ListViewItem>()
+                .Select(i => i.Tag.ToString())
+                .ToList();
+        }
+
+        private void btnProximo_Click(object sender, EventArgs e)
+        {
+            SalvarListaBloqueio();
+            var formAvaliacao = new FormProfessor();
+            formAvaliacao.Show();
+            this.Hide();
         }
     }
 }

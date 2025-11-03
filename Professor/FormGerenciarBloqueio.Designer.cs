@@ -37,9 +37,10 @@
             btnBloquear = new Button();
             btnDesbloquear = new Button();
             btnOk = new Button();
-            Cancelar = new Button();
+            btnCancelar = new Button();
             lblInstalados = new Label();
             lblBloqueados = new Label();
+            btnProximo = new Button();
             SuspendLayout();
             // 
             // lvInstalados
@@ -112,15 +113,15 @@
             btnOk.UseVisualStyleBackColor = true;
             btnOk.Click += btnOk_Click;
             // 
-            // Cancelar
+            // btnCancelar
             // 
-            Cancelar.Location = new Point(494, 437);
-            Cancelar.Name = "Cancelar";
-            Cancelar.Size = new Size(100, 34);
-            Cancelar.TabIndex = 5;
-            Cancelar.Text = "Cancelar";
-            Cancelar.UseVisualStyleBackColor = true;
-            Cancelar.Click += Cancelar_Click;
+            btnCancelar.Location = new Point(494, 437);
+            btnCancelar.Name = "btnCancelar";
+            btnCancelar.Size = new Size(100, 34);
+            btnCancelar.TabIndex = 5;
+            btnCancelar.Text = "Cancelar";
+            btnCancelar.UseVisualStyleBackColor = true;
+            btnCancelar.Click += btnCancelar_Click;
             // 
             // lblInstalados
             // 
@@ -140,14 +141,25 @@
             lblBloqueados.TabIndex = 7;
             lblBloqueados.Text = "Bloqueados";
             // 
+            // btnProximo
+            // 
+            btnProximo.Location = new Point(372, 428);
+            btnProximo.Name = "btnProximo";
+            btnProximo.Size = new Size(167, 52);
+            btnProximo.TabIndex = 8;
+            btnProximo.Text = "Próximo";
+            btnProximo.UseVisualStyleBackColor = true;
+            btnProximo.Click += btnProximo_Click;
+            // 
             // FormGerenciarBloqueio
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(924, 542);
+            Controls.Add(btnProximo);
             Controls.Add(lblBloqueados);
             Controls.Add(lblInstalados);
-            Controls.Add(Cancelar);
+            Controls.Add(btnCancelar);
             Controls.Add(btnOk);
             Controls.Add(btnDesbloquear);
             Controls.Add(btnBloquear);
@@ -169,9 +181,10 @@
         private Button btnBloquear;
         private Button btnDesbloquear;
         private Button btnOk;
-        private Button Cancelar;
+        private Button btnCancelar;
         private ImageList imageListIcones;
         private Label lblInstalados;
         private Label lblBloqueados;
+        private Button btnProximo;
     }
 }
