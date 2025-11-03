@@ -42,7 +42,7 @@
             btnModoAvaliacao.TabIndex = 16;
             btnModoAvaliacao.Text = "Modo Avaliação";
             btnModoAvaliacao.UseVisualStyleBackColor = true;
-            btnModoAvaliacao.Visible = false;
+            btnModoAvaliacao.Click += btnModoAvaliacao_Click;
             // 
             // btnModoApresentacao
             // 
@@ -52,7 +52,7 @@
             btnModoApresentacao.TabIndex = 15;
             btnModoApresentacao.Text = "Modo Apresentação";
             btnModoApresentacao.UseVisualStyleBackColor = true;
-            btnModoApresentacao.Visible = false;
+            btnModoApresentacao.Click += btnModoApresentacao_Click;
             // 
             // lstAlunosConectados
             // 

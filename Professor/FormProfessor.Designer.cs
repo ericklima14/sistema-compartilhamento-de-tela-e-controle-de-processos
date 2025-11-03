@@ -43,10 +43,6 @@
             headerPrograma = new ColumnHeader();
             imageListProcessos = new ImageList(components);
             btnMatarProcesso = new Button();
-            lvListaProcessosBloq = new ListView();
-            columnPrograma = new ColumnHeader();
-            lblListaProcessos = new Label();
-            btnRetirarProcesso = new Button();
             btnGerenciarBloqueios = new Button();
             btnStartStream = new Button();
             btnStopStream = new Button();
@@ -104,7 +100,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(612, 39);
+            label1.Location = new Point(946, 24);
             label1.Name = "label1";
             label1.Size = new Size(110, 15);
             label1.TabIndex = 5;
@@ -115,7 +111,7 @@
             lstAlunosConectados.FormattingEnabled = true;
             lstAlunosConectados.HorizontalScrollbar = true;
             lstAlunosConectados.ItemHeight = 15;
-            lstAlunosConectados.Location = new Point(579, 72);
+            lstAlunosConectados.Location = new Point(913, 57);
             lstAlunosConectados.Name = "lstAlunosConectados";
             lstAlunosConectados.Size = new Size(180, 154);
             lstAlunosConectados.TabIndex = 6;
@@ -133,7 +129,7 @@
             // 
             // btnListarProcessos
             // 
-            btnListarProcessos.Location = new Point(601, 244);
+            btnListarProcessos.Location = new Point(935, 229);
             btnListarProcessos.Name = "btnListarProcessos";
             btnListarProcessos.Size = new Size(140, 41);
             btnListarProcessos.TabIndex = 8;
@@ -145,7 +141,7 @@
             // lblProcessosAluno
             // 
             lblProcessosAluno.AutoSize = true;
-            lblProcessosAluno.Location = new Point(891, 39);
+            lblProcessosAluno.Location = new Point(941, 297);
             lblProcessosAluno.Name = "lblProcessosAluno";
             lblProcessosAluno.Size = new Size(112, 15);
             lblProcessosAluno.TabIndex = 9;
@@ -157,7 +153,7 @@
             lvProcessos.CheckBoxes = true;
             lvProcessos.Columns.AddRange(new ColumnHeader[] { headerPrograma });
             lvProcessos.FullRowSelect = true;
-            lvProcessos.Location = new Point(847, 63);
+            lvProcessos.Location = new Point(897, 321);
             lvProcessos.Name = "lvProcessos";
             lvProcessos.Size = new Size(210, 178);
             lvProcessos.SmallImageList = imageListProcessos;
@@ -178,7 +174,7 @@
             // 
             // btnMatarProcesso
             // 
-            btnMatarProcesso.Location = new Point(881, 258);
+            btnMatarProcesso.Location = new Point(931, 516);
             btnMatarProcesso.Name = "btnMatarProcesso";
             btnMatarProcesso.Size = new Size(140, 41);
             btnMatarProcesso.TabIndex = 11;
@@ -186,46 +182,9 @@
             btnMatarProcesso.UseVisualStyleBackColor = true;
             btnMatarProcesso.Click += btnMatarProcesso_Click;
             // 
-            // lvListaProcessosBloq
-            // 
-            lvListaProcessosBloq.CheckBoxes = true;
-            lvListaProcessosBloq.Columns.AddRange(new ColumnHeader[] { columnPrograma });
-            lvListaProcessosBloq.FullRowSelect = true;
-            lvListaProcessosBloq.Location = new Point(318, 275);
-            lvListaProcessosBloq.Name = "lvListaProcessosBloq";
-            lvListaProcessosBloq.Size = new Size(191, 176);
-            lvListaProcessosBloq.SmallImageList = imageListProcessos;
-            lvListaProcessosBloq.TabIndex = 12;
-            lvListaProcessosBloq.UseCompatibleStateImageBehavior = false;
-            lvListaProcessosBloq.View = View.Details;
-            // 
-            // columnPrograma
-            // 
-            columnPrograma.Text = "Programas";
-            columnPrograma.Width = 250;
-            // 
-            // lblListaProcessos
-            // 
-            lblListaProcessos.AutoSize = true;
-            lblListaProcessos.Location = new Point(335, 248);
-            lblListaProcessos.Name = "lblListaProcessos";
-            lblListaProcessos.Size = new Size(167, 15);
-            lblListaProcessos.TabIndex = 13;
-            lblListaProcessos.Text = "Lista de Processos Bloqueados";
-            lblListaProcessos.Click += lblListaProcessos_Click;
-            // 
-            // btnRetirarProcesso
-            // 
-            btnRetirarProcesso.Location = new Point(352, 476);
-            btnRetirarProcesso.Name = "btnRetirarProcesso";
-            btnRetirarProcesso.Size = new Size(128, 39);
-            btnRetirarProcesso.TabIndex = 14;
-            btnRetirarProcesso.Text = "Retirar Processo";
-            btnRetirarProcesso.UseVisualStyleBackColor = true;
-            // 
             // btnGerenciarBloqueios
             // 
-            btnGerenciarBloqueios.Location = new Point(683, 400);
+            btnGerenciarBloqueios.Location = new Point(330, 297);
             btnGerenciarBloqueios.Name = "btnGerenciarBloqueios";
             btnGerenciarBloqueios.Size = new Size(172, 51);
             btnGerenciarBloqueios.TabIndex = 15;
@@ -280,9 +239,6 @@
             Controls.Add(btnStopStream);
             Controls.Add(btnStartStream);
             Controls.Add(btnGerenciarBloqueios);
-            Controls.Add(btnRetirarProcesso);
-            Controls.Add(lblListaProcessos);
-            Controls.Add(lvListaProcessosBloq);
             Controls.Add(btnMatarProcesso);
             Controls.Add(lvProcessos);
             Controls.Add(lblProcessosAluno);
@@ -317,11 +273,7 @@
         private ColumnHeader headerPrograma;
         private ImageList imageListProcessos;
         private Button btnMatarProcesso;
-        private ListView lvListaProcessosBloq;
-        private Label lblListaProcessos;
-        private ColumnHeader columnPrograma;
         private ImageList imageListProcessosBloq;
-        private Button btnRetirarProcesso;
         private Button btnGerenciarBloqueios;
         private Button btnStartStream;
         private Button btnStopStream;

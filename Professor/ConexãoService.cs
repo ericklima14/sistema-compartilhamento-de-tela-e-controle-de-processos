@@ -116,7 +116,7 @@ namespace Professor
 
         private void AtualizarListaAlunos() => ListaDeAlunosAtualizada?.Invoke();
 
-        private async Task SendMessageAsync(TcpClient client, string message)
+        public async Task SendMessageAsync(TcpClient client, string message)
         {
             if (client != null && client.Connected)
             {
@@ -149,7 +149,7 @@ namespace Professor
             }
         }
 
-        private async Task BroadcastMessage(string message, TcpClient sender = null)
+        public async Task BroadcastMessage(string message, TcpClient sender = null)
         {
             List<TcpClient> clientsParaEnviar;
             lock (_clients)

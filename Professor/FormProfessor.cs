@@ -435,7 +435,7 @@ namespace Professor
 
         private async void btnGerenciarBloqueios_Click(object sender, EventArgs e)
         {
-            using (FormGerenciarBloqueio formBloqueio = new FormGerenciarBloqueio(_processosBloqueados))
+            using (FormGerenciarBloqueio formBloqueio = new FormGerenciarBloqueio())
             {
                 if (formBloqueio.ShowDialog() == DialogResult.OK)
                 {

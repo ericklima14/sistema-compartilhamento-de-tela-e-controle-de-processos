@@ -16,10 +16,10 @@ namespace Professor
         public List<string> ListaBloqueioFinal { get; private set; }
         public List<ProgramaInstalado> ProgramasEncontrados { get; private set; }
 
-        public FormGerenciarBloqueio(List<string> listaBloqueio)
+        public FormGerenciarBloqueio()
         {
             InitializeComponent();
-            ListaBloqueioFinal = new List<string>(listaBloqueio);
+            ListaBloqueioFinal = new List<string>();
         }
 
         private void FormGerenciarBloqueio_Load(object sender, EventArgs e)
