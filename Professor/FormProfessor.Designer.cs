@@ -137,7 +137,7 @@
             // 
             // btnStartStream
             // 
-            btnStartStream.Location = new Point(385, 82);
+            btnStartStream.Location = new Point(275, 95);
             btnStartStream.Name = "btnStartStream";
             btnStartStream.Size = new Size(159, 36);
             btnStartStream.TabIndex = 16;
@@ -146,7 +146,7 @@
             // 
             // btnStopStream
             // 
-            btnStopStream.Location = new Point(385, 124);
+            btnStopStream.Location = new Point(275, 137);
             btnStopStream.Name = "btnStopStream";
             btnStopStream.Size = new Size(159, 36);
             btnStopStream.TabIndex = 17;
@@ -155,7 +155,7 @@
             // 
             // txtIpReciever
             // 
-            txtIpReciever.Location = new Point(385, 53);
+            txtIpReciever.Location = new Point(275, 66);
             txtIpReciever.Name = "txtIpReciever";
             txtIpReciever.Size = new Size(159, 23);
             txtIpReciever.TabIndex = 18;
@@ -164,7 +164,7 @@
             // lblTransmissaoAula
             // 
             lblTransmissaoAula.AutoSize = true;
-            lblTransmissaoAula.Location = new Point(385, 24);
+            lblTransmissaoAula.Location = new Point(275, 37);
             lblTransmissaoAula.Name = "lblTransmissaoAula";
             lblTransmissaoAula.Size = new Size(149, 15);
             lblTransmissaoAula.TabIndex = 19;
@@ -193,7 +193,7 @@
             // lblMensagens
             // 
             lblMensagens.AutoSize = true;
-            lblMensagens.Location = new Point(732, 24);
+            lblMensagens.Location = new Point(689, 24);
             lblMensagens.Name = "lblMensagens";
             lblMensagens.Size = new Size(114, 15);
             lblMensagens.TabIndex = 23;
@@ -204,10 +204,10 @@
             lstLog.FormattingEnabled = true;
             lstLog.HorizontalScrollbar = true;
             lstLog.ItemHeight = 15;
-            lstLog.Location = new Point(713, 57);
+            lstLog.Location = new Point(604, 57);
             lstLog.Name = "lstLog";
             lstLog.RightToLeft = RightToLeft.No;
-            lstLog.Size = new Size(159, 109);
+            lstLog.Size = new Size(268, 154);
             lstLog.TabIndex = 22;
             // 
             // FormProfessor

@@ -1,9 +1,10 @@
+using LibVLCSharp.Shared;
 using System.Diagnostics;
+using System.IO;
 using System.Management;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using LibVLCSharp.Shared;
-using System.IO;
+using System.Windows.Forms;
 
 namespace Aluno
 {
@@ -219,6 +220,7 @@ a=fmtp:96 packetization-mode=1
                     await ReadTotalBytesAsync(stream, compressedMessage);
 
                     string mensagem = CompressionHelper.Decompress(compressedMessage);
+                    AtualizarLog($"[DEBUG] Enviando mensagem: {mensagem}");
 
                     if (mensagem.StartsWith("CMD_UPDATE_BLOCKLIST|")) 
                     {
@@ -273,11 +275,17 @@ a=fmtp:96 packetization-mode=1
         {
             if (stream != null && stream.CanWrite)
             {
-                byte[] compressedMessage = CompressionHelper.Compress(message);
-                byte[] lengthBuffer = BitConverter.GetBytes(compressedMessage.Length);
+                try
+                {
+                    byte[] compressedMessage = CompressionHelper.Compress(message);
+                    byte[] lengthBuffer = BitConverter.GetBytes(compressedMessage.Length);
 
-                await stream.WriteAsync(lengthBuffer, 0, lengthBuffer.Length);
-                await stream.WriteAsync(compressedMessage, 0, compressedMessage.Length);
+                    await stream.WriteAsync(lengthBuffer, 0, lengthBuffer.Length);
+                    await stream.WriteAsync(compressedMessage, 0, compressedMessage.Length);
+                } 
+                catch (Exception ex) {
+                    AtualizarLog($"[ERRO SEND] {ex.GetType().Name}: {ex.Message}");
+                }
             }
         }
 

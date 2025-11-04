@@ -26,7 +26,7 @@ namespace Professor
         {
             if (lvProcessos.InvokeRequired)
             {
-                lvProcessos.Invoke(new Action<string[]>(AtualizarListaProcessos), processos);
+                lvProcessos.Invoke(new Action(() => AtualizarListaProcessos(processos)));
                 return;
             }
 
