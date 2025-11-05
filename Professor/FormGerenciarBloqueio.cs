@@ -64,8 +64,9 @@ namespace Professor
 
             lvInstalados.Items.Clear();
             lvBloqueados.Items.Clear();
+
             imageListIcones.Images.Clear();
-            imageListIcones.Images.Add(SystemIcons.Application);
+            imageListIcones.Images.Add(SystemIcons.Application); // Default icon
 
             foreach (var programa in ProgramasEncontrados.OrderBy(p => p.Nome))
             {
@@ -227,6 +228,12 @@ namespace Professor
                 .Cast<ListViewItem>()
                 .Select(i => i.Tag.ToString())
                 .ToList();
+
+            var novosIcones = ProgramasEncontrados
+                   .Where(p => !string.IsNullOrEmpty(p.CaminhoIcone))
+                   .ToDictionary(p => p.NomeProcesso, p => p.CaminhoIcone);
+
+            ProcessosManager.Instance.AtualizarBlocklist(ListaBloqueioFinal, novosIcones);
         }
 
         private void btnProximo_Click(object sender, EventArgs e)
