@@ -30,8 +30,9 @@ namespace Professor
                 return;
             }
 
-            string receiverIp = "127.0.0.1";
-            int receiverPort = 1234;
+            // Mudei para multicast (antes 127.0.0.1)
+            string multicastIp = "239.0.0.1";
+            int multicastPort = 1234;
             _cancellationTokenSource = new CancellationTokenSource();
 
             try
@@ -58,7 +59,7 @@ namespace Professor
                     "-tune zerolatency",
                     "-an",
                     "-f rtp",
-                    $"rtp://{receiverIp}:{receiverPort}"
+                    $"rtp://{multicastIp}:{multicastPort}"
                 );
 
                 Debug.WriteLine($"Argumentos do FFMpeg: {ffmpegArguments}");

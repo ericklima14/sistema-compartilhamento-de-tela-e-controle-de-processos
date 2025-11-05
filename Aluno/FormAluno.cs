@@ -1,4 +1,5 @@
 using LibVLCSharp.Shared;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Management;
@@ -43,19 +44,21 @@ namespace Aluno
         // #TODO: mudar a logica de OnLoad pra algo mais refinado, como transmissao so iniciar quando ja conectado no servidor tcp.
         private void FormAluno_Load(object? sender, EventArgs e)
         {
-            string ipAluno = "127.0.0.1";
+            // Mudei para multicast (antes 127.0.0.1)
+            string multicastIp = "239.0.0.1";
+            int port = 1234;
 
             // --- SOLUÇÃO HÍBRIDA: SDP Hardcoded, Carregado via Arquivo Temporário ---
 
             // 1. Definimos o conteúdo do arquivo SDP diretamente em uma string.
             string sdpContent = $@"
 v=0
-o=- 0 0 IN IP4 {ipAluno}
+o=- 0 0 IN IP4 {multicastIp}
 s=No Name
-c=IN IP4 {ipAluno}
+c=IN IP4 {multicastIp}
 t=0 0
 a=tool:libavformat 62.4.101
-m=video 1234 RTP/AVP 96
+m=video {port} RTP/AVP 96
 b=AS:6000
 a=framerate:30
 a=rtpmap:96 H264/90000
@@ -70,6 +73,9 @@ a=fmtp:96 packetization-mode=1
             // 3. Criamos a mídia a partir da URI do arquivo local.
             //    Este é o método mais compatível e robusto para o LibVLC.
             var media = new Media(_libVLC, new Uri(_sdpFilePath));
+
+            //  Adiciona um buffer no cliente
+            //media.AddOption(":rtp-caching=300");
 
             _mediaPlayer.Play(media);
 
