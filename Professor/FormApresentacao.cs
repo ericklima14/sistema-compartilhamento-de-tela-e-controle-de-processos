@@ -14,17 +14,42 @@ namespace Professor
     {
         public FormApresentacao()
         {
+            VideoTransmissaoManager.Instance.LogAtualizado += msg => AdicionarLog(msg);
             InitializeComponent();
         }
 
-        private void lblMensagens_Click(object sender, EventArgs e)
+        private void btnStartStream_Click(object sender, EventArgs e)
         {
-
+            VideoTransmissaoManager.Instance.StartStream();
         }
 
-        private void lblEnviarMsg_Click(object sender, EventArgs e)
+        private void btnStopStream_Click(object sender, EventArgs e)
         {
+            VideoTransmissaoManager.Instance.StopStream();
+        }
 
+        //private void FormApresentacao_FormClosed(object sender, FormClosedEventArgs e)
+        //{
+        //    VideoTransmissaoManager.Instance.StopStream();
+        //    VideoTransmissaoManager.Instance.LogAtualizado -= AdicionarLog;
+        //    Close();
+        //}
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            VideoTransmissaoManager.Instance.StopStream();
+            VideoTransmissaoManager.Instance.LogAtualizado -= AdicionarLog;
+            base.OnFormClosed(e);
+        }
+
+        private void AdicionarLog(string msg)
+        {
+            if (lstLog.InvokeRequired)
+            {
+                lstLog.Invoke(new Action<string>(AdicionarLog), msg);
+                return;
+            }
+            lstLog.Items.Add(msg);
+            lstLog.TopIndex = lstLog.Items.Count - 1;
         }
     }
 }
