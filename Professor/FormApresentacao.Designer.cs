@@ -65,6 +65,7 @@
             btnEnviar.TabIndex = 10;
             btnEnviar.Text = "Enviar";
             btnEnviar.UseVisualStyleBackColor = true;
+            btnEnviar.Click += this.btnEnviar_Click;
             // 
             // txtMensagem
             // 
