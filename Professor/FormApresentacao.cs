@@ -19,11 +19,24 @@ namespace Professor
         {
             VideoTransmissaoManager.Instance.LogAtualizado += msg => AdicionarLog(msg);
             ConexaoService.Instance.LogAtualizado += msg => AdicionarLog(msg);
+            VideoTransmissaoManager.Instance.StreamIniciado += OnStreamIniciado;
+
             InitializeComponent();
+        }
+        // Enviar o caminho da stream RTP pelo TCP.
+        private void OnStreamIniciado(string ip, int port)
+        {
+            string comando = $"CMD_STREAM_INFO|{ip}|{port}";
+
+            Task.Run(async () => await ConexaoService.Instance.BroadcastMessage(comando));
+
+            AdicionarLog($"Anunciando stream para alunos: {ip}:{port}");
         }
 
         private void btnStartStream_Click(object sender, EventArgs e)
         {
+            // TODO: adicionar tratamento de erro pra ips invalidos.
+            VideoTransmissaoManager.Instance.StreamAddress = txtIpTransmissao.Text;
             VideoTransmissaoManager.Instance.StartStream();
         }
 
@@ -36,7 +49,9 @@ namespace Professor
         {
             VideoTransmissaoManager.Instance.PrepareForClosing();
             VideoTransmissaoManager.Instance.LogAtualizado -= AdicionarLog;
+            VideoTransmissaoManager.Instance.StreamIniciado -= OnStreamIniciado;
             //ProcessosManager.Instance.LogAtualizado -= AdicionarLog;
+
             base.OnFormClosed(e);
         }
 

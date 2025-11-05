@@ -32,7 +32,7 @@ namespace Aluno
 
             _mediaPlayer = new MediaPlayer(_libVLC);
             videoView.MediaPlayer = _mediaPlayer;
-            this.Load += FormAluno_Load;
+            //this.Load += FormAluno_Load;
         }
 
 
@@ -41,17 +41,20 @@ namespace Aluno
             Debug.WriteLine($"[VLC] {e.Level}: {e.Message} (em {e.Module})");
         }
 
-        // #TODO: mudar a logica de OnLoad pra algo mais refinado, como transmissao so iniciar quando ja conectado no servidor tcp.
-        private void FormAluno_Load(object? sender, EventArgs e)
+        // Recebe a transmissao RTP pelo TCP.
+        // Mudei para multicast (antes 127.0.0.1)
+        private void IniciarStream(string multicastIp, int port)
         {
-            // Mudei para multicast (antes 127.0.0.1)
-            string multicastIp = "239.0.0.1";
-            int port = 1234;
+            if (_mediaPlayer.IsPlaying)
+                return;
+
+            AtualizarLog($"Recebido comando para sintonizar stream: {multicastIp}:{port}");
 
             // --- SOLUÇÃO HÍBRIDA: SDP Hardcoded, Carregado via Arquivo Temporário ---
-
-            // 1. Definimos o conteúdo do arquivo SDP diretamente em uma string.
-            string sdpContent = $@"
+            try
+            {
+                // 1. Definimos o conteúdo do arquivo SDP diretamente em uma string.
+                string sdpContent = $@"
 v=0
 o=- 0 0 IN IP4 {multicastIp}
 s=No Name
@@ -65,21 +68,28 @@ a=rtpmap:96 H264/90000
 a=fmtp:96 packetization-mode=1
 ".Trim();
 
-            // 2. Criamos um arquivo temporário para armazenar nosso SDP.
-            //    Isso torna a aplicação autônoma, sem depender de um arquivo externo.
-            _sdpFilePath = Path.Combine(Path.GetTempPath(), "aluno_stream.sdp");
-            File.WriteAllText(_sdpFilePath, sdpContent);
+                // 2. Criamos um arquivo temporário para armazenar nosso SDP.
+                //    Isso torna a aplicação autônoma, sem depender de um arquivo externo.
+                _sdpFilePath = Path.Combine(Path.GetTempPath(), "aluno_stream.sdp");
+                File.WriteAllText(_sdpFilePath, sdpContent);
 
-            // 3. Criamos a mídia a partir da URI do arquivo local.
-            //    Este é o método mais compatível e robusto para o LibVLC.
-            var media = new Media(_libVLC, new Uri(_sdpFilePath));
+                // 3. Criamos a mídia a partir da URI do arquivo local.
+                //    Este é o método mais compatível e robusto para o LibVLC.
+                var media = new Media(_libVLC, new Uri(_sdpFilePath));
 
-            //  Adiciona um buffer no cliente
-            //media.AddOption(":rtp-caching=300");
+                //  Adiciona um buffer no cliente
+                //media.AddOption(":rtp-caching=300");
 
-            _mediaPlayer.Play(media);
+                _mediaPlayer.Play(media);
 
-            this.Text = "Recebendo stream via SDP...";
+                //this.Text = "Recebendo stream via SDP...";
+                this.Text = $"Recebendo stream de {multicastIp}:{port}";
+            }
+            catch (Exception ex)
+            {
+                AtualizarLog($"Erro ao iniciar stream: {ex.Message}");
+                MessageBox.Show($"Erro ao iniciar stream: {ex.Message}");
+            }
         }
 
         private void FormAluno_FormClosing(object sender, FormClosingEventArgs e)
@@ -88,6 +98,13 @@ a=fmtp:96 packetization-mode=1
             _mediaPlayer.Stop();
             _mediaPlayer.Dispose();
             _libVLC.Dispose();
+
+             // Limpeza do arquivo SDP ao fechar
+            //if (!string.IsNullOrEmpty(_sdpFilePath) && File.Exists(_sdpFilePath))
+            //{
+            //    try { File.Delete(_sdpFilePath); }
+            //    catch (Exception ex) { Debug.WriteLine($"Erro ao deletar SDP: {ex.Message}"); }
+            //}
         }
 
         private async void btnConectar_Click(object sender, EventArgs e)
@@ -228,7 +245,24 @@ a=fmtp:96 packetization-mode=1
                     string mensagem = CompressionHelper.Decompress(compressedMessage);
                     AtualizarLog($"[DEBUG] Enviando mensagem: {mensagem}");
 
-                    if (mensagem.StartsWith("CMD_UPDATE_BLOCKLIST|")) 
+                    if (mensagem.StartsWith("CMD_STREAM_INFO|"))
+                    {
+                        string payload = mensagem.Substring("CMD_STREAM_INFO|".Length);
+                        string[] parts = payload.Split('|');
+
+                        if (parts.Length == 2 &&
+                            !string.IsNullOrEmpty(parts[0]) &&
+                            int.TryParse(parts[1], out int port))
+                        {
+                            string multicastIp = parts[0];
+
+                            this.Invoke(new Action(() =>
+                            {
+                                IniciarStream(multicastIp, port);
+                            }));
+                        }
+                    }
+                    else if (mensagem.StartsWith("CMD_UPDATE_BLOCKLIST|")) 
                     {
                         string payload = mensagem.Substring("CMD_UPDATE_BLOCKLIST|".Length);
                         processosBloqueados = new List<string>(payload.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));

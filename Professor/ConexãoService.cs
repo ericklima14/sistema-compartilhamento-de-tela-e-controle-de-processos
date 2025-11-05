@@ -74,6 +74,16 @@ namespace Professor
                 Log($"Novo aluno conectado: {clientIdentifier}");
                 AtualizarListaAlunos();
 
+                // Se a transmissao ja estiver rolando quando o aluno se conectar, envia IMEDIATAMENTE para este aluno.
+                if (VideoTransmissaoManager.Instance.IsStreaming)
+                {
+                    string ip = VideoTransmissaoManager.Instance.StreamAddress;
+                    int port = VideoTransmissaoManager.Instance.StreamPort;
+                    string comando = $"CMD_STREAM_INFO|{ip}|{port}";
+
+                    await SendMessageAsync(client, comando);
+                }
+
                 while (client.Connected)
                 {
                     byte[] lengthBuffer = new byte[4];
