@@ -14,7 +14,6 @@ namespace Professor
             InitializeComponent();
 
             ConexaoService.Instance.ListaDeAlunosAtualizada += AtualizarListaAlunos;
-            ConexaoService.Instance.LogAtualizado += msg => AdicionarLog(msg);
 
             ProcessosManager.Instance.LogAtualizado += msg => AdicionarLog(msg);
             ProcessosManager.Instance.ListaProcessosAtualizada += AtualizarListaProcessos;
