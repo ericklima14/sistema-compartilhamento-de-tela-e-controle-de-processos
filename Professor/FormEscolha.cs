@@ -47,8 +47,8 @@ namespace Professor
         private void btnModoApresentacao_Click(object sender, EventArgs e)
         {
             //TODO: temos que mudar essa bomba para o que vamos de fato chamar
-            var formProfessor = new FormProfessor();
-            formProfessor.Show();
+            var formApresentacao = new FormApresentacao();
+            formApresentacao.Show();
             this.Hide();
         }
 
