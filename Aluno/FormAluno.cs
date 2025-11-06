@@ -99,7 +99,7 @@ a=fmtp:96 packetization-mode=1
             _mediaPlayer.Dispose();
             _libVLC.Dispose();
 
-             // Limpeza do arquivo SDP ao fechar
+            // Limpeza do arquivo SDP ao fechar
             //if (!string.IsNullOrEmpty(_sdpFilePath) && File.Exists(_sdpFilePath))
             //{
             //    try { File.Delete(_sdpFilePath); }
@@ -141,8 +141,9 @@ a=fmtp:96 packetization-mode=1
                 wmiWatcher.Start();
                 AtualizarLog("Vigia de processos em tempo real ATIVADO");
 
-                MatarProcessosInciais();    
-            } catch (Exception ex)
+                MatarProcessosInciais();
+            }
+            catch (Exception ex)
             {
                 AtualizarLog($"Erro ao iniciar o vigia de processos: {ex.Message}");
             }
@@ -150,7 +151,7 @@ a=fmtp:96 packetization-mode=1
 
         private void MatarProcessosInciais()
         {
-            foreach(var nome in processosBloqueados)
+            foreach (var nome in processosBloqueados)
             {
                 try
                 {
@@ -178,7 +179,7 @@ a=fmtp:96 packetization-mode=1
 
         private void PararVigiaDeProcessos()
         {
-            if(wmiWatcher != null)
+            if (wmiWatcher != null)
             {
                 wmiWatcher.Stop();
                 wmiWatcher.Dispose();
@@ -195,7 +196,8 @@ a=fmtp:96 packetization-mode=1
 
                 AtualizarLog($"[DEBUG] Novo processo detectado: {nomeProcesso}");
 
-                if (processosBloqueados.Contains(nomeProcesso.Replace(".exe", ""), StringComparer.OrdinalIgnoreCase)) {
+                if (processosBloqueados.Contains(nomeProcesso.Replace(".exe", ""), StringComparer.OrdinalIgnoreCase))
+                {
                     AtualizarLog($"Processo proibido '{nomeProcesso}' detectado instantaneamente");
 
                     string nome = nomeProcesso.Replace(".exe", "");
@@ -221,15 +223,15 @@ a=fmtp:96 packetization-mode=1
                     {
                         AtualizarLog($"Erro ao tentar finalizar '{nome}': {ex.Message}");
                     }
-                  
+
                 }
-            } 
+            }
             catch (Exception ex)
             {
                 AtualizarLog($"Erro no evento do vigia: {ex.Message}");
             }
         }
-         
+
         private async Task ReceberMensagem()
         {
             while (client.Connected)
@@ -262,7 +264,7 @@ a=fmtp:96 packetization-mode=1
                             }));
                         }
                     }
-                    else if (mensagem.StartsWith("CMD_UPDATE_BLOCKLIST|")) 
+                    else if (mensagem.StartsWith("CMD_UPDATE_BLOCKLIST|"))
                     {
                         string payload = mensagem.Substring("CMD_UPDATE_BLOCKLIST|".Length);
                         processosBloqueados = new List<string>(payload.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
@@ -275,7 +277,8 @@ a=fmtp:96 packetization-mode=1
                     }
                     else if (mensagem == "CMD_START_MONITORING")
                     {
-                        this.Invoke(new Action(() => {
+                        this.Invoke(new Action(() =>
+                        {
                             AtualizarLog("Professor iniciou o monitoramento de processos.");
                             IniciarVigiaDeProcessos();
                             processTimer.Start();
@@ -283,7 +286,8 @@ a=fmtp:96 packetization-mode=1
                     }
                     else if (mensagem == "CMD_STOP_MONITORING")
                     {
-                        this.Invoke(new Action(() => {
+                        this.Invoke(new Action(() =>
+                        {
                             AtualizarLog("Professor parou o monitoramento de processos.");
                             processTimer.Stop();
                         }));
@@ -300,12 +304,13 @@ a=fmtp:96 packetization-mode=1
                 catch (Exception)
                 {
                     AtualizarLog("Conexão perdida.");
-                    if (processTimer.Enabled) 
-                        this.Invoke(new Action(() => {
+                    if (processTimer.Enabled)
+                        this.Invoke(new Action(() =>
+                        {
                             PararVigiaDeProcessos();
                             processTimer.Stop();
                         }));
-                    
+
                     break;
                 }
             }
@@ -322,8 +327,9 @@ a=fmtp:96 packetization-mode=1
 
                     await stream.WriteAsync(lengthBuffer, 0, lengthBuffer.Length);
                     await stream.WriteAsync(compressedMessage, 0, compressedMessage.Length);
-                } 
-                catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     AtualizarLog($"[ERRO SEND] {ex.GetType().Name}: {ex.Message}");
                 }
             }
@@ -372,17 +378,19 @@ a=fmtp:96 packetization-mode=1
                 //var processNames = Process.GetProcesses().Select(p => p.ProcessName).Distinct().OrderBy(name => name);
                 var processNames = Process.GetProcesses()
                                           .Where(p => !string.IsNullOrEmpty(p.MainWindowTitle))
-                                          .Select(p => p.ProcessName )
+                                          .Select(p => p.ProcessName)
                                           .Distinct()
                                           .OrderBy(name => name);
 
 
                 string responsePayload = string.Join("|", processNames);
                 await SendMessageAsync("RSP_PROCESS_LIST|" + responsePayload);
-            } catch {
+            }
+            catch
+            {
                 Console.WriteLine("Processo que nao pode ser acessado");
             }
-            
+
         }
 
         private void MatarProcessos(string comando)
