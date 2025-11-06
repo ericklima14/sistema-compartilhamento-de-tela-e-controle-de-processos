@@ -118,8 +118,16 @@ a=fmtp:96 packetization-mode=1
                 await client.ConnectAsync(ip, port);
                 stream = client.GetStream();
 
+                string userName = Environment.UserName;
+                string machineName = Environment.MachineName;
+                string identifier = $"{userName}@{machineName}";
+
+                // Envia a mensagem de identificação 
+                await SendMessageAsync($"INFO_USER_NAME|{identifier}");
+
                 btnConectar.Enabled = false;
-                AtualizarLog("Conectado ao Professor");
+                AtualizarLog($"Conectado ao Professor como: {identifier}");
+                //AtualizarLog("Conectado ao Professor");
 
                 Task.Run(() => ReceberMensagem());
             }
