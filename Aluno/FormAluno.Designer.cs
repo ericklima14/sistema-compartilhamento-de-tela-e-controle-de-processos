@@ -43,15 +43,15 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(28, 37);
+            label1.Location = new Point(39, 41);
             label1.Name = "label1";
-            label1.Size = new Size(86, 15);
+            label1.Size = new Size(118, 15);
             label1.TabIndex = 0;
-            label1.Text = "IP do Professor";
+            label1.Text = "IP do Professor (TCP)";
             // 
             // txtIpProfessor
             // 
-            txtIpProfessor.Location = new Point(28, 65);
+            txtIpProfessor.Location = new Point(39, 59);
             txtIpProfessor.Name = "txtIpProfessor";
             txtIpProfessor.Size = new Size(120, 23);
             txtIpProfessor.TabIndex = 1;
@@ -59,7 +59,7 @@
             // 
             // btnConectar
             // 
-            btnConectar.Location = new Point(28, 109);
+            btnConectar.Location = new Point(39, 88);
             btnConectar.Name = "btnConectar";
             btnConectar.Size = new Size(120, 34);
             btnConectar.TabIndex = 2;

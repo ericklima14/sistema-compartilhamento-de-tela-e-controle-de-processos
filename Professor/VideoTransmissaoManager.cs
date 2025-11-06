@@ -12,6 +12,10 @@ namespace Professor
         private static readonly VideoTransmissaoManager _instancia = new VideoTransmissaoManager();
         public static VideoTransmissaoManager Instance => _instancia;
 
+        public string StreamAddress { get; set; }
+        public int StreamPort { get; private set; } = 1234;
+        public bool IsStreaming => _ffmpegTask != null && !_ffmpegTask.IsCompleted;
+
         private CancellationTokenSource _cancellationTokenSource;
         private Task _ffmpegTask;
         private Process _ffmpegProcess;
@@ -19,19 +23,21 @@ namespace Professor
         private bool _isClosing = false;
         public event Action<string> LogAtualizado;
         public event Action<bool> StatusStreamAtualizado;
+        public event Action<string, int> StreamIniciado;
 
         private VideoTransmissaoManager() { }
 
         public void StartStream()
         {
-            if (_ffmpegTask != null && !_ffmpegTask.IsCompleted)
+            if (IsStreaming)
             {
                 Log("Stream já em andamento.");
                 return;
             }
 
-            string receiverIp = "127.0.0.1";
-            int receiverPort = 1234;
+            // Mudei para multicast (antes 127.0.0.1)
+            string multicastIp = StreamAddress;
+            int multicastPort = StreamPort;
             _cancellationTokenSource = new CancellationTokenSource();
 
             try
@@ -58,7 +64,7 @@ namespace Professor
                     "-tune zerolatency",
                     "-an",
                     "-f rtp",
-                    $"rtp://{receiverIp}:{receiverPort}"
+                    $"rtp://{multicastIp}:{multicastPort}"
                 );
 
                 Debug.WriteLine($"Argumentos do FFMpeg: {ffmpegArguments}");
@@ -97,6 +103,7 @@ namespace Professor
 
                 StatusStreamAtualizado?.Invoke(true);
                 Log("Transmissão iniciada.");
+                StreamIniciado?.Invoke(multicastIp, multicastPort);
             }
             catch (Exception ex)
             {
