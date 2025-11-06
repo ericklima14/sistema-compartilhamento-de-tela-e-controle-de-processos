@@ -43,7 +43,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(39, 41);
+            label1.Location = new Point(31, 25);
             label1.Name = "label1";
             label1.Size = new Size(118, 15);
             label1.TabIndex = 0;
@@ -51,7 +51,7 @@
             // 
             // txtIpProfessor
             // 
-            txtIpProfessor.Location = new Point(39, 59);
+            txtIpProfessor.Location = new Point(31, 43);
             txtIpProfessor.Name = "txtIpProfessor";
             txtIpProfessor.Size = new Size(120, 23);
             txtIpProfessor.TabIndex = 1;
@@ -59,7 +59,7 @@
             // 
             // btnConectar
             // 
-            btnConectar.Location = new Point(39, 88);
+            btnConectar.Location = new Point(31, 72);
             btnConectar.Name = "btnConectar";
             btnConectar.Size = new Size(120, 34);
             btnConectar.TabIndex = 2;
@@ -71,23 +71,23 @@
             // 
             lstBox.FormattingEnabled = true;
             lstBox.ItemHeight = 15;
-            lstBox.Location = new Point(243, 26);
+            lstBox.Location = new Point(174, 12);
             lstBox.Name = "lstBox";
-            lstBox.Size = new Size(376, 94);
+            lstBox.Size = new Size(377, 94);
             lstBox.TabIndex = 3;
             // 
             // txtMensagem
             // 
-            txtMensagem.Location = new Point(655, 48);
+            txtMensagem.Location = new Point(174, 112);
             txtMensagem.Name = "txtMensagem";
-            txtMensagem.Size = new Size(120, 23);
+            txtMensagem.Size = new Size(272, 23);
             txtMensagem.TabIndex = 4;
             // 
             // btnEnviar
             // 
-            btnEnviar.Location = new Point(670, 90);
+            btnEnviar.Location = new Point(451, 112);
             btnEnviar.Name = "btnEnviar";
-            btnEnviar.Size = new Size(95, 30);
+            btnEnviar.Size = new Size(100, 23);
             btnEnviar.TabIndex = 5;
             btnEnviar.Text = "Enviar";
             btnEnviar.UseVisualStyleBackColor = true;
@@ -100,11 +100,12 @@
             // 
             // videoView
             // 
+            videoView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             videoView.BackColor = Color.Black;
-            videoView.Location = new Point(259, 156);
+            videoView.Location = new Point(8, 141);
             videoView.MediaPlayer = null;
             videoView.Name = "videoView";
-            videoView.Size = new Size(487, 286);
+            videoView.Size = new Size(560, 315);
             videoView.TabIndex = 7;
             videoView.Text = "videoView1";
             // 
@@ -112,7 +113,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(823, 470);
+            ClientSize = new Size(577, 464);
             Controls.Add(videoView);
             Controls.Add(btnEnviar);
             Controls.Add(txtMensagem);

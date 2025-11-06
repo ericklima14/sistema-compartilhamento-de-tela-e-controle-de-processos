@@ -62,16 +62,40 @@ namespace Professor
 
         private async Task HandleClientAsync(TcpClient client)
         {
-            string clientIdentifier = client.Client.RemoteEndPoint?.ToString() ?? "Desconhecido";
+            //string clientIdentifier = client.Client.RemoteEndPoint?.ToString() ?? "Desconhecido";
+            string clientIp = client.Client.RemoteEndPoint?.ToString() ?? "Desconhecido";
+            string clientIdentifier = null;
             NetworkStream stream = client.GetStream();
 
             try
             {
+                // O servidor espera o cliente se identificar primeiro.
+                byte[] initialLengthBuffer = new byte[4];
+                await ReadTotalBytesAsync(stream, initialLengthBuffer);
+                int initialMessageLength = BitConverter.ToInt32(initialLengthBuffer, 0);
+
+                byte[] initialCompressedMessage = new byte[initialMessageLength];
+                await ReadTotalBytesAsync(stream, initialCompressedMessage);
+
+                string initialMessage = CompressionHelper.Decompress(initialCompressedMessage);
+
+                if (initialMessage.StartsWith("INFO_USER_NAME|"))
+                {
+                    clientIdentifier = initialMessage.Substring("INFO_USER_NAME|".Length);
+                }
+                else
+                {
+                    Log($"Cliente {clientIp} falhou na identificação (mensagem inválida). Desconectando.");
+                    client.Close();
+                    return;
+                }
+
                 lock (_clients)
                 {
                     _clients.Add(client, clientIdentifier);
                 }
-                Log($"Novo aluno conectado: {clientIdentifier}");
+                Log($"Novo aluno conectado: {clientIdentifier} [{clientIp}]");
+                //Log($"Novo aluno conectado: {clientIdentifier}");
                 AtualizarListaAlunos();
 
                 // Se a transmissao ja estiver rolando quando o aluno se conectar, envia IMEDIATAMENTE para este aluno.
