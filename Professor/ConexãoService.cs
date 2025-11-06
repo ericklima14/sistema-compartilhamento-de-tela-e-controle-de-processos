@@ -81,7 +81,7 @@ namespace Professor
 
                 if (initialMessage.StartsWith("INFO_USER_NAME|"))
                 {
-                    clientIdentifier = initialMessage.Substring("INFO_USER_NAME|".Length);
+                    clientIdentifier = $"{initialMessage.Substring("INFO_USER_NAME|".Length)} {clientIp}";
                 }
                 else
                 {
@@ -94,7 +94,7 @@ namespace Professor
                 {
                     _clients.Add(client, clientIdentifier);
                 }
-                Log($"Novo aluno conectado: {clientIdentifier} [{clientIp}]");
+                Log($"Novo aluno conectado: {clientIdentifier}");
                 //Log($"Novo aluno conectado: {clientIdentifier}");
                 AtualizarListaAlunos();
 
