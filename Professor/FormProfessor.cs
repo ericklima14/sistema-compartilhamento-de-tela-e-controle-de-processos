@@ -152,5 +152,23 @@ namespace Professor
                 }
             }
         }
+
+        private void btnIniciarTelas_Click(object sender, EventArgs e)
+        {
+            string comando = $"CMD_START_SCREEN_MONITORING";
+
+            Task.Run(async () => await ConexaoService.Instance.BroadcastMessage(comando));
+
+            AdicionarLog($"Você iniciou o monitoramento de telas dos alunos.");
+        }
+
+        private void btnPararTelas_Click(object sender, EventArgs e)
+        {
+            string comando = $"CMD_STOP_SCREEN_MONITORING";
+
+            Task.Run(async () => await ConexaoService.Instance.BroadcastMessage(comando));
+
+            AdicionarLog($"Você encerrou o monitoramento de telas dos alunos.");
+        }
     }
 }
