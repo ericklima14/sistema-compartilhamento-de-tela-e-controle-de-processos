@@ -20,6 +20,9 @@
                 {
                     var formEscolha = new FormEscolha();
                     formEscolha.Show();
+
+                    formEscolha.FormClosed += (s, args) => this.Close();
+
                     this.Hide();
                 });
             });

@@ -41,6 +41,8 @@ namespace Professor
             var formGerenciarBloqueio = new FormGerenciarBloqueio(ProcessosManager.Instance.ProcessosBloqueados.ToList(), 
                 FormGerenciarBloqueio.ModoGerenciamento.FluxoInicial);
             formGerenciarBloqueio.Show();
+
+            formGerenciarBloqueio.FormClosed += (s, args) => this.Close();
             this.Hide();
         }
 
@@ -48,6 +50,8 @@ namespace Professor
         {
             var formApresentacao = new FormApresentacao();
             formApresentacao.Show();
+
+            formApresentacao.FormClosed += (s, args) => this.Close();
             this.Hide();
         }
 
