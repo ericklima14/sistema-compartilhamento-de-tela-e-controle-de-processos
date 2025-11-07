@@ -38,10 +38,9 @@
             imageListProcessos = new ImageList(components);
             btnMatarProcesso = new Button();
             btnGerenciarBloqueios = new Button();
-            btnStartStream = new Button();
-            btnStopStream = new Button();
-            txtIpReciever = new TextBox();
-            lblTransmissaoAula = new Label();
+            btnIniciarTelas = new Button();
+            btnPararTelas = new Button();
+            lblMonitorarTelas = new Label();
             videoView1 = new LibVLCSharp.WinForms.VideoView();
             videoView2 = new LibVLCSharp.WinForms.VideoView();
             lblMensagens = new Label();
@@ -127,7 +126,7 @@
             // 
             // btnGerenciarBloqueios
             // 
-            btnGerenciarBloqueios.Location = new Point(362, 495);
+            btnGerenciarBloqueios.Location = new Point(663, 389);
             btnGerenciarBloqueios.Name = "btnGerenciarBloqueios";
             btnGerenciarBloqueios.Size = new Size(172, 51);
             btnGerenciarBloqueios.TabIndex = 15;
@@ -135,58 +134,52 @@
             btnGerenciarBloqueios.UseVisualStyleBackColor = true;
             btnGerenciarBloqueios.Click += btnGerenciarBloqueios_Click;
             // 
-            // btnStartStream
+            // btnIniciarTelas
             // 
-            btnStartStream.Location = new Point(275, 95);
-            btnStartStream.Name = "btnStartStream";
-            btnStartStream.Size = new Size(159, 36);
-            btnStartStream.TabIndex = 16;
-            btnStartStream.Text = "Iniciar Transmissão";
-            btnStartStream.UseVisualStyleBackColor = true;
+            btnIniciarTelas.Location = new Point(41, 50);
+            btnIniciarTelas.Name = "btnIniciarTelas";
+            btnIniciarTelas.Size = new Size(159, 36);
+            btnIniciarTelas.TabIndex = 16;
+            btnIniciarTelas.Text = "Iniciar Monitoramento";
+            btnIniciarTelas.UseVisualStyleBackColor = true;
+            btnIniciarTelas.Click += btnIniciarTelas_Click;
             // 
-            // btnStopStream
+            // btnPararTelas
             // 
-            btnStopStream.Location = new Point(275, 137);
-            btnStopStream.Name = "btnStopStream";
-            btnStopStream.Size = new Size(159, 36);
-            btnStopStream.TabIndex = 17;
-            btnStopStream.Text = "Parar Transmissão";
-            btnStopStream.UseVisualStyleBackColor = true;
+            btnPararTelas.Location = new Point(41, 92);
+            btnPararTelas.Name = "btnPararTelas";
+            btnPararTelas.Size = new Size(159, 36);
+            btnPararTelas.TabIndex = 17;
+            btnPararTelas.Text = "Parar Monitoramento";
+            btnPararTelas.UseVisualStyleBackColor = true;
+            btnPararTelas.Click += btnPararTelas_Click;
             // 
-            // txtIpReciever
+            // lblMonitorarTelas
             // 
-            txtIpReciever.Location = new Point(275, 66);
-            txtIpReciever.Name = "txtIpReciever";
-            txtIpReciever.Size = new Size(159, 23);
-            txtIpReciever.TabIndex = 18;
-            txtIpReciever.Text = "127.0.0.1";
-            // 
-            // lblTransmissaoAula
-            // 
-            lblTransmissaoAula.AutoSize = true;
-            lblTransmissaoAula.Location = new Point(275, 37);
-            lblTransmissaoAula.Name = "lblTransmissaoAula";
-            lblTransmissaoAula.Size = new Size(149, 15);
-            lblTransmissaoAula.TabIndex = 19;
-            lblTransmissaoAula.Text = "Transmissão de Aula (beta)";
+            lblMonitorarTelas.AutoSize = true;
+            lblMonitorarTelas.Location = new Point(41, 32);
+            lblMonitorarTelas.Name = "lblMonitorarTelas";
+            lblMonitorarTelas.Size = new Size(89, 15);
+            lblMonitorarTelas.TabIndex = 19;
+            lblMonitorarTelas.Text = "Monitorar Telas";
             // 
             // videoView1
             // 
             videoView1.BackColor = Color.Black;
-            videoView1.Location = new Point(237, 247);
+            videoView1.Location = new Point(41, 146);
             videoView1.MediaPlayer = null;
             videoView1.Name = "videoView1";
-            videoView1.Size = new Size(177, 124);
+            videoView1.Size = new Size(336, 189);
             videoView1.TabIndex = 20;
             videoView1.Text = "videoView1";
             // 
             // videoView2
             // 
             videoView2.BackColor = Color.Black;
-            videoView2.Location = new Point(484, 247);
+            videoView2.Location = new Point(41, 351);
             videoView2.MediaPlayer = null;
             videoView2.Name = "videoView2";
-            videoView2.Size = new Size(177, 124);
+            videoView2.Size = new Size(336, 189);
             videoView2.TabIndex = 21;
             videoView2.Text = "videoView2";
             // 
@@ -219,10 +212,9 @@
             Controls.Add(lstLog);
             Controls.Add(videoView2);
             Controls.Add(videoView1);
-            Controls.Add(lblTransmissaoAula);
-            Controls.Add(txtIpReciever);
-            Controls.Add(btnStopStream);
-            Controls.Add(btnStartStream);
+            Controls.Add(lblMonitorarTelas);
+            Controls.Add(btnPararTelas);
+            Controls.Add(btnIniciarTelas);
             Controls.Add(btnGerenciarBloqueios);
             Controls.Add(btnMatarProcesso);
             Controls.Add(lvProcessos);
@@ -249,10 +241,9 @@
         private Button btnMatarProcesso;
         private ImageList imageListProcessosBloq;
         private Button btnGerenciarBloqueios;
-        private Button btnStartStream;
-        private Button btnStopStream;
-        private TextBox txtIpReciever;
-        private Label lblTransmissaoAula;
+        private Button btnIniciarTelas;
+        private Button btnPararTelas;
+        private Label lblMonitorarTelas;
         private LibVLCSharp.WinForms.VideoView videoView1;
         private LibVLCSharp.WinForms.VideoView videoView2;
         private Label lblMensagens;

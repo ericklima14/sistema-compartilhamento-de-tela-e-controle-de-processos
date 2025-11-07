@@ -304,6 +304,14 @@ a=fmtp:96 packetization-mode=1
                     {
                         MatarProcessos(mensagem);
                     }
+                    else if (mensagem == "CMD_START_SCREEN_MONITORING")
+                    {
+                        AtualizarLog($"Professor iniciou o monitoramento de telas.");
+                    }
+                    else if (mensagem == "CMD_STOP_SCREEN_MONITORING")
+                    {
+                        AtualizarLog($"Professor encerrou o monitoramento de telas.");
+                    }
                     else
                     {
                         AtualizarLog(mensagem);

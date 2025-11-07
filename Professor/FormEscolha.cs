@@ -38,15 +38,14 @@ namespace Professor
 
         private void btnModoAvaliacao_Click(object sender, EventArgs e)
         {
-            var formProfessor = new FormGerenciarBloqueio(ProcessosManager.Instance.ProcessosBloqueados.ToList(), 
+            var formGerenciarBloqueio = new FormGerenciarBloqueio(ProcessosManager.Instance.ProcessosBloqueados.ToList(), 
                 FormGerenciarBloqueio.ModoGerenciamento.FluxoInicial);
-            formProfessor.Show();
+            formGerenciarBloqueio.Show();
             this.Hide();
         }
 
         private void btnModoApresentacao_Click(object sender, EventArgs e)
         {
-            //TODO: temos que mudar essa bomba para o que vamos de fato chamar
             var formApresentacao = new FormApresentacao();
             formApresentacao.Show();
             this.Hide();
