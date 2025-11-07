@@ -16,6 +16,8 @@ namespace Professor
         {
             InitializeComponent();
             ConexaoService.Instance.ListaDeAlunosAtualizada += AtualizarListaAlunos;
+
+            lblProfessorIP.Text = ConexaoService.Instance.ProfessorIP;
         }
 
         public void AtualizarListaAlunos()
@@ -38,7 +40,7 @@ namespace Professor
 
         private void btnModoAvaliacao_Click(object sender, EventArgs e)
         {
-            var formGerenciarBloqueio = new FormGerenciarBloqueio(ProcessosManager.Instance.ProcessosBloqueados.ToList(), 
+            var formGerenciarBloqueio = new FormGerenciarBloqueio(ProcessosManager.Instance.ProcessosBloqueados.ToList(),
                 FormGerenciarBloqueio.ModoGerenciamento.FluxoInicial);
             formGerenciarBloqueio.Show();
 
@@ -59,6 +61,11 @@ namespace Professor
         {
             ConexaoService.Instance.ListaDeAlunosAtualizada -= AtualizarListaAlunos;
             base.OnFormClosed(e);
+        }
+
+        private void lblProfessorIP_DoubleClick(object sender, EventArgs e)
+        {
+            Clipboard.SetText(lblProfessorIP.Text);
         }
     }
 }
