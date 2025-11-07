@@ -22,6 +22,8 @@ namespace Aluno
 
         public FormAluno()
         {
+            MonitoramentoTelaManager.Instance.LogAtualizado += msg => AtualizarLog(msg);
+
             InitializeComponent();
 
             Core.Initialize();
@@ -32,7 +34,6 @@ namespace Aluno
 
             _mediaPlayer = new MediaPlayer(_libVLC);
             videoView.MediaPlayer = _mediaPlayer;
-            //this.Load += FormAluno_Load;
         }
 
 
@@ -306,11 +307,19 @@ a=fmtp:96 packetization-mode=1
                     }
                     else if (mensagem == "CMD_START_SCREEN_MONITORING")
                     {
-                        AtualizarLog($"Professor iniciou o monitoramento de telas.");
+                        this.Invoke(new Action(() =>
+                        {
+                            AtualizarLog($"Professor iniciou o monitoramento de telas.");
+                            MonitoramentoTelaManager.Instance.StartStream("127.0.0.1", 5004);
+                        }));
                     }
                     else if (mensagem == "CMD_STOP_SCREEN_MONITORING")
                     {
-                        AtualizarLog($"Professor encerrou o monitoramento de telas.");
+                        this.Invoke(new Action(() =>
+                        {
+                            AtualizarLog($"Professor encerrou o monitoramento de telas.");
+                            MonitoramentoTelaManager.Instance.PrepareForClosing();
+                        }));
                     }
                     else
                     {
@@ -444,6 +453,12 @@ a=fmtp:96 packetization-mode=1
                     AtualizarLog($"Erro ao tentar finalizar '{nome}': {ex.Message}");
                 }
             }
+        }
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            MonitoramentoTelaManager.Instance.LogAtualizado -= AtualizarLog;
+
+            base.OnFormClosed(e);
         }
     }
 }
