@@ -79,7 +79,10 @@ a=fmtp:96 packetization-mode=1
                 var media = new Media(_libVLC, new Uri(_sdpFilePath));
 
                 //  Adiciona um buffer no cliente
-                //media.AddOption(":rtp-caching=300");
+                media.AddOption(":rtp-caching=1000");
+
+                // Adicione um buffer de rede genérico também
+                media.AddOption(":network-caching=1000");
 
                 _mediaPlayer.Play(media);
 
