@@ -1,7 +1,9 @@
+using LibVLCSharp.Shared;
+using LibVLCSharp.WinForms;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.IO;
 
 namespace Professor
 {
@@ -9,9 +11,22 @@ namespace Professor
     {
         private string _alunoAtual = null;
 
+        private LibVLC _libVLC;
+        private MediaPlayer _mediaPlayer;
+        private string? _sdpFilePath;
+
         public FormProfessor()
         {
             InitializeComponent();
+
+            Core.Initialize();
+
+            // Logs detalhados
+            _libVLC = new LibVLC("--verbose=2");
+            _libVLC.Log += Vlc_Log;
+
+            _mediaPlayer = new MediaPlayer(_libVLC);
+            videoView1.MediaPlayer = _mediaPlayer;
 
             ConexaoService.Instance.ListaDeAlunosAtualizada += AtualizarListaAlunos;
             ConexaoService.Instance.LogAtualizado += msg => AdicionarLog(msg);
@@ -20,6 +35,74 @@ namespace Professor
             ProcessosManager.Instance.ListaProcessosAtualizada += AtualizarListaProcessos;
 
             AtualizarListaAlunos();
+        }
+
+        private void Vlc_Log(object? sender, LogEventArgs e)
+        {
+            Debug.WriteLine($"[VLC] {e.Level}: {e.Message} (em {e.Module})");
+        }
+
+        private void ReceberTela(string professorIp, int chosenPort)
+        {
+            if (_mediaPlayer.IsPlaying)
+                return;
+
+            AdicionarLog($"Recebendo tela na porta {chosenPort}");
+
+            // --- SOLUÇÃO HÍBRIDA: SDP Hardcoded, Carregado via Arquivo Temporário ---
+            try
+            {
+                // 1. Definimos o conteúdo do arquivo SDP diretamente em uma string.
+                string sdpContent = $@"
+v=0
+o=- 0 0 IN IP4 {professorIp}
+s=No Name
+c=IN IP4 {professorIp}
+t=0 0
+a=tool:libavformat 62.4.101
+m=video {chosenPort} RTP/AVP 96
+b=AS:6000
+a=framerate:30
+a=rtpmap:96 H264/90000
+a=fmtp:96 packetization-mode=1
+".Trim();
+
+
+                _sdpFilePath = Path.Combine(Path.GetTempPath(), $"prof_recv_{chosenPort}.sdp");
+                File.WriteAllText(_sdpFilePath, sdpContent);
+
+                // 3. Criamos a mídia a partir da URI do arquivo local.
+                //    Este é o método mais compatível e robusto para o LibVLC.
+                var media = new Media(_libVLC, new Uri(_sdpFilePath));
+
+                //  Adiciona um buffer no cliente
+                //media.AddOption(":rtp-caching=300");
+
+                _mediaPlayer.Play(media);
+
+                //this.Text = "Recebendo stream via SDP...";
+                this.Text = $"Visualizando aluno na porta {chosenPort}";
+            }
+            catch (Exception ex)
+            {
+                AdicionarLog($"Erro ao iniciar stream: {ex.Message}");
+                MessageBox.Show($"Erro ao iniciar stream: {ex.Message}");
+            }
+        }
+
+        private void FormProfessor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _libVLC.Log -= Vlc_Log;
+            _mediaPlayer.Stop();
+            _mediaPlayer.Dispose();
+            _libVLC.Dispose();
+
+            // Limpeza do arquivo SDP ao fechar
+            //if (!string.IsNullOrEmpty(_sdpFilePath) && File.Exists(_sdpFilePath))
+            //{
+            //    try { File.Delete(_sdpFilePath); }
+            //    catch (Exception ex) { Debug.WriteLine($"Erro ao deletar SDP: {ex.Message}"); }
+            //}
         }
 
         private void AtualizarListaProcessos(string[] processos)
@@ -160,6 +243,8 @@ namespace Professor
             Task.Run(async () => await ConexaoService.Instance.BroadcastMessage(comando));
 
             AdicionarLog($"Você iniciou o monitoramento de telas dos alunos.");
+
+            ReceberTela("127.0.0.1", 5004);
         }
 
         private void btnPararTelas_Click(object sender, EventArgs e)
