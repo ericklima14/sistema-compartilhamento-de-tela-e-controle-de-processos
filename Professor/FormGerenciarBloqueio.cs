@@ -241,6 +241,8 @@ namespace Professor
             SalvarListaBloqueio();
             var formAvaliacao = new FormProfessor();
             formAvaliacao.Show();
+
+            formAvaliacao.FormClosed += (s, args) => this.Close();
             this.Hide();
         }
     }

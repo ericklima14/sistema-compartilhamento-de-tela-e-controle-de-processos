@@ -14,12 +14,17 @@
 
             ConexaoService.Instance.IniciarServidor();
 
+            var interfaces = ConexaoService.ObterIntefaces();
+
             Task.Delay(500).ContinueWith(_ =>
             {
                 this.Invoke(() =>
                 {
-                    var formEscolha = new FormEscolha();
-                    formEscolha.Show();
+                    var formEscolherIP = new FormEscolherIP(interfaces);
+                    formEscolherIP.Show();
+
+                    formEscolherIP.FormClosed += (s, args) => this.Close();
+
                     this.Hide();
                 });
             });
