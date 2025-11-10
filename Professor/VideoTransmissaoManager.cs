@@ -66,7 +66,7 @@ namespace Professor
                     "-tune zerolatency",
                     "-an",
                     "-f rtp",
-                    $"rtp://{multicastIp}:{multicastPort}"
+                    $"rtp://{multicastIp}:{multicastPort}?ttl=10&pkt_size=1316"
                 );
 
                 Debug.WriteLine($"Argumentos do FFMpeg: {ffmpegArguments}");
