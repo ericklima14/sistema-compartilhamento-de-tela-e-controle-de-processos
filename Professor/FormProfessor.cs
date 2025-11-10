@@ -244,7 +244,8 @@ a=fmtp:96 packetization-mode=1
 
             AdicionarLog($"Você iniciou o monitoramento de telas dos alunos.");
 
-            ReceberTela("127.0.0.1", 5004);
+            string professorIP = ConexaoService.Instance.ProfessorIP;
+            ReceberTela(professorIP, 5004);
         }
 
         private void btnPararTelas_Click(object sender, EventArgs e)

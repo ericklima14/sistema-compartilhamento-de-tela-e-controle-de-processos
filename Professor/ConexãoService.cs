@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,8 @@ namespace Professor
         public event Action<string> LogAtualizado;
         public event Action ListaDeAlunosAtualizada;
         public event Action<string, string> MensagemRecebida;
+
+        public string ProfessorIP { get; set; }
 
         private ConexaoService() { }
 
@@ -198,6 +201,39 @@ namespace Professor
                     await SendMessageAsync(client, message);
                 }
             }
+        }
+
+        public static Dictionary<string, string> ObterIntefaces()
+        {
+            var interfaces = new Dictionary<string, string>();
+
+            // Itera por todas as placas de rede da máquina
+            foreach (var ni in NetworkInterface.GetAllNetworkInterfaces())
+            {
+
+                // Não pode ser "Loopback" (ignora o 127.0.0.1)
+                if (ni.OperationalStatus == OperationalStatus.Up &&
+                    ni.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                {
+
+                    var ipProps = ni.GetIPProperties();
+                    foreach (var addr in ipProps.UnicastAddresses)
+                    {
+                        // Apenas endereços IPv4
+                        if (addr.Address.AddressFamily == AddressFamily.InterNetwork)
+                        {
+                            string ip = addr.Address.ToString();
+                            string descricao = $"{ni.Name} ({ni.Description})";
+
+                            if (!interfaces.ContainsKey(ip))
+                            {
+                                interfaces.Add(ip, descricao);
+                            }
+                        }
+                    }
+                }
+            }
+            return interfaces;
         }
     }
 }

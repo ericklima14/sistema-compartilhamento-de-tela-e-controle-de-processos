@@ -32,11 +32,13 @@
             btnModoApresentacao = new Button();
             lstAlunosConectados = new ListBox();
             label1 = new Label();
+            lblProfessorIP = new Label();
+            lblMensagem = new Label();
             SuspendLayout();
             // 
             // btnModoAvaliacao
             // 
-            btnModoAvaliacao.Location = new Point(515, 377);
+            btnModoAvaliacao.Location = new Point(278, 375);
             btnModoAvaliacao.Name = "btnModoAvaliacao";
             btnModoAvaliacao.Size = new Size(140, 41);
             btnModoAvaliacao.TabIndex = 16;
@@ -46,7 +48,7 @@
             // 
             // btnModoApresentacao
             // 
-            btnModoApresentacao.Location = new Point(210, 377);
+            btnModoApresentacao.Location = new Point(52, 375);
             btnModoApresentacao.Name = "btnModoApresentacao";
             btnModoApresentacao.Size = new Size(140, 41);
             btnModoApresentacao.TabIndex = 15;
@@ -59,7 +61,7 @@
             lstAlunosConectados.FormattingEnabled = true;
             lstAlunosConectados.HorizontalScrollbar = true;
             lstAlunosConectados.ItemHeight = 15;
-            lstAlunosConectados.Location = new Point(321, 113);
+            lstAlunosConectados.Location = new Point(127, 143);
             lstAlunosConectados.Name = "lstAlunosConectados";
             lstAlunosConectados.Size = new Size(217, 199);
             lstAlunosConectados.TabIndex = 14;
@@ -67,17 +69,40 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(374, 75);
+            label1.Location = new Point(180, 116);
             label1.Name = "label1";
             label1.Size = new Size(110, 15);
             label1.TabIndex = 13;
             label1.Text = "Alunos Conectados";
             // 
+            // lblProfessorIP
+            // 
+            lblProfessorIP.AutoSize = true;
+            lblProfessorIP.Font = new Font("Segoe UI", 14F);
+            lblProfessorIP.Location = new Point(165, 67);
+            lblProfessorIP.Name = "lblProfessorIP";
+            lblProfessorIP.Size = new Size(144, 25);
+            lblProfessorIP.TabIndex = 17;
+            lblProfessorIP.Text = "255.255.255.255";
+            lblProfessorIP.DoubleClick += lblProfessorIP_DoubleClick;
+            // 
+            // lblMensagem
+            // 
+            lblMensagem.AutoSize = true;
+            lblMensagem.Font = new Font("Segoe UI", 12F);
+            lblMensagem.Location = new Point(94, 35);
+            lblMensagem.Name = "lblMensagem";
+            lblMensagem.Size = new Size(285, 21);
+            lblMensagem.TabIndex = 18;
+            lblMensagem.Text = "INFORME ESSE IP PARA SEUS ALUNOS:";
+            // 
             // FormEscolha
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(851, 471);
+            ClientSize = new Size(489, 471);
+            Controls.Add(lblMensagem);
+            Controls.Add(lblProfessorIP);
             Controls.Add(btnModoAvaliacao);
             Controls.Add(btnModoApresentacao);
             Controls.Add(lstAlunosConectados);
@@ -94,5 +119,7 @@
         private Button btnModoApresentacao;
         private ListBox lstAlunosConectados;
         private Label label1;
+        private Label lblProfessorIP;
+        private Label lblMensagem;
     }
 }

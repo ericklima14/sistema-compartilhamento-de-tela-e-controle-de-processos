@@ -129,6 +129,7 @@ a=fmtp:96 packetization-mode=1
                 // Envia a mensagem de identificação 
                 await SendMessageAsync($"INFO_USER_NAME|{identifier}");
 
+                txtIpProfessor.Enabled = false;
                 btnConectar.Enabled = false;
                 AtualizarLog($"Conectado ao Professor como: {identifier}");
                 //AtualizarLog("Conectado ao Professor");
@@ -313,7 +314,7 @@ a=fmtp:96 packetization-mode=1
                         this.Invoke(new Action(() =>
                         {
                             AtualizarLog($"Professor iniciou o monitoramento de telas.");
-                            MonitoramentoTelaManager.Instance.StartStream("127.0.0.1", 5004);
+                            MonitoramentoTelaManager.Instance.StartStream(txtIpProfessor.Text, 5004);
                         }));
                     }
                     else if (mensagem == "CMD_STOP_SCREEN_MONITORING")
