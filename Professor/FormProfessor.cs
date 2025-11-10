@@ -12,7 +12,7 @@ namespace Professor
         private string _alunoAtual = null;
 
         private LibVLC _libVLC;
-        private MediaPlayer _mediaPlayer;
+        private List<MediaPlayer> _activeMediaPlayers = new List<MediaPlayer>();
         private string? _sdpFilePath;
 
         public FormProfessor()
@@ -24,9 +24,6 @@ namespace Professor
             // Logs detalhados
             _libVLC = new LibVLC("--verbose=2");
             _libVLC.Log += Vlc_Log;
-
-            _mediaPlayer = new MediaPlayer(_libVLC);
-            videoView1.MediaPlayer = _mediaPlayer;
 
             ConexaoService.Instance.ListaDeAlunosAtualizada += AtualizarListaAlunos;
             ConexaoService.Instance.LogAtualizado += msg => AdicionarLog(msg);
@@ -42,10 +39,8 @@ namespace Professor
             Debug.WriteLine($"[VLC] {e.Level}: {e.Message} (em {e.Module})");
         }
 
-        private void ReceberTela(string professorIp, int chosenPort)
+        private void ReceberTela(VideoView targetVideoView, string professorIp, int chosenPort)
         {
-            if (_mediaPlayer.IsPlaying)
-                return;
 
             AdicionarLog($"Recebendo tela na porta {chosenPort}");
 
@@ -74,28 +69,52 @@ a=fmtp:96 packetization-mode=1
                 // 3. Criamos a mídia a partir da URI do arquivo local.
                 //    Este é o método mais compatível e robusto para o LibVLC.
                 var media = new Media(_libVLC, new Uri(_sdpFilePath));
+                var newMediaPlayer = new MediaPlayer(_libVLC);
 
+                targetVideoView.MediaPlayer = newMediaPlayer;
                 //  Adiciona um buffer no cliente
                 //media.AddOption(":rtp-caching=300");
 
-                _mediaPlayer.Play(media);
+                newMediaPlayer.Play(media);
+
+                _activeMediaPlayers.Add(newMediaPlayer);
 
                 //this.Text = "Recebendo stream via SDP...";
                 this.Text = $"Visualizando aluno na porta {chosenPort}";
             }
             catch (Exception ex)
             {
-                AdicionarLog($"Erro ao iniciar stream: {ex.Message}");
+                AdicionarLog($"Erro ao iniciar stream porta {chosenPort}: {ex.Message}");
                 MessageBox.Show($"Erro ao iniciar stream: {ex.Message}");
+            }
+        }
+
+        private void LimparStreams()
+        {
+            // Para e dispensa todos os media players ativos
+            foreach (var player in _activeMediaPlayers)
+            {
+                player.Stop();
+                player.Dispose();
+            }
+            _activeMediaPlayers.Clear();
+
+            // Limpa a UI
+            if (flpStudentStreams.InvokeRequired)
+            {
+                flpStudentStreams.Invoke(new Action(() => flpStudentStreams.Controls.Clear()));
+            }
+            else
+            {
+                flpStudentStreams.Controls.Clear();
             }
         }
 
         private void FormProfessor_FormClosing(object sender, FormClosingEventArgs e)
         {
             _libVLC.Log -= Vlc_Log;
-            _mediaPlayer.Stop();
-            _mediaPlayer.Dispose();
             _libVLC.Dispose();
+            LimparStreams();
 
             // Limpeza do arquivo SDP ao fechar
             //if (!string.IsNullOrEmpty(_sdpFilePath) && File.Exists(_sdpFilePath))
@@ -238,20 +257,76 @@ a=fmtp:96 packetization-mode=1
 
         private void btnIniciarTelas_Click(object sender, EventArgs e)
         {
-            string comando = $"CMD_START_SCREEN_MONITORING";
-
-            Task.Run(async () => await ConexaoService.Instance.BroadcastMessage(comando));
+            LimparStreams();
 
             AdicionarLog($"Você iniciou o monitoramento de telas dos alunos.");
 
             string professorIP = ConexaoService.Instance.ProfessorIP;
-            ReceberTela(professorIP, 5004);
+            int basePort = 5004;
+
+            Dictionary<TcpClient, string> clientMap;
+            lock (ConexaoService.Instance.Clients)
+            {
+                clientMap = new Dictionary<TcpClient, string>(ConexaoService.Instance.Clients);
+            }
+
+            foreach (var entry in clientMap)
+            {
+                TcpClient client = entry.Key;
+                string identifier = entry.Value;
+                int currentPort = basePort += 2;
+
+                Panel studentPanel = new Panel
+                {
+                    Width = 320,
+                    Height = 210, 
+                    Margin = new Padding(5)
+                };
+
+                Label studentLabel = new Label
+                {
+                    Text = identifier,
+                    AutoSize = true, 
+                    Location = new Point(10, 180), 
+
+                    ForeColor = Color.White,
+                    BackColor = Color.FromArgb(150, 0, 0, 0),
+
+                    Font = new Font("Arial", 9, FontStyle.Bold),
+                    Padding = new Padding(3) 
+                };
+
+                VideoView studentVideoView = new VideoView
+                {
+                    Dock = DockStyle.Fill,
+                    MediaPlayer = null
+                };
+
+                studentPanel.Controls.Add(studentVideoView);
+                studentPanel.Controls.Add(studentLabel);
+                studentLabel.BringToFront();
+
+                if (flpStudentStreams.InvokeRequired)
+                {
+                    flpStudentStreams.Invoke(new Action(() => flpStudentStreams.Controls.Add(studentPanel)));
+                }
+                else
+                {
+                    flpStudentStreams.Controls.Add(studentPanel);
+                }
+
+                ReceberTela(studentVideoView, professorIP, currentPort);
+
+                string comando = $"CMD_START_SCREEN_MONITORING|{currentPort}";
+                Task.Run(async () => await ConexaoService.Instance.SendMessageAsync(client, comando));
+            }
         }
 
         private void btnPararTelas_Click(object sender, EventArgs e)
         {
-            string comando = $"CMD_STOP_SCREEN_MONITORING";
+            LimparStreams();
 
+            string comando = $"CMD_STOP_SCREEN_MONITORING";
             Task.Run(async () => await ConexaoService.Instance.BroadcastMessage(comando));
 
             AdicionarLog($"Você encerrou o monitoramento de telas dos alunos.");

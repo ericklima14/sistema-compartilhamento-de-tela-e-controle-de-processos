@@ -100,6 +100,8 @@ a=fmtp:96 packetization-mode=1
             _mediaPlayer.Dispose();
             _libVLC.Dispose();
 
+
+
             // Limpeza do arquivo SDP ao fechar
             //if (!string.IsNullOrEmpty(_sdpFilePath) && File.Exists(_sdpFilePath))
             //{
@@ -306,12 +308,22 @@ a=fmtp:96 packetization-mode=1
                     {
                         MatarProcessos(mensagem);
                     }
-                    else if (mensagem == "CMD_START_SCREEN_MONITORING")
+                    else if (mensagem.StartsWith("CMD_START_SCREEN_MONITORING|")) // <- PARA ISSO
                     {
                         this.Invoke(new Action(() =>
                         {
-                            AtualizarLog($"Professor iniciou o monitoramento de telas.");
-                            MonitoramentoTelaManager.Instance.StartStream(txtIpProfessor.Text, 5004);
+                            // Extrai a porta do comando
+                            string[] parts = mensagem.Split('|');
+                            int port = 5004; // Porta padrão caso algo falhe
+                            if (parts.Length > 1 && int.TryParse(parts[1], out int assignedPort))
+                            {
+                                port = assignedPort;
+                            }
+
+                            AtualizarLog($"Professor iniciou o monitoramento de telas. Transmitindo para porta {port}.");
+
+                            // Envia a porta correta para o Manager
+                            MonitoramentoTelaManager.Instance.StartStream(txtIpProfessor.Text, port);
                         }));
                     }
                     else if (mensagem == "CMD_STOP_SCREEN_MONITORING")
@@ -458,6 +470,7 @@ a=fmtp:96 packetization-mode=1
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             MonitoramentoTelaManager.Instance.LogAtualizado -= AtualizarLog;
+            MonitoramentoTelaManager.Instance.PrepareForClosing();
 
             base.OnFormClosed(e);
         }
