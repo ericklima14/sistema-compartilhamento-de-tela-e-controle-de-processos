@@ -50,19 +50,20 @@ namespace Professor
                     return;
                 }
 
+
                 string ffmpegArguments = string.Join(" ",
-            "-f gdigrab",
-            "-framerate 30",
-            "-i desktop",
-            "-c:v libx264",
-            "-b:v 2000k", // Pode até aumentar o bitrate agora
-            "-preset faster",
-            "-tune zerolatency",
-            "-g 60",
-            "-an",
-            "-f mpegts", // SRT prefere mpegts
-            $"\"srt://0.0.0.0:{StreamPort}?mode=listener&transtype=live&latency=1000000\"" // Latency em microsegundos
-        );
+    "-f gdigrab",
+    "-framerate 30",
+    "-i desktop",
+    "-c:v libx264",
+    "-b:v 2000k",
+    "-preset faster",
+    "-tune zerolatency",
+    "-g 60",
+    "-an",
+    "-f mpegts",
+    $"srt://0.0.0.0:{StreamPort}?mode=listener&transtype=live&latency=1000000" // <-- SEM ASPAS
+);
 
                 Debug.WriteLine($"Argumentos do FFMpeg: {ffmpegArguments}");
                 _ffmpegProcess = new Process
