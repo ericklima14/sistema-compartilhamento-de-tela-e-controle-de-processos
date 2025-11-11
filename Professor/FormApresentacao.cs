@@ -26,7 +26,7 @@ namespace Professor
         // Enviar o caminho da stream RTP pelo TCP.
         private void OnStreamIniciado(string ip, int port)
         {
-            string comando = $"CMD_STREAM_INFO|{ip}|{port}";
+            string comando = $"CMD_STREAM_INFO|{port}";
 
             Task.Run(async () => await ConexaoService.Instance.BroadcastMessage(comando));
 
