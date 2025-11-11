@@ -41,18 +41,15 @@
             btnIniciarTelas = new Button();
             btnPararTelas = new Button();
             lblMonitorarTelas = new Label();
-            videoView1 = new LibVLCSharp.WinForms.VideoView();
-            videoView2 = new LibVLCSharp.WinForms.VideoView();
             lblMensagens = new Label();
             lstLog = new ListBox();
-            ((System.ComponentModel.ISupportInitialize)videoView1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)videoView2).BeginInit();
+            flpStudentStreams = new FlowLayoutPanel();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(946, 24);
+            label1.Location = new Point(1134, 26);
             label1.Name = "label1";
             label1.Size = new Size(110, 15);
             label1.TabIndex = 5;
@@ -63,7 +60,7 @@
             lstAlunosConectados.FormattingEnabled = true;
             lstAlunosConectados.HorizontalScrollbar = true;
             lstAlunosConectados.ItemHeight = 15;
-            lstAlunosConectados.Location = new Point(913, 57);
+            lstAlunosConectados.Location = new Point(1101, 59);
             lstAlunosConectados.Name = "lstAlunosConectados";
             lstAlunosConectados.Size = new Size(180, 154);
             lstAlunosConectados.TabIndex = 6;
@@ -71,7 +68,7 @@
             // 
             // btnListarProcessos
             // 
-            btnListarProcessos.Location = new Point(935, 229);
+            btnListarProcessos.Location = new Point(1123, 231);
             btnListarProcessos.Name = "btnListarProcessos";
             btnListarProcessos.Size = new Size(140, 41);
             btnListarProcessos.TabIndex = 8;
@@ -83,7 +80,7 @@
             // lblProcessosAluno
             // 
             lblProcessosAluno.AutoSize = true;
-            lblProcessosAluno.Location = new Point(941, 297);
+            lblProcessosAluno.Location = new Point(1129, 299);
             lblProcessosAluno.Name = "lblProcessosAluno";
             lblProcessosAluno.Size = new Size(112, 15);
             lblProcessosAluno.TabIndex = 9;
@@ -95,7 +92,7 @@
             lvProcessos.CheckBoxes = true;
             lvProcessos.Columns.AddRange(new ColumnHeader[] { headerPrograma });
             lvProcessos.FullRowSelect = true;
-            lvProcessos.Location = new Point(897, 321);
+            lvProcessos.Location = new Point(1085, 323);
             lvProcessos.Name = "lvProcessos";
             lvProcessos.Size = new Size(210, 178);
             lvProcessos.SmallImageList = imageListProcessos;
@@ -116,7 +113,7 @@
             // 
             // btnMatarProcesso
             // 
-            btnMatarProcesso.Location = new Point(931, 516);
+            btnMatarProcesso.Location = new Point(1119, 518);
             btnMatarProcesso.Name = "btnMatarProcesso";
             btnMatarProcesso.Size = new Size(140, 41);
             btnMatarProcesso.TabIndex = 11;
@@ -126,7 +123,7 @@
             // 
             // btnGerenciarBloqueios
             // 
-            btnGerenciarBloqueios.Location = new Point(663, 389);
+            btnGerenciarBloqueios.Location = new Point(851, 391);
             btnGerenciarBloqueios.Name = "btnGerenciarBloqueios";
             btnGerenciarBloqueios.Size = new Size(172, 51);
             btnGerenciarBloqueios.TabIndex = 15;
@@ -163,30 +160,10 @@
             lblMonitorarTelas.TabIndex = 19;
             lblMonitorarTelas.Text = "Monitorar Telas";
             // 
-            // videoView1
-            // 
-            videoView1.BackColor = Color.Black;
-            videoView1.Location = new Point(41, 146);
-            videoView1.MediaPlayer = null;
-            videoView1.Name = "videoView1";
-            videoView1.Size = new Size(336, 189);
-            videoView1.TabIndex = 20;
-            videoView1.Text = "videoView1";
-            // 
-            // videoView2
-            // 
-            videoView2.BackColor = Color.Black;
-            videoView2.Location = new Point(41, 351);
-            videoView2.MediaPlayer = null;
-            videoView2.Name = "videoView2";
-            videoView2.Size = new Size(336, 189);
-            videoView2.TabIndex = 21;
-            videoView2.Text = "videoView2";
-            // 
             // lblMensagens
             // 
             lblMensagens.AutoSize = true;
-            lblMensagens.Location = new Point(689, 24);
+            lblMensagens.Location = new Point(877, 26);
             lblMensagens.Name = "lblMensagens";
             lblMensagens.Size = new Size(114, 15);
             lblMensagens.TabIndex = 23;
@@ -197,21 +174,30 @@
             lstLog.FormattingEnabled = true;
             lstLog.HorizontalScrollbar = true;
             lstLog.ItemHeight = 15;
-            lstLog.Location = new Point(604, 57);
+            lstLog.Location = new Point(792, 59);
             lstLog.Name = "lstLog";
             lstLog.RightToLeft = RightToLeft.No;
             lstLog.Size = new Size(268, 154);
             lstLog.TabIndex = 22;
             // 
+            // flpStudentStreams
+            // 
+            flpStudentStreams.AutoScroll = true;
+            flpStudentStreams.BorderStyle = BorderStyle.FixedSingle;
+            flpStudentStreams.Location = new Point(26, 154);
+            flpStudentStreams.Name = "flpStudentStreams";
+            flpStudentStreams.Padding = new Padding(10);
+            flpStudentStreams.Size = new Size(754, 493);
+            flpStudentStreams.TabIndex = 24;
+            // 
             // FormProfessor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1146, 574);
+            ClientSize = new Size(1307, 672);
+            Controls.Add(flpStudentStreams);
             Controls.Add(lblMensagens);
             Controls.Add(lstLog);
-            Controls.Add(videoView2);
-            Controls.Add(videoView1);
             Controls.Add(lblMonitorarTelas);
             Controls.Add(btnPararTelas);
             Controls.Add(btnIniciarTelas);
@@ -224,8 +210,6 @@
             Controls.Add(label1);
             Name = "FormProfessor";
             Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)videoView1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)videoView2).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -244,9 +228,8 @@
         private Button btnIniciarTelas;
         private Button btnPararTelas;
         private Label lblMonitorarTelas;
-        private LibVLCSharp.WinForms.VideoView videoView1;
-        private LibVLCSharp.WinForms.VideoView videoView2;
         private Label lblMensagens;
         private ListBox lstLog;
+        private FlowLayoutPanel flpStudentStreams;
     }
 }
