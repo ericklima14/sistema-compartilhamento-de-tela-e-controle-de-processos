@@ -44,50 +44,27 @@ namespace Aluno
 
         // Recebe a transmissao RTP pelo TCP.
         // Mudei para multicast (antes 127.0.0.1)
-        private void IniciarStream(string multicastIp, int port)
+        private void IniciarStream(string ipProfessor, int port)
         {
             if (_mediaPlayer.IsPlaying)
                 return;
 
-            AtualizarLog($"Recebido comando para sintonizar stream: {multicastIp}:{port}");
+            AtualizarLog($"Recebido comando para sintonizar stream: {ipProfessor}:{port}");
 
             // --- SOLUÇÃO HÍBRIDA: SDP Hardcoded, Carregado via Arquivo Temporário ---
             try
             {
-                // 1. Definimos o conteúdo do arquivo SDP diretamente em uma string.
-                string sdpContent = $@"
-v=0
-o=- 0 0 IN IP4 {multicastIp}
-s=No Name
-c=IN IP4 {multicastIp}
-t=0 0
-a=tool:libavformat 62.4.101
-m=video {port} RTP/AVP 96
-b=AS:6000
-a=framerate:30
-a=rtpmap:96 H264/90000
-a=fmtp:96 packetization-mode=1
-".Trim();
+                // NÃO PRECISA MAIS DE SDP
+                string networkUrl = $"srt://{ipProfessor}:{port}";
 
-                // 2. Criamos um arquivo temporário para armazenar nosso SDP.
-                //    Isso torna a aplicação autônoma, sem depender de um arquivo externo.
-                _sdpFilePath = Path.Combine(Path.GetTempPath(), "aluno_stream.sdp");
-                File.WriteAllText(_sdpFilePath, sdpContent);
+                var media = new Media(_libVLC, new Uri(networkUrl));
 
-                // 3. Criamos a mídia a partir da URI do arquivo local.
-                //    Este é o método mais compatível e robusto para o LibVLC.
-                var media = new Media(_libVLC, new Uri(_sdpFilePath));
-
-                //  Adiciona um buffer no cliente
-                media.AddOption(":rtp-caching=1000");
-
-                // Adicione um buffer de rede genérico também
-                media.AddOption(":network-caching=1000");
+                // Adicionamos opções de latência para o SRT
+                media.AddOption(":srt-latency=1000"); // 1000ms
 
                 _mediaPlayer.Play(media);
 
-                //this.Text = "Recebendo stream via SDP...";
-                this.Text = $"Recebendo stream de {multicastIp}:{port}";
+                this.Text = $"Recebendo stream de {ipProfessor}:{port}";
             }
             catch (Exception ex)
             {
@@ -262,18 +239,19 @@ a=fmtp:96 packetization-mode=1
 
                     if (mensagem.StartsWith("CMD_STREAM_INFO|"))
                     {
+                        // NOVO: O Professor agora só precisa enviar a porta
+                        // Ex: "CMD_STREAM_INFO|1234"
                         string payload = mensagem.Substring("CMD_STREAM_INFO|".Length);
-                        string[] parts = payload.Split('|');
 
-                        if (parts.Length == 2 &&
-                            !string.IsNullOrEmpty(parts[0]) &&
-                            int.TryParse(parts[1], out int port))
+                        if (int.TryParse(payload, out int port))
                         {
-                            string multicastIp = parts[0];
+                            // Pegamos o IP do professor que o aluno já usou para se conectar
+                            string ipDoProfessor = txtIpProfessor.Text;
 
                             this.Invoke(new Action(() =>
                             {
-                                IniciarStream(multicastIp, port);
+                                // Iniciamos o stream com o IP do professor
+                                IniciarStream(ipDoProfessor, port);
                             }));
                         }
                     }

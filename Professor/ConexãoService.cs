@@ -27,6 +27,8 @@ namespace Professor
 
         public void IniciarServidor()
         {
+            VideoTransmissaoManager.Instance.StreamIniciado += NotificarAlunosSobreStream; 
+
             Task.Run(async () => {
                 _listener = new TcpListener(IPAddress.Any, 8080);
                 _listener.Start();
@@ -48,10 +50,35 @@ namespace Professor
 
             });
         }
+        private void NotificarAlunosSobreStream(string ipInutil, int port)
+        {
+            // O primeiro argumento (ipInutil) não é necessário, pois os alunos já sabem o IP.
+            Log($"Stream iniciado na porta {port}. Notificando {Clients.Count} alunos conectados...");
+
+            string comando = $"CMD_STREAM_INFO|{port}";
+
+            // Usamos Task.Run para disparar o broadcast sem bloquear o thread do evento
+            Task.Run(async () =>
+            {
+                List<TcpClient> clientsAtuais;
+                lock (_clients)
+                {
+                    clientsAtuais = _clients.Keys.ToList();
+                }
+
+                foreach (var client in clientsAtuais)
+                {
+                    await SendMessageAsync(client, comando);
+                }
+            });
+        }
 
         public void PararServidor()
         {
+            VideoTransmissaoManager.Instance.StreamIniciado -= NotificarAlunosSobreStream; 
+
             _listener?.Stop();
+
             lock (_clients)
             {
                 foreach (var client in _clients.Keys.ToList())
@@ -104,9 +131,8 @@ namespace Professor
                 // Se a transmissao ja estiver rolando quando o aluno se conectar, envia IMEDIATAMENTE para este aluno.
                 if (VideoTransmissaoManager.Instance.IsStreaming)
                 {
-                    string ip = VideoTransmissaoManager.Instance.StreamAddress;
                     int port = VideoTransmissaoManager.Instance.StreamPort;
-                    string comando = $"CMD_STREAM_INFO|{ip}|{port}";
+                    string comando = $"CMD_STREAM_INFO|{port}";
 
                     await SendMessageAsync(client, comando);
                 }

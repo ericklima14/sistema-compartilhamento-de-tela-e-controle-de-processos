@@ -36,7 +36,7 @@ namespace Professor
         private void btnStartStream_Click(object sender, EventArgs e)
         {
             // TODO: adicionar tratamento de erro pra ips invalidos.
-            VideoTransmissaoManager.Instance.StreamAddress = txtIpTransmissao.Text;
+            ConexaoService.Instance.ProfessorIP = txtIpTransmissao.Text;
             VideoTransmissaoManager.Instance.StartStream();
         }
 

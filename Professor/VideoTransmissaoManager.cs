@@ -12,7 +12,6 @@ namespace Professor
         private static readonly VideoTransmissaoManager _instancia = new VideoTransmissaoManager();
         public static VideoTransmissaoManager Instance => _instancia;
 
-        public string StreamAddress { get; set; }
         public int StreamPort { get; private set; } = 1234;
         public bool IsStreaming => _ffmpegTask != null && !_ffmpegTask.IsCompleted;
 
@@ -35,9 +34,6 @@ namespace Professor
                 return;
             }
 
-            // Mudei para multicast (antes 127.0.0.1)
-            string multicastIp = StreamAddress;
-            int multicastPort = StreamPort;
             _cancellationTokenSource = new CancellationTokenSource();
 
             try
@@ -55,19 +51,18 @@ namespace Professor
                 }
 
                 string ffmpegArguments = string.Join(" ",
-                    "-f gdigrab",
-                    "-framerate 24",
-                    "-i desktop",
-                    "-c:v libx264",
-                    "-b:v 1000k",
-                    "-maxrate 1200k",
-                    "-bufsize 2000k",
-                    "-preset faster",
-                    "-tune zerolatency",
-                    "-an",
-                    "-f rtp",
-                    $"rtp://{multicastIp}:{multicastPort}?ttl=10&pkt_size=1316"
-                );
+            "-f gdigrab",
+            "-framerate 30",
+            "-i desktop",
+            "-c:v libx264",
+            "-b:v 2000k", // Pode até aumentar o bitrate agora
+            "-preset faster",
+            "-tune zerolatency",
+            "-g 60",
+            "-an",
+            "-f mpegts", // SRT prefere mpegts
+            $"\"srt://0.0.0.0:{StreamPort}?mode=listener&transtype=live&latency=1000000\"" // Latency em microsegundos
+        );
 
                 Debug.WriteLine($"Argumentos do FFMpeg: {ffmpegArguments}");
                 _ffmpegProcess = new Process
@@ -105,7 +100,7 @@ namespace Professor
 
                 StatusStreamAtualizado?.Invoke(true);
                 Log("Transmissão iniciada.");
-                StreamIniciado?.Invoke(multicastIp, multicastPort);
+                StreamIniciado?.Invoke($"srt://{ConexaoService.Instance.ProfessorIP}", StreamPort);
             }
             catch (Exception ex)
             {

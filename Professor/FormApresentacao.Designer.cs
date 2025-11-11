@@ -90,7 +90,7 @@
             txtIpTransmissao.Name = "txtIpTransmissao";
             txtIpTransmissao.Size = new Size(159, 23);
             txtIpTransmissao.TabIndex = 22;
-            txtIpTransmissao.Text = "239.0.0.1";
+            txtIpTransmissao.Text = "127.0.0.1";
             // 
             // btnStopStream
             // 
