@@ -46,18 +46,18 @@ namespace Professor
             {
                 // 1. Definimos o conteúdo do arquivo SDP diretamente em uma string.
                 string sdpContent = $@"
-                    v=0
-                    o=- 0 0 IN IP4 {professorIp}
-                    s=No Name
-                    c=IN IP4 {professorIp}
-                    t=0 0
-                    a=tool:libavformat 62.4.101
-                    m=video {chosenPort} RTP/AVP 96
-                    b=AS:6000
-                    a=framerate:30
-                    a=rtpmap:96 H264/90000
-                    a=fmtp:96 packetization-mode=1
-                    ".Trim();
+v=0
+o=- 0 0 IN IP4 {professorIp}
+s=No Name
+c=IN IP4 {professorIp}
+t=0 0
+a=tool:libavformat 62.4.101
+m=video {chosenPort} RTP/AVP 96
+b=AS:6000
+a=framerate:30
+a=rtpmap:96 H264/90000
+a=fmtp:96 packetization-mode=1
+".Trim();
 
                 _sdpFilePath = Path.Combine(Path.GetTempPath(), $"prof_recv_{chosenPort}.sdp");
                 File.WriteAllText(_sdpFilePath, sdpContent);
