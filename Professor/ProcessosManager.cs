@@ -14,6 +14,10 @@ namespace Professor
 
         private string _alunoAtual;
         private readonly List<string> _processosBloqueados = new List<string>();
+
+        private readonly HashSet<string> _processosManuaisConhecidos = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        public IReadOnlyCollection<string> ProcessosManuaisConhecidos => _processosManuaisConhecidos;
+
         public IReadOnlyList<string> ProcessosBloqueados => _processosBloqueados;
         private readonly Dictionary<string, string> _caminhosDeIcone = new Dictionary<string, string>();
         public IReadOnlyDictionary<string, string> CaminhosDeIcone => _caminhosDeIcone;
@@ -87,6 +91,8 @@ namespace Professor
             bool listaMudou = false;
             foreach (var nome in nomesProcessos)
             {
+                _processosManuaisConhecidos.Add(nome);
+
                 if (!_processosBloqueados.Contains(nome, StringComparer.OrdinalIgnoreCase))
                 {
                     _processosBloqueados.Add(nome);

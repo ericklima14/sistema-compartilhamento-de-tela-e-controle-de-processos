@@ -282,10 +282,15 @@ a=fmtp:96 packetization-mode=1
                         processosBloqueados = new List<string>(payload.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
                         AtualizarLog($"Lista de bloqueio atualizada. Fiscalização ativada.");
 
-                        if (wmiWatcher == null)
+                        this.Invoke(new Action(() =>
                         {
-                            this.Invoke(new Action(() => IniciarVigiaDeProcessos()));
-                        }
+                            if (wmiWatcher == null) {
+                                IniciarVigiaDeProcessos();
+                            }
+                            else {
+                                MatarProcessosInciais();
+                            }
+                        }));
                     }
                     else if (mensagem == "CMD_START_MONITORING")
                     {

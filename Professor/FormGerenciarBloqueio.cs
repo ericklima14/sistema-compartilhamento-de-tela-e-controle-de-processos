@@ -59,6 +59,8 @@ namespace Professor
         {
             ProgramasEncontrados = GetProgramasInstalados();
 
+            var processosManuais = ProcessosManager.Instance.ProcessosManuaisConhecidos;
+
             lvInstalados.BeginUpdate();
             lvBloqueados.BeginUpdate();
 
@@ -67,6 +69,8 @@ namespace Professor
 
             imageListIcones.Images.Clear();
             imageListIcones.Images.Add(SystemIcons.Application); // Default icon
+
+            var processosJaAdicionados = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var programa in ProgramasEncontrados.OrderBy(p => p.Nome))
             {
@@ -100,6 +104,33 @@ namespace Professor
                 else
                 {
                     lvInstalados.Items.Add(item);
+                }
+
+                processosJaAdicionados.Add(programa.NomeProcesso);
+            }
+
+            foreach (string nomeProcessoManual in processosManuais)
+            {
+                // Se este processo manual AINDA não foi adicionado (ex: não estava no registro)
+                if (!processosJaAdicionados.Contains(nomeProcessoManual))
+                {
+                    var itemManual = new ListViewItem($"{nomeProcessoManual} (Manual)", 0) // Usa ícone padrão
+                    {
+                        Tag = nomeProcessoManual
+                    };
+
+                    // Verifica onde ele deve ir:
+                    if (ListaBloqueioFinal.Contains(nomeProcessoManual, StringComparer.OrdinalIgnoreCase))
+                    {
+                        lvBloqueados.Items.Add(itemManual);
+                    }
+                    else
+                    {
+                        // AQUI ESTÁ A MÁGICA!
+                        // Se ele está na "memória" mas NÃO está na lista de bloqueio,
+                        // ele (corretamente) vai para a lista de INSTALADOS (Desbloqueados).
+                        lvInstalados.Items.Add(itemManual);
+                    }
                 }
             }
 
@@ -167,19 +198,19 @@ namespace Professor
                 nomeProcesso = Path.GetFileNameWithoutExtension(caminhoIcone);
             }
 
-            if (string.IsNullOrEmpty(nomeProcesso) && !string.IsNullOrEmpty(uninstallString))
-            {
-                try
-                {
-                    // Tenta extrair o nome do processo da string de desinstalação
-                    // Exemplo: "C:\Program Files\App\unins000.exe" -> "unins000"
-                    nomeProcesso = Path.GetFileNameWithoutExtension(uninstallString.Split(new[] { ".exe" }, StringSplitOptions.None)[0]);
-                }
-                catch (Exception ex)
-                {
-                    Console.Write($"Não foi possivel extrair o nome do processo. Erro: {ex}");
-                }
-            }
+            //if (string.IsNullOrEmpty(nomeProcesso) && !string.IsNullOrEmpty(uninstallString))
+            //{
+            //    try
+            //    {
+            //        // Tenta extrair o nome do processo da string de desinstalação
+            //        // Exemplo: "C:\Program Files\App\unins000.exe" -> "unins000"
+            //        nomeProcesso = Path.GetFileNameWithoutExtension(uninstallString.Split(new[] { ".exe" }, StringSplitOptions.None)[0]);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.Write($"Não foi possivel extrair o nome do processo. Erro: {ex}");
+            //    }
+            //}
 
             if (string.IsNullOrEmpty(nomeProcesso))
                 return null;
