@@ -73,39 +73,31 @@ namespace Professor
 
         public async Task MatarProcessos(List<string> nomesProcessos)
         {
-            if (_alunoAtual == null || nomesProcessos.Count == 0)
+            if (nomesProcessos.Count == 0)
             {
-                Log("Nenhum aluno ou processo selecionado para matar.");
+                Log("Nenhum processo selecionado para matar.");
                 return;
             }
 
-            TcpClient targetClient = GetClientByIdentifier(_alunoAtual);
-            if (targetClient != null)
+            string payload = string.Join("|", nomesProcessos);
+            string mensagem = $"CMD_KILL_PROCESSES|{payload}";
+            await BroadcastMessageAsync(mensagem);
+            Log($"Comando para matar processos [{payload}] enviado para todos os alunos.");
+
+            bool listaMudou = false;
+            foreach (var nome in nomesProcessos)
             {
-                string payload = string.Join("|", nomesProcessos);
-                string mensagem = $"CMD_KILL_PROCESSES|{payload}";
-                await EnviarMensagemAsync(targetClient, mensagem);
-                Log($"Comando para matar processos [{payload}] enviado para {_alunoAtual}.");
-
-                bool listaMudou = false;
-                foreach (var nome in nomesProcessos)
+                if (!_processosBloqueados.Contains(nome, StringComparer.OrdinalIgnoreCase))
                 {
-                    if (!_processosBloqueados.Contains(nome, StringComparer.OrdinalIgnoreCase))
-                    {
-                        _processosBloqueados.Add(nome);
-                        listaMudou = true;
-                    }
-                }
-
-                if (listaMudou)
-                {
-                    Log($"Processos [{payload}] adicionados à lista de bloqueio global.");
-                    await AtualizarBlocklistGlobal();
+                    _processosBloqueados.Add(nome);
+                    listaMudou = true;
                 }
             }
-            else
+
+            if (listaMudou)
             {
-                Log($"Aluno {_alunoAtual} não encontrado para matar processos.");
+                Log($"Processos [{payload}] adicionados à lista de bloqueio global.");
+                await AtualizarBlocklistGlobal();
             }
         }
 

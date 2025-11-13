@@ -40,21 +40,23 @@ namespace Professor
 
         private void btnModoAvaliacao_Click(object sender, EventArgs e)
         {
+            this.Hide();
+
             var formGerenciarBloqueio = new FormGerenciarBloqueio(ProcessosManager.Instance.ProcessosBloqueados.ToList(),
                 FormGerenciarBloqueio.ModoGerenciamento.FluxoInicial);
             formGerenciarBloqueio.Show();
 
-            formGerenciarBloqueio.FormClosed += (s, args) => this.Close();
-            this.Hide();
+            formGerenciarBloqueio.FormClosed += (s, args) => this.Show();
         }
 
         private void btnModoApresentacao_Click(object sender, EventArgs e)
         {
+            this.Hide();
+
             var formApresentacao = new FormApresentacao();
             formApresentacao.Show();
 
-            formApresentacao.FormClosed += (s, args) => this.Close();
-            this.Hide();
+            formApresentacao.FormClosed += (s, args) => this.Show();
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)

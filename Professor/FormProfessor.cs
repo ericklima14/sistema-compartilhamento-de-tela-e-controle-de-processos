@@ -233,6 +233,14 @@ a=fmtp:96 packetization-mode=1
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            AdicionarLog($"Encerrando o monitoramento de telas dos alunos.");
+            string comando = $"CMD_STOP_SCREEN_MONITORING";
+            Task.Run(async () => await ConexaoService.Instance.BroadcastMessage(comando));
+
+            _libVLC.Log -= Vlc_Log;
+            _libVLC.Dispose();
+            LimparStreams();
+
             ConexaoService.Instance.ListaDeAlunosAtualizada -= AtualizarListaAlunos;
             ProcessosManager.Instance.LogAtualizado -= AdicionarLog;
             ProcessosManager.Instance.ListaProcessosAtualizada -= AtualizarListaProcessos;
