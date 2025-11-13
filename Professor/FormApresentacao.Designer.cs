@@ -36,12 +36,18 @@
             txtIpTransmissao = new TextBox();
             btnStopStream = new Button();
             btnStartStream = new Button();
+            txtBoxPreset = new TextBox();
+            lblPreset = new Label();
+            lblBitRate = new Label();
+            txtBoxBitRate = new TextBox();
+            lblFrameRate = new Label();
+            txtBoxFrameRate = new TextBox();
             SuspendLayout();
             // 
             // lblMensagens
             // 
             lblMensagens.AutoSize = true;
-            lblMensagens.Location = new Point(241, 36);
+            lblMensagens.Location = new Point(293, 36);
             lblMensagens.Name = "lblMensagens";
             lblMensagens.Size = new Size(114, 15);
             lblMensagens.TabIndex = 11;
@@ -59,9 +65,9 @@
             // 
             // txtMensagem
             // 
-            txtMensagem.Location = new Point(241, 169);
+            txtMensagem.Location = new Point(293, 169);
             txtMensagem.Name = "txtMensagem";
-            txtMensagem.Size = new Size(328, 23);
+            txtMensagem.Size = new Size(276, 23);
             txtMensagem.TabIndex = 9;
             // 
             // lstLog
@@ -69,10 +75,10 @@
             lstLog.FormattingEnabled = true;
             lstLog.HorizontalScrollbar = true;
             lstLog.ItemHeight = 15;
-            lstLog.Location = new Point(241, 54);
+            lstLog.Location = new Point(293, 54);
             lstLog.Name = "lstLog";
             lstLog.RightToLeft = RightToLeft.No;
-            lstLog.Size = new Size(460, 109);
+            lstLog.Size = new Size(408, 109);
             lstLog.TabIndex = 8;
             // 
             // lblTransmissaoAula
@@ -112,11 +118,68 @@
             btnStartStream.UseVisualStyleBackColor = true;
             btnStartStream.Click += btnStartStream_Click;
             // 
+            // txtBoxPreset
+            // 
+            txtBoxPreset.Location = new Point(198, 68);
+            txtBoxPreset.Name = "txtBoxPreset";
+            txtBoxPreset.Size = new Size(89, 23);
+            txtBoxPreset.TabIndex = 24;
+            txtBoxPreset.Text = "1";
+            // 
+            // lblPreset
+            // 
+            lblPreset.AutoSize = true;
+            lblPreset.Location = new Point(198, 50);
+            lblPreset.Name = "lblPreset";
+            lblPreset.Size = new Size(39, 15);
+            lblPreset.TabIndex = 25;
+            lblPreset.Text = "Preset";
+            // 
+            // lblBitRate
+            // 
+            lblBitRate.AutoSize = true;
+            lblBitRate.Location = new Point(198, 161);
+            lblBitRate.Name = "lblBitRate";
+            lblBitRate.Size = new Size(47, 15);
+            lblBitRate.TabIndex = 27;
+            lblBitRate.Text = "Bit Rate";
+            // 
+            // txtBoxBitRate
+            // 
+            txtBoxBitRate.Location = new Point(198, 179);
+            txtBoxBitRate.Name = "txtBoxBitRate";
+            txtBoxBitRate.Size = new Size(89, 23);
+            txtBoxBitRate.TabIndex = 26;
+            txtBoxBitRate.Text = "2000";
+            // 
+            // lblFrameRate
+            // 
+            lblFrameRate.AutoSize = true;
+            lblFrameRate.Location = new Point(198, 107);
+            lblFrameRate.Name = "lblFrameRate";
+            lblFrameRate.Size = new Size(66, 15);
+            lblFrameRate.TabIndex = 29;
+            lblFrameRate.Text = "Frame Rate";
+            // 
+            // txtBoxFrameRate
+            // 
+            txtBoxFrameRate.Location = new Point(198, 125);
+            txtBoxFrameRate.Name = "txtBoxFrameRate";
+            txtBoxFrameRate.Size = new Size(89, 23);
+            txtBoxFrameRate.TabIndex = 28;
+            txtBoxFrameRate.Text = "5";
+            // 
             // FormApresentacao
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(731, 224);
+            Controls.Add(lblFrameRate);
+            Controls.Add(txtBoxFrameRate);
+            Controls.Add(lblBitRate);
+            Controls.Add(txtBoxBitRate);
+            Controls.Add(lblPreset);
+            Controls.Add(txtBoxPreset);
             Controls.Add(lblTransmissaoAula);
             Controls.Add(txtIpTransmissao);
             Controls.Add(btnStopStream);
@@ -140,5 +203,11 @@
         private TextBox txtIpTransmissao;
         private Button btnStopStream;
         private Button btnStartStream;
+        private TextBox txtBoxPreset;
+        private Label lblPreset;
+        private Label lblBitRate;
+        private TextBox txtBoxBitRate;
+        private Label lblFrameRate;
+        private TextBox txtBoxFrameRate;
     }
 }

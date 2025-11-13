@@ -24,7 +24,6 @@ namespace Professor
             _libVLC.Log += Vlc_Log;
 
             ConexaoService.Instance.ListaDeAlunosAtualizada += AtualizarListaAlunos;
-            ConexaoService.Instance.LogAtualizado += msg => AdicionarLog(msg);
 
             ProcessosManager.Instance.LogAtualizado += msg => AdicionarLog(msg);
             ProcessosManager.Instance.ListaProcessosAtualizada += AtualizarListaProcessos;
