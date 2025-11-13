@@ -23,6 +23,7 @@ namespace Professor
 
             InitializeComponent();
         }
+
         // Enviar o caminho da stream RTP pelo TCP.
         private void OnStreamIniciado(string ip, int port)
         {
@@ -35,14 +36,20 @@ namespace Professor
 
         private void btnStartStream_Click(object sender, EventArgs e)
         {
+            int preset = int.Parse(txtBoxPreset.Text);
+
             // TODO: adicionar tratamento de erro pra ips invalidos.
             VideoTransmissaoManager.Instance.StreamAddress = txtIpTransmissao.Text;
-            VideoTransmissaoManager.Instance.StartStream();
+            VideoTransmissaoManager.Instance.StartStream(preset, txtBoxFrameRate.Text, txtBoxBitRate.Text);
+            btnStartStream.Enabled = false;
+            btnStopStream.Enabled = true;
         }
 
         private void btnStopStream_Click(object sender, EventArgs e)
         {
             VideoTransmissaoManager.Instance.PrepareForClosing();
+            btnStartStream.Enabled = true;
+            btnStopStream.Enabled = false;
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)

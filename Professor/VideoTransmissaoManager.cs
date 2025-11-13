@@ -27,7 +27,7 @@ namespace Professor
 
         private VideoTransmissaoManager() { }
 
-        public void StartStream()
+        public void StartStream(int preset = 1, string frameRate = "5", string bitRate = "2000")
         {
             if (IsStreaming)
             {
@@ -54,17 +54,29 @@ namespace Professor
                     return;
                 }
 
+                string presetString = "";
+
+                switch (preset)
+                {
+                    case 0:
+                        presetString = "ultrafast";
+                        break;
+                    case 1:
+                        presetString = "faster";
+                        break;
+                }
+
                 string ffmpegArguments = string.Join(" ",
                     "-f gdigrab",
-                    "-framerate 30",
+                    "-framerate " + frameRate,
                     "-i desktop",
                     "-c:v libx264",
-                    "-b:v 6000k",
-                    "-preset ultrafast",
+                    "-b:v " + bitRate + "k",
+                    "-preset " + presetString,
                     "-tune zerolatency",
                     "-an",
                     "-f rtp",
-                    $"rtp://{multicastIp}:{multicastPort}"
+                    $"rtp://{multicastIp}:{multicastPort}&ttl=255"
                 );
 
                 Debug.WriteLine($"Argumentos do FFMpeg: {ffmpegArguments}");
