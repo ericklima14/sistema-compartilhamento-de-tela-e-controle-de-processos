@@ -279,46 +279,7 @@ a=fmtp:96 packetization-mode=1
                 string identifier = entry.Value;
                 int currentPort = basePort += 2;
 
-                Panel studentPanel = new Panel
-                {
-                    Width = 320,
-                    Height = 210, 
-                    Margin = new Padding(5)
-                };
-
-                Label studentLabel = new Label
-                {
-                    Text = identifier,
-                    AutoSize = true, 
-                    Location = new Point(10, 180), 
-
-                    ForeColor = Color.White,
-                    BackColor = Color.FromArgb(150, 0, 0, 0),
-
-                    Font = new Font("Arial", 9, FontStyle.Bold),
-                    Padding = new Padding(3) 
-                };
-
-                VideoView studentVideoView = new VideoView
-                {
-                    Dock = DockStyle.Fill,
-                    MediaPlayer = null
-                };
-
-                studentPanel.Controls.Add(studentVideoView);
-                studentPanel.Controls.Add(studentLabel);
-                studentLabel.BringToFront();
-
-                if (flpStudentStreams.InvokeRequired)
-                {
-                    flpStudentStreams.Invoke(new Action(() => flpStudentStreams.Controls.Add(studentPanel)));
-                }
-                else
-                {
-                    flpStudentStreams.Controls.Add(studentPanel);
-                }
-
-                ReceberTela(studentVideoView, professorIP, currentPort);
+                CriarPainelStream(identifier, currentPort);
 
                 string comando = $"CMD_START_SCREEN_MONITORING|{currentPort}";
                 Task.Run(async () => await ConexaoService.Instance.SendMessageAsync(client, comando));
@@ -333,6 +294,102 @@ a=fmtp:96 packetization-mode=1
             Task.Run(async () => await ConexaoService.Instance.BroadcastMessage(comando));
 
             AdicionarLog($"Você encerrou o monitoramento de telas dos alunos.");
+        }
+
+        private void CriarPainelStream(string identifier, int currentPort)
+        {
+            string professorIP = ConexaoService.Instance.ProfessorIP;
+
+            Panel studentPanel = new Panel
+            {
+                Width = 320,
+                Height = 210,
+                Margin = new Padding(5),
+                Tag = new { Port = currentPort, Nome = identifier }
+            };
+
+            Label studentLabel = new Label
+            {
+                Text = identifier,
+                AutoSize = true,
+                Location = new Point(10, 180),
+
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(150, 0, 0, 0),
+
+                Font = new Font("Arial", 9, FontStyle.Bold),
+                Padding = new Padding(3)
+            };
+
+            VideoView studentVideoView = new VideoView
+            {
+                Dock = DockStyle.Fill,
+                MediaPlayer = null
+            };
+
+            studentPanel.Controls.Add(studentVideoView);
+            studentPanel.Controls.Add(studentLabel);
+            studentLabel.BringToFront();
+
+            studentLabel.Click += StudentLabel_Click;
+
+            // Adiciona ao FlowLayoutPanel (garantindo a thread-safety)
+            if (flpStudentStreams.InvokeRequired)
+            {
+                flpStudentStreams.Invoke(new Action(() => flpStudentStreams.Controls.Add(studentPanel)));
+            }
+            else
+            {
+                flpStudentStreams.Controls.Add(studentPanel);
+            }
+
+            ReceberTela(studentVideoView, professorIP, currentPort);
+        }
+
+        private void StudentLabel_Click(object sender, EventArgs e)
+        {
+            Panel studentPanel = null;
+            if (sender is Panel p) studentPanel = p;
+            else if (sender is Control c && c.Parent is Panel p2) studentPanel = p2;
+
+            if (studentPanel == null) return;
+
+            // Recupera os dados que salvamos na Tag
+            dynamic dadosAluno = studentPanel.Tag;
+            if (dadosAluno == null) return;
+
+            int port = dadosAluno.Port;
+            string nome = dadosAluno.Nome;
+
+            VideoView videoView = studentPanel.Controls.OfType<VideoView>().FirstOrDefault();
+            if (videoView != null && videoView.MediaPlayer != null)
+            {
+                var playerToStop = videoView.MediaPlayer;
+                playerToStop.Stop();
+                _activeMediaPlayers.Remove(playerToStop);
+                playerToStop.Dispose();
+            }
+
+            flpStudentStreams.Controls.Remove(studentPanel);
+            studentPanel.Dispose();
+
+            FormFoco formFoco = new FormFoco(_libVLC, port, nome);
+            formFoco.FormClosed += FormFoco_FormClosed;
+
+            formFoco.Show();
+            AdicionarLog($"Foco aberto para: {nome} na porta {port}");
+        }
+
+        private void FormFoco_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (sender is FormFoco formFoco)
+            {
+                int port = formFoco.Port;
+                string nome = formFoco.NomeAluno;
+
+                AdicionarLog($"Foco fechado. Restaurando stream de: {nome} (Porta {port})");
+                CriarPainelStream(nome, port);
+            }
         }
     }
 }
