@@ -14,10 +14,20 @@ namespace Professor
             byte[] originalBytes = Encoding.UTF8.GetBytes(text);
 
             var compressor = new Compressor(compressionLevel);
+            var stopwatch = new Stopwatch();
 
+            stopwatch.Start();
             byte[] compressedBytes = compressor.Wrap(originalBytes).ToArray();
+            stopwatch.Stop();
 
-            //Debug.WriteLine($"TAMANHO DA MENSAGEM DEPOIS DA COMPRESSAO (PROFESSOR): {compressedBytes.Length} bytes");
+            double tempoGastoMs = stopwatch.Elapsed.TotalMilliseconds;
+            long tempoGastoTicks = stopwatch.ElapsedTicks;
+
+            Console.WriteLine($"[Métrica] Compressão Zstd:");
+            Console.WriteLine($" - Tamanho: {compressedBytes.Length}B -> {compressedBytes.Length}B");
+            Console.WriteLine($" - Tempo: {tempoGastoMs:F4} ms ({tempoGastoTicks} ticks)");
+
+            Debug.WriteLine($"TAMANHO DA MENSAGEM DEPOIS DA COMPRESSAO (PROFESSOR): {compressedBytes.Length} bytes");
 
             return compressedBytes;
         }
