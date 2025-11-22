@@ -391,5 +391,37 @@ a=fmtp:96 packetization-mode=1
                 CriarPainelStream(nome, port);
             }
         }
+
+        private void lstAlunosConectados_DoubleClick(object sender, EventArgs e)
+        {
+            if (lstAlunosConectados.SelectedItem == null) return;
+
+            string nomeAlunoSelecionado = lstAlunosConectados.SelectedItem.ToString();
+            Panel painelDoAluno = null;
+
+            foreach (Control controle in flpStudentStreams.Controls)
+            {
+                if (controle is Panel p && p.Tag != null)
+                {
+                    dynamic dados = p.Tag;
+
+                    if (dados.Nome == nomeAlunoSelecionado)
+                    {
+                        painelDoAluno = p;
+                        break;
+                    }
+                }
+            }
+
+            if (painelDoAluno != null)
+            {
+                StudentLabel_Click(painelDoAluno, EventArgs.Empty);
+            }
+            else
+            {
+                MessageBox.Show($"O monitoramento de tela para {nomeAlunoSelecionado} não está ativo no momento.",
+                                "Stream não encontrado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
     }
 }
