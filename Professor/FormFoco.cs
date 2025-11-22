@@ -26,12 +26,11 @@ namespace Professor
 
             _libVLC = libVLC;
             _port = port;
-            this.Text = $"Foco: {nomeAluno} (Porta {_port})";
+            this.Text = $"Visualizando tela do aluno: {nomeAluno} (Porta {_port})";
 
             this.Port = port;
             this.NomeAluno = nomeAluno;
 
-            this.lblProcessosAluno.Text = $"Processos: {this.NomeAluno}";
             this.btnMatarProcesso.Click += btnMatarProcesso_Click; // Conecta o evento
 
             this.Load += FormFoco_Load;

@@ -225,8 +225,8 @@ a=fmtp:96 packetization-mode=1
 
             Panel studentPanel = new Panel
             {
-                Width = 320,
-                Height = 210,
+                Width = 384,
+                Height = 216,
                 Margin = new Padding(5),
                 Tag = new { Port = currentPort, Nome = identifier }
             };

@@ -195,7 +195,8 @@
             ClientSize = new Size(1307, 672);
             Controls.Add(tlpPrincipal);
             Name = "FormProfessor";
-            Text = "Form1";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Monitoramento de Laboratório - Professor";
             flpStudentStreams.ResumeLayout(false);
             flpStudentStreams.PerformLayout();
             tlpPrincipal.ResumeLayout(false);
