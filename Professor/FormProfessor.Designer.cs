@@ -39,11 +39,6 @@
             lblMensagens = new Label();
             lstLog = new ListBox();
             flpStudentStreams = new FlowLayoutPanel();
-            btnListarProcessos = new Button();
-            lblProcessosAluno = new Label();
-            headerPrograma = new ColumnHeader();
-            lvProcessos = new ListView();
-            btnMatarProcesso = new Button();
             SuspendLayout();
             // 
             // label1
@@ -64,7 +59,6 @@
             lstAlunosConectados.Name = "lstAlunosConectados";
             lstAlunosConectados.Size = new Size(180, 154);
             lstAlunosConectados.TabIndex = 6;
-            lstAlunosConectados.SelectedIndexChanged += lstAlunosConectados_SelectedIndexChanged;
             lstAlunosConectados.DoubleClick += lstAlunosConectados_DoubleClick;
             // 
             // imageListProcessos
@@ -142,55 +136,6 @@
             flpStudentStreams.Size = new Size(754, 493);
             flpStudentStreams.TabIndex = 24;
             // 
-            // btnListarProcessos
-            // 
-            btnListarProcessos.Location = new Point(1123, 231);
-            btnListarProcessos.Name = "btnListarProcessos";
-            btnListarProcessos.Size = new Size(140, 41);
-            btnListarProcessos.TabIndex = 8;
-            btnListarProcessos.Text = "Listar Processos";
-            btnListarProcessos.UseVisualStyleBackColor = true;
-            btnListarProcessos.Visible = false;
-            btnListarProcessos.Click += btnListarProcessos_Click;
-            // 
-            // lblProcessosAluno
-            // 
-            lblProcessosAluno.AutoSize = true;
-            lblProcessosAluno.Location = new Point(1129, 299);
-            lblProcessosAluno.Name = "lblProcessosAluno";
-            lblProcessosAluno.Size = new Size(112, 15);
-            lblProcessosAluno.TabIndex = 9;
-            lblProcessosAluno.Text = "Processos do aluno:";
-            lblProcessosAluno.Visible = false;
-            // 
-            // headerPrograma
-            // 
-            headerPrograma.Text = "Programa";
-            headerPrograma.Width = 250;
-            // 
-            // lvProcessos
-            // 
-            lvProcessos.CheckBoxes = true;
-            lvProcessos.Columns.AddRange(new ColumnHeader[] { headerPrograma });
-            lvProcessos.FullRowSelect = true;
-            lvProcessos.Location = new Point(1085, 323);
-            lvProcessos.Name = "lvProcessos";
-            lvProcessos.Size = new Size(210, 178);
-            lvProcessos.SmallImageList = imageListProcessos;
-            lvProcessos.TabIndex = 10;
-            lvProcessos.UseCompatibleStateImageBehavior = false;
-            lvProcessos.View = View.Details;
-            // 
-            // btnMatarProcesso
-            // 
-            btnMatarProcesso.Location = new Point(1119, 518);
-            btnMatarProcesso.Name = "btnMatarProcesso";
-            btnMatarProcesso.Size = new Size(140, 41);
-            btnMatarProcesso.TabIndex = 11;
-            btnMatarProcesso.Text = "Matar Processo";
-            btnMatarProcesso.UseVisualStyleBackColor = true;
-            btnMatarProcesso.Click += btnMatarProcesso_Click;
-            // 
             // FormProfessor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -203,10 +148,6 @@
             Controls.Add(btnPararTelas);
             Controls.Add(btnIniciarTelas);
             Controls.Add(btnGerenciarBloqueios);
-            Controls.Add(btnMatarProcesso);
-            Controls.Add(lvProcessos);
-            Controls.Add(lblProcessosAluno);
-            Controls.Add(btnListarProcessos);
             Controls.Add(lstAlunosConectados);
             Controls.Add(label1);
             Name = "FormProfessor";
@@ -227,10 +168,5 @@
         private Label lblMensagens;
         private ListBox lstLog;
         private FlowLayoutPanel flpStudentStreams;
-        private Button btnListarProcessos;
-        private Label lblProcessosAluno;
-        private ColumnHeader headerPrograma;
-        private ListView lvProcessos;
-        private Button btnMatarProcesso;
     }
 }
