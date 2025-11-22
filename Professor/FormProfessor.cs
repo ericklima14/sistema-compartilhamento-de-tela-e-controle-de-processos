@@ -32,7 +32,7 @@ namespace Professor
 
         private void Vlc_Log(object? sender, LogEventArgs e)
         {
-            Debug.WriteLine($"[VLC] {e.Level}: {e.Message} (em {e.Module})");
+            //Debug.WriteLine($"[VLC] {e.Level}: {e.Message} (em {e.Module})");
         }
 
         private void ReceberTela(VideoView targetVideoView, string professorIp, int chosenPort)

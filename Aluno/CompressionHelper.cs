@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using ZstdSharp;
 
 namespace Aluno
@@ -9,11 +10,16 @@ namespace Aluno
 
         public static byte[] Compress(string text)
         {
+            Debug.WriteLine($"MENSAGEM ANTES DA COMPRESSAO (PROFESSOR): {text}");
             byte[] originalBytes = Encoding.UTF8.GetBytes(text);
+
+            //Debug.WriteLine($"TAMANHO DA MENSAGEM ANTES DA COMPRESSAO (ALUNO): {originalBytes.Length} bytes");
 
             var compressor = new Compressor(compressionLevel);
 
             byte[] compressedBytes = compressor.Wrap(originalBytes).ToArray();
+
+            //Debug.WriteLine($"TAMANHO DA MENSAGEM DEPOIS DA COMPRESSAO (ALUNO): {compressedBytes.Length} bytes");
 
             return compressedBytes;
         }

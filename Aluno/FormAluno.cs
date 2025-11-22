@@ -39,7 +39,7 @@ namespace Aluno
 
         private void Vlc_Log(object? sender, LogEventArgs e)
         {
-            Debug.WriteLine($"[VLC] {e.Level}: {e.Message} (em {e.Module})");
+            //Debug.WriteLine($"[VLC] {e.Level}: {e.Message} (em {e.Module})");
         }
 
         // Recebe a transmissao RTP pelo TCP.
@@ -255,6 +255,8 @@ a=fmtp:96 packetization-mode=1
                     int messageLength = BitConverter.ToInt32(lengthBuffer, 0);
                     byte[] compressedMessage = new byte[messageLength];
                     await ReadTotalBytesAsync(stream, compressedMessage);
+
+                    AtualizarLog($"TAMANHO DA MENSAGEM COMPRIMIDA PARA O ALUNO: {compressedMessage.Length}");
 
                     string mensagem = CompressionHelper.Decompress(compressedMessage);
                     AtualizarLog($"[DEBUG] Enviando mensagem: {mensagem}");

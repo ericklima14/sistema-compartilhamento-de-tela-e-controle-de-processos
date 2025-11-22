@@ -79,7 +79,7 @@ namespace Professor
                     $"rtp://{multicastIp}:{multicastPort}&ttl=255"
                 );
 
-                Debug.WriteLine($"Argumentos do FFMpeg: {ffmpegArguments}");
+                //Debug.WriteLine($"Argumentos do FFMpeg: {ffmpegArguments}");
                 _ffmpegProcess = new Process
                 {
                     StartInfo =
@@ -96,7 +96,7 @@ namespace Professor
                 {
                     if (!string.IsNullOrWhiteSpace(args.Data))
                     {
-                        Debug.WriteLine($"[FFMpeg] {args.Data}");
+                        //Debug.WriteLine($"[FFMpeg] {args.Data}");
                     }
                 };
 
@@ -131,11 +131,11 @@ namespace Professor
                 try
                 {
                     _ffmpegProcess.Kill(true);
-                    Debug.WriteLine("Processo FFmpeg encerrado forçadamente.");
+                    //Debug.WriteLine("Processo FFmpeg encerrado forçadamente.");
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Não foi possível encerrar o processo FFmpeg: {ex.Message}");
+                    //Debug.WriteLine($"Não foi possível encerrar o processo FFmpeg: {ex.Message}");
                 }
             }
 

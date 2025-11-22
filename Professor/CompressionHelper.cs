@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using ZstdSharp;
 
 namespace Professor
@@ -9,11 +10,14 @@ namespace Professor
 
         public static byte[] Compress(string text)
         {
+            Debug.WriteLine($"MENSAGEM ANTES DA COMPRESSAO (PROFESSOR): {text}");
             byte[] originalBytes = Encoding.UTF8.GetBytes(text);
 
             var compressor = new Compressor(compressionLevel);
 
             byte[] compressedBytes = compressor.Wrap(originalBytes).ToArray();
+
+            //Debug.WriteLine($"TAMANHO DA MENSAGEM DEPOIS DA COMPRESSAO (PROFESSOR): {compressedBytes.Length} bytes");
 
             return compressedBytes;
         }

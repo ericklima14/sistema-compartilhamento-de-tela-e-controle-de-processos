@@ -78,6 +78,7 @@ namespace Professor
                 int initialMessageLength = BitConverter.ToInt32(initialLengthBuffer, 0);
 
                 byte[] initialCompressedMessage = new byte[initialMessageLength];
+
                 await ReadTotalBytesAsync(stream, initialCompressedMessage);
 
                 string initialMessage = CompressionHelper.Decompress(initialCompressedMessage);
@@ -119,6 +120,7 @@ namespace Professor
 
                     byte[] compressedMessage = new byte[messageLength];
                     await ReadTotalBytesAsync(stream, compressedMessage);
+                    Log($"TAMANHO DA MENSAGEM COMPRIMIDA PARA O PROFESSOR: {compressedMessage.Length}");
 
                     string mensagem = CompressionHelper.Decompress(compressedMessage);
 
