@@ -12,8 +12,6 @@
             btnIniciarServidor.Enabled = false;
             btnIniciarServidor.Text = "Iniciando...";
 
-            ConexaoService.Instance.IniciarServidor();
-
             var interfaces = ConexaoService.ObterIntefaces();
 
             Task.Delay(500).ContinueWith(_ =>

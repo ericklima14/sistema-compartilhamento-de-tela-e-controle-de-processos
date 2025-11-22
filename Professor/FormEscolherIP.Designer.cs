@@ -50,7 +50,7 @@
             btnOk.Name = "btnOk";
             btnOk.Size = new Size(124, 41);
             btnOk.TabIndex = 1;
-            btnOk.Text = "Selecionar";
+            btnOk.Text = "Iniciar Servidor";
             btnOk.UseVisualStyleBackColor = true;
             btnOk.Click += btnOk_Click;
             // 

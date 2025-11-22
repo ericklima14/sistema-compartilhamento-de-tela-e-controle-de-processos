@@ -37,7 +37,7 @@
             btnIniciarServidor.Name = "btnIniciarServidor";
             btnIniciarServidor.Size = new Size(151, 55);
             btnIniciarServidor.TabIndex = 5;
-            btnIniciarServidor.Text = "Iniciar Servidor";
+            btnIniciarServidor.Text = "Iniciar";
             btnIniciarServidor.UseVisualStyleBackColor = true;
             btnIniciarServidor.Click += btnIniciarServidor_Click;
             // 

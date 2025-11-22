@@ -45,15 +45,20 @@ namespace Professor
 
         private void btnOk_Click(object sender, EventArgs e)
         {
+            btnOk.Enabled = false;
+            btnOk.Text = "Iniciando...";
+
             var selected = lstInterfaces.SelectedItem as InterfaceDisplay;
             if (selected != null)
             {
                 ConexaoService.Instance.ProfessorIP = selected.Ip;
 
-                Task.Delay(200).ContinueWith(_ =>
+                Task.Delay(500).ContinueWith(_ =>
                 {
                     this.Invoke(() =>
                     {
+                        ConexaoService.Instance.IniciarServidor();
+
                         var formEscolha = new FormEscolha();
                         formEscolha.Show();
 
