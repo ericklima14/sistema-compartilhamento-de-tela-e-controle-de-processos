@@ -16,7 +16,6 @@ namespace Professor
         public FormProfessor()
         {
             InitializeComponent();
-
             Core.Initialize();
 
             // Logs detalhados
@@ -24,8 +23,8 @@ namespace Professor
             _libVLC.Log += Vlc_Log;
 
             ConexaoService.Instance.ListaDeAlunosAtualizada += AtualizarListaAlunos;
-
             ProcessosManager.Instance.LogAtualizado += msg => AdicionarLog(msg);
+            ConexaoService.Instance.NovoAlunoMonitoramentoIniciado += OnNovoAlunoMonitoramentoIniciado;
 
             AtualizarListaAlunos();
         }
@@ -161,6 +160,8 @@ a=fmtp:96 packetization-mode=1
             _libVLC.Dispose();
             LimparStreams();
 
+            ConexaoService.Instance.IsScreenMonitoringActive = false;
+
             ConexaoService.Instance.ListaDeAlunosAtualizada -= AtualizarListaAlunos;
             ProcessosManager.Instance.LogAtualizado -= AdicionarLog;
             base.OnFormClosed(e);
@@ -187,8 +188,10 @@ a=fmtp:96 packetization-mode=1
 
             AdicionarLog($"Você iniciou o monitoramento de telas dos alunos.");
 
+            ConexaoService.Instance.ResetMonitoringPorts();
+            ConexaoService.Instance.IsScreenMonitoringActive = true;
+
             string professorIP = ConexaoService.Instance.ProfessorIP;
-            int basePort = 5004;
 
             Dictionary<TcpClient, string> clientMap;
             lock (ConexaoService.Instance.Clients)
@@ -200,7 +203,8 @@ a=fmtp:96 packetization-mode=1
             {
                 TcpClient client = entry.Key;
                 string identifier = entry.Value;
-                int currentPort = basePort += 2;
+
+                int currentPort = ConexaoService.Instance.GetNextMonitoringPort();
 
                 CriarPainelStream(identifier, currentPort);
 
@@ -212,6 +216,8 @@ a=fmtp:96 packetization-mode=1
         private void btnPararTelas_Click(object sender, EventArgs e)
         {
             LimparStreams();
+
+            ConexaoService.Instance.IsScreenMonitoringActive = false;
 
             string comando = $"CMD_STOP_SCREEN_MONITORING";
             Task.Run(async () => await ConexaoService.Instance.BroadcastMessage(comando));
@@ -345,6 +351,15 @@ a=fmtp:96 packetization-mode=1
                 MessageBox.Show($"O monitoramento de tela para {nomeAlunoSelecionado} não está ativo no momento.",
                                 "Stream não encontrado", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private void OnNovoAlunoMonitoramentoIniciado(string nomeAluno, int port)
+        {
+            this.Invoke(new Action(() =>
+            {
+                AdicionarLog($"Aluno {nomeAluno} conectou durante monitoramento. Abrindo painel na porta {port}...");
+                CriarPainelStream(nomeAluno, port);
+            }));
         }
     }
 }

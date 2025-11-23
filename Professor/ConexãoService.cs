@@ -23,6 +23,10 @@ namespace Professor
 
         public string ProfessorIP { get; set; }
 
+        public bool IsScreenMonitoringActive { get; set; } = false;
+        private int _nextMonitoringPort = 5004;
+        public event Action<string, int> NovoAlunoMonitoramentoIniciado;
+
         private ConexaoService() { }
 
         public void IniciarServidor()
@@ -65,7 +69,6 @@ namespace Professor
 
         private async Task HandleClientAsync(TcpClient client)
         {
-            //string clientIdentifier = client.Client.RemoteEndPoint?.ToString() ?? "Desconhecido";
             string clientIp = client.Client.RemoteEndPoint?.ToString() ?? "Desconhecido";
             string clientIdentifier = null;
             NetworkStream stream = client.GetStream();
@@ -99,8 +102,19 @@ namespace Professor
                     _clients.Add(client, clientIdentifier);
                 }
                 Log($"Novo aluno conectado: {clientIdentifier}");
-                //Log($"Novo aluno conectado: {clientIdentifier}");
                 AtualizarListaAlunos();
+
+                // Verifica se o Professor está monitorando as telas neste momento
+                if (IsScreenMonitoringActive)
+                {
+                    int port = GetNextMonitoringPort();
+
+                    Log($"Monitoramento ativo detectado. Solicitando tela de {clientIdentifier} na porta {port}.");
+                    NovoAlunoMonitoramentoIniciado?.Invoke(clientIdentifier, port);
+
+                    string comando = $"CMD_START_SCREEN_MONITORING|{port}";
+                    await SendMessageAsync(client, comando);
+                }
 
                 // Se a transmissao ja estiver rolando quando o aluno se conectar, envia IMEDIATAMENTE para este aluno.
                 if (VideoTransmissaoManager.Instance.IsStreaming)
@@ -255,6 +269,17 @@ namespace Professor
             {
                 Log($"Tentativa de envio falhou. Aluno '{nomeAluno}' não encontrado.");
             }
+        }
+
+        public void ResetMonitoringPorts(int startPort = 5004)
+        {
+            _nextMonitoringPort = startPort;
+        }
+
+        public int GetNextMonitoringPort()
+        {
+            _nextMonitoringPort += 2;
+            return _nextMonitoringPort;
         }
     }
 }
