@@ -26,6 +26,8 @@ namespace Aluno
 
             InitializeComponent();
 
+            txtMensagem.KeyDown += txtMensagem_KeyDown;
+
             Core.Initialize();
 
             // Logs detalhados
@@ -502,6 +504,17 @@ a=fmtp:96 packetization-mode=1
             MonitoramentoTelaManager.Instance.PrepareForClosing();
 
             base.OnFormClosed(e);
+        }
+
+        private void txtMensagem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                // Tira som do windows zoado
+                e.SuppressKeyPress = true;
+
+                btnEnviar.PerformClick();
+            }
         }
     }
 }

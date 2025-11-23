@@ -28,11 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            lblMensagens = new Label();
             btnEnviar = new Button();
             txtMensagem = new TextBox();
             lstLog = new ListBox();
-            lblTransmissaoAula = new Label();
             txtIpTransmissao = new TextBox();
             btnStopStream = new Button();
             btnStartStream = new Button();
@@ -42,20 +40,21 @@
             txtBoxBitRate = new TextBox();
             lblFrameRate = new Label();
             txtBoxFrameRate = new TextBox();
+            groupBox1 = new GroupBox();
+            groupBox2 = new GroupBox();
+            groupBox3 = new GroupBox();
+            tableLayoutPanel2 = new TableLayoutPanel();
+            tableLayoutPanel3 = new TableLayoutPanel();
+            groupBox1.SuspendLayout();
+            groupBox2.SuspendLayout();
+            groupBox3.SuspendLayout();
+            tableLayoutPanel2.SuspendLayout();
+            tableLayoutPanel3.SuspendLayout();
             SuspendLayout();
-            // 
-            // lblMensagens
-            // 
-            lblMensagens.AutoSize = true;
-            lblMensagens.Location = new Point(293, 36);
-            lblMensagens.Name = "lblMensagens";
-            lblMensagens.Size = new Size(114, 15);
-            lblMensagens.TabIndex = 11;
-            lblMensagens.Text = "Caixa de Mensagens";
             // 
             // btnEnviar
             // 
-            btnEnviar.Location = new Point(575, 169);
+            btnEnviar.Location = new Point(436, 254);
             btnEnviar.Name = "btnEnviar";
             btnEnviar.Size = new Size(126, 23);
             btnEnviar.TabIndex = 10;
@@ -65,44 +64,38 @@
             // 
             // txtMensagem
             // 
-            txtMensagem.Location = new Point(293, 169);
+            txtMensagem.Location = new Point(3, 254);
             txtMensagem.Name = "txtMensagem";
-            txtMensagem.Size = new Size(276, 23);
+            txtMensagem.Size = new Size(427, 23);
             txtMensagem.TabIndex = 9;
             // 
             // lstLog
             // 
+            lstLog.Dock = DockStyle.Top;
             lstLog.FormattingEnabled = true;
             lstLog.HorizontalScrollbar = true;
             lstLog.ItemHeight = 15;
-            lstLog.Location = new Point(293, 54);
+            lstLog.Location = new Point(3, 19);
             lstLog.Name = "lstLog";
             lstLog.RightToLeft = RightToLeft.No;
-            lstLog.Size = new Size(408, 109);
+            lstLog.Size = new Size(559, 229);
             lstLog.TabIndex = 8;
-            // 
-            // lblTransmissaoAula
-            // 
-            lblTransmissaoAula.AutoSize = true;
-            lblTransmissaoAula.Location = new Point(33, 39);
-            lblTransmissaoAula.Name = "lblTransmissaoAula";
-            lblTransmissaoAula.Size = new Size(149, 15);
-            lblTransmissaoAula.TabIndex = 23;
-            lblTransmissaoAula.Text = "Transmissão de Aula (beta)";
             // 
             // txtIpTransmissao
             // 
-            txtIpTransmissao.Location = new Point(33, 68);
+            txtIpTransmissao.Dock = DockStyle.Top;
+            txtIpTransmissao.Location = new Point(3, 19);
             txtIpTransmissao.Name = "txtIpTransmissao";
-            txtIpTransmissao.Size = new Size(159, 23);
+            txtIpTransmissao.Size = new Size(142, 23);
             txtIpTransmissao.TabIndex = 22;
             txtIpTransmissao.Text = "239.0.0.1";
             // 
             // btnStopStream
             // 
-            btnStopStream.Location = new Point(33, 139);
+            btnStopStream.Dock = DockStyle.Top;
+            btnStopStream.Location = new Point(3, 78);
             btnStopStream.Name = "btnStopStream";
-            btnStopStream.Size = new Size(159, 36);
+            btnStopStream.Size = new Size(142, 36);
             btnStopStream.TabIndex = 21;
             btnStopStream.Text = "Parar Transmissão";
             btnStopStream.UseVisualStyleBackColor = true;
@@ -110,9 +103,10 @@
             // 
             // btnStartStream
             // 
-            btnStartStream.Location = new Point(33, 97);
+            btnStartStream.Dock = DockStyle.Top;
+            btnStartStream.Location = new Point(3, 42);
             btnStartStream.Name = "btnStartStream";
-            btnStartStream.Size = new Size(159, 36);
+            btnStartStream.Size = new Size(142, 36);
             btnStartStream.TabIndex = 20;
             btnStartStream.Text = "Iniciar Transmissão";
             btnStartStream.UseVisualStyleBackColor = true;
@@ -120,16 +114,18 @@
             // 
             // txtBoxPreset
             // 
-            txtBoxPreset.Location = new Point(198, 68);
+            txtBoxPreset.Dock = DockStyle.Top;
+            txtBoxPreset.Location = new Point(3, 34);
             txtBoxPreset.Name = "txtBoxPreset";
-            txtBoxPreset.Size = new Size(89, 23);
+            txtBoxPreset.Size = new Size(142, 23);
             txtBoxPreset.TabIndex = 24;
             txtBoxPreset.Text = "1";
             // 
             // lblPreset
             // 
             lblPreset.AutoSize = true;
-            lblPreset.Location = new Point(198, 50);
+            lblPreset.Dock = DockStyle.Top;
+            lblPreset.Location = new Point(3, 19);
             lblPreset.Name = "lblPreset";
             lblPreset.Size = new Size(39, 15);
             lblPreset.TabIndex = 25;
@@ -138,7 +134,8 @@
             // lblBitRate
             // 
             lblBitRate.AutoSize = true;
-            lblBitRate.Location = new Point(198, 161);
+            lblBitRate.Dock = DockStyle.Top;
+            lblBitRate.Location = new Point(3, 95);
             lblBitRate.Name = "lblBitRate";
             lblBitRate.Size = new Size(47, 15);
             lblBitRate.TabIndex = 27;
@@ -146,16 +143,18 @@
             // 
             // txtBoxBitRate
             // 
-            txtBoxBitRate.Location = new Point(198, 179);
+            txtBoxBitRate.Dock = DockStyle.Top;
+            txtBoxBitRate.Location = new Point(3, 110);
             txtBoxBitRate.Name = "txtBoxBitRate";
-            txtBoxBitRate.Size = new Size(89, 23);
+            txtBoxBitRate.Size = new Size(142, 23);
             txtBoxBitRate.TabIndex = 26;
             txtBoxBitRate.Text = "2000";
             // 
             // lblFrameRate
             // 
             lblFrameRate.AutoSize = true;
-            lblFrameRate.Location = new Point(198, 107);
+            lblFrameRate.Dock = DockStyle.Top;
+            lblFrameRate.Location = new Point(3, 57);
             lblFrameRate.Name = "lblFrameRate";
             lblFrameRate.Size = new Size(66, 15);
             lblFrameRate.TabIndex = 29;
@@ -163,43 +162,108 @@
             // 
             // txtBoxFrameRate
             // 
-            txtBoxFrameRate.Location = new Point(198, 125);
+            txtBoxFrameRate.Dock = DockStyle.Top;
+            txtBoxFrameRate.Location = new Point(3, 72);
             txtBoxFrameRate.Name = "txtBoxFrameRate";
-            txtBoxFrameRate.Size = new Size(89, 23);
+            txtBoxFrameRate.Size = new Size(142, 23);
             txtBoxFrameRate.TabIndex = 28;
             txtBoxFrameRate.Text = "5";
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(btnStopStream);
+            groupBox1.Controls.Add(btnStartStream);
+            groupBox1.Controls.Add(txtIpTransmissao);
+            groupBox1.Dock = DockStyle.Fill;
+            groupBox1.Location = new Point(3, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(148, 127);
+            groupBox1.TabIndex = 31;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Transmissão de Aula";
+            // 
+            // groupBox2
+            // 
+            groupBox2.Controls.Add(txtBoxBitRate);
+            groupBox2.Controls.Add(lblBitRate);
+            groupBox2.Controls.Add(txtBoxFrameRate);
+            groupBox2.Controls.Add(lblFrameRate);
+            groupBox2.Controls.Add(txtBoxPreset);
+            groupBox2.Controls.Add(lblPreset);
+            groupBox2.Dock = DockStyle.Fill;
+            groupBox2.Location = new Point(3, 136);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(148, 143);
+            groupBox2.TabIndex = 32;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Parâmetros";
+            // 
+            // groupBox3
+            // 
+            groupBox3.Controls.Add(lstLog);
+            groupBox3.Controls.Add(btnEnviar);
+            groupBox3.Controls.Add(txtMensagem);
+            groupBox3.Dock = DockStyle.Fill;
+            groupBox3.Location = new Point(163, 3);
+            groupBox3.Name = "groupBox3";
+            groupBox3.Size = new Size(565, 282);
+            groupBox3.TabIndex = 33;
+            groupBox3.TabStop = false;
+            groupBox3.Text = "Caixa de Mensagens";
+            // 
+            // tableLayoutPanel2
+            // 
+            tableLayoutPanel2.ColumnCount = 2;
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 160F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel2.Controls.Add(groupBox3, 1, 0);
+            tableLayoutPanel2.Controls.Add(tableLayoutPanel3, 0, 0);
+            tableLayoutPanel2.Dock = DockStyle.Fill;
+            tableLayoutPanel2.Location = new Point(0, 0);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 1;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel2.Size = new Size(731, 288);
+            tableLayoutPanel2.TabIndex = 31;
+            // 
+            // tableLayoutPanel3
+            // 
+            tableLayoutPanel3.ColumnCount = 1;
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel3.Controls.Add(groupBox2, 0, 1);
+            tableLayoutPanel3.Controls.Add(groupBox1, 0, 0);
+            tableLayoutPanel3.Dock = DockStyle.Top;
+            tableLayoutPanel3.Location = new Point(3, 3);
+            tableLayoutPanel3.Name = "tableLayoutPanel3";
+            tableLayoutPanel3.RowCount = 2;
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 47.36842F));
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 52.63158F));
+            tableLayoutPanel3.Size = new Size(154, 282);
+            tableLayoutPanel3.TabIndex = 32;
             // 
             // FormApresentacao
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(731, 224);
-            Controls.Add(lblFrameRate);
-            Controls.Add(txtBoxFrameRate);
-            Controls.Add(lblBitRate);
-            Controls.Add(txtBoxBitRate);
-            Controls.Add(lblPreset);
-            Controls.Add(txtBoxPreset);
-            Controls.Add(lblTransmissaoAula);
-            Controls.Add(txtIpTransmissao);
-            Controls.Add(btnStopStream);
-            Controls.Add(btnStartStream);
-            Controls.Add(lblMensagens);
-            Controls.Add(btnEnviar);
-            Controls.Add(txtMensagem);
-            Controls.Add(lstLog);
+            ClientSize = new Size(731, 288);
+            Controls.Add(tableLayoutPanel2);
             Name = "FormApresentacao";
             Text = "FormApresentacao";
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
+            groupBox3.ResumeLayout(false);
+            groupBox3.PerformLayout();
+            tableLayoutPanel2.ResumeLayout(false);
+            tableLayoutPanel3.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
-        private Label lblMensagens;
         private Button btnEnviar;
         private TextBox txtMensagem;
         private ListBox lstLog;
-        private Label lblTransmissaoAula;
         private TextBox txtIpTransmissao;
         private Button btnStopStream;
         private Button btnStartStream;
@@ -209,5 +273,10 @@
         private TextBox txtBoxBitRate;
         private Label lblFrameRate;
         private TextBox txtBoxFrameRate;
+        private GroupBox groupBox1;
+        private GroupBox groupBox2;
+        private GroupBox groupBox3;
+        private TableLayoutPanel tableLayoutPanel2;
+        private TableLayoutPanel tableLayoutPanel3;
     }
 }

@@ -22,6 +22,8 @@ namespace Professor
             VideoTransmissaoManager.Instance.StreamIniciado += OnStreamIniciado;
 
             InitializeComponent();
+
+            txtMensagem.KeyDown += txtMensagem_KeyDown;
         }
 
         // Enviar o caminho da stream RTP pelo TCP.
@@ -81,6 +83,17 @@ namespace Professor
                 await ConexaoService.Instance.BroadcastMessage(mensagemProfessor);
                 AdicionarLog(mensagemProfessor);
                 txtMensagem.Clear();
+            }
+        }
+
+        private void txtMensagem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                // Tira som do windows zoado
+                e.SuppressKeyPress = true;
+
+                btnEnviar.PerformClick();
             }
         }
     }
