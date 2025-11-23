@@ -25,12 +25,12 @@ namespace Aluno
 
         private MonitoramentoTelaManager() { }
 
-        public void StartStream(string targetIp, int targetPort)
+        public void StartStream(string targetIp, int targetPort, int fps = 5, string bitrate = "1000k")
         {
             if (IsStreaming)
             {
-                Log("Stream já em andamento.");
-                return;
+                StopStream();
+                Thread.Sleep(200);
             }
 
             _cancellationTokenSource = new CancellationTokenSource();
@@ -51,10 +51,10 @@ namespace Aluno
 
                 string ffmpegArguments = string.Join(" ",
                     "-f gdigrab",
-                    "-framerate 5",
+                    $"-framerate {fps}",
                     "-i desktop",
                     "-c:v libx264",
-                    "-b:v 1000k",
+                    $"-b:v {bitrate}",
                     "-preset ultrafast",
                     "-tune zerolatency",
                     "-an",

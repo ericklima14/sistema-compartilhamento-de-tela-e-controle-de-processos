@@ -39,12 +39,33 @@ namespace Professor
 
         private async void FormFoco_Load(object sender, EventArgs e)
         {
+            string comandoAltaQualidade = $"CMD_TRANSMISSAO_FOCO|{Port}|30|2000k";
+            await ConexaoService.Instance.EnviarMensagemParaAlunoPorNome(NomeAluno, comandoAltaQualidade);
+            await Task.Delay(500);
+
             _mediaPlayer = new MediaPlayer(_libVLC);
             videoView1.MediaPlayer = _mediaPlayer;
 
+            string professorIp = ConexaoService.Instance.ProfessorIP;
+
             try
             {
-                string sdpFilePath = Path.Combine(Path.GetTempPath(), $"prof_recv_{_port}.sdp");
+                string sdpContent = $@"
+v=0
+o=- 0 0 IN IP4 {professorIp}
+s=No Name
+c=IN IP4 {professorIp}
+t=0 0
+a=tool:libavformat 62.4.101
+m=video {Port} RTP/AVP 96
+b=AS:2000
+a=framerate:30
+a=rtpmap:96 H264/90000
+a=fmtp:96 packetization-mode=1
+".Trim();
+
+                string sdpFilePath = Path.Combine(Path.GetTempPath(), $"prof_foco_{Port}.sdp");
+                File.WriteAllText(sdpFilePath, sdpContent);
 
                 if (File.Exists(sdpFilePath))
                 {
@@ -71,6 +92,9 @@ namespace Professor
         {
             _mediaPlayer?.Stop();
             _mediaPlayer?.Dispose();
+
+            string comandoBaixaQualidade = $"CMD_TRANSMISSAO_FOCO|{Port}|5|1000k";
+            Task.Run(async () => await ConexaoService.Instance.EnviarMensagemParaAlunoPorNome(NomeAluno, comandoBaixaQualidade));
 
             ProcessosManager.Instance.ListaProcessosAtualizada -= AtualizarListaProcessos;
             Task.Run(async () => await ProcessosManager.Instance.PararMonitoramento());

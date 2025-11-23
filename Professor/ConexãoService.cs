@@ -237,5 +237,24 @@ namespace Professor
             }
             return interfaces;
         }
+
+        public async Task EnviarMensagemParaAlunoPorNome(string nomeAluno, string mensagem)
+        {
+            TcpClient clienteAlvo = null;
+
+            lock (_clients)
+            {
+                clienteAlvo = _clients.FirstOrDefault(x => x.Value == nomeAluno).Key;
+            }
+
+            if (clienteAlvo != null)
+            {
+                await SendMessageAsync(clienteAlvo, mensagem);
+            }
+            else
+            {
+                Log($"Tentativa de envio falhou. Aluno '{nomeAluno}' não encontrado.");
+            }
+        }
     }
 }

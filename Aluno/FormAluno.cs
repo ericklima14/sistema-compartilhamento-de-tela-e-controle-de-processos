@@ -343,6 +343,26 @@ a=fmtp:96 packetization-mode=1
                             MonitoramentoTelaManager.Instance.PrepareForClosing();
                         }));
                     }
+                    else if (mensagem.StartsWith("CMD_TRANSMISSAO_FOCO|"))
+                    {
+                        string payload = mensagem.Substring("CMD_TRANSMISSAO_FOCO|".Length);
+                        string[] parts = payload.Split('|');
+
+                        if (parts.Length == 3)
+                        {
+                            if (int.TryParse(parts[0], out int port) &&
+                                int.TryParse(parts[1], out int fps))
+                            {
+                                string bitrate = parts[2];
+
+                                this.Invoke(new Action(() =>
+                                {
+                                    AtualizarLog($"Alterando qualidade stream: {fps}fps, {bitrate} bitrate.");
+                                    MonitoramentoTelaManager.Instance.StartStream(txtIpProfessor.Text, port, fps, bitrate);
+                                }));
+                            }
+                        }
+                    }
                     else
                     {
                         AtualizarLog(mensagem);
