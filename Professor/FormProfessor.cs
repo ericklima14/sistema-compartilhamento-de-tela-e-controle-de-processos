@@ -25,6 +25,7 @@ namespace Professor
             ConexaoService.Instance.ListaDeAlunosAtualizada += AtualizarListaAlunos;
             ProcessosManager.Instance.LogAtualizado += msg => AdicionarLog(msg);
             ConexaoService.Instance.NovoAlunoMonitoramentoIniciado += OnNovoAlunoMonitoramentoIniciado;
+            ConexaoService.Instance.AlunoDesconectado += OnAlunoDesconectado;
 
             AtualizarListaAlunos();
         }
@@ -360,6 +361,51 @@ a=fmtp:96 packetization-mode=1
                 AdicionarLog($"Aluno {nomeAluno} conectou durante monitoramento. Abrindo painel na porta {port}...");
                 CriarPainelStream(nomeAluno, port);
             }));
+        }
+
+        private void OnAlunoDesconectado(string nomeAluno)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() => OnAlunoDesconectado(nomeAluno)));
+                return;
+            }
+
+            AdicionarLog($"Aluno desconectou: {nomeAluno}. Removendo painel...");
+            Panel painelParaRemover = null;
+
+            foreach (Control controle in flpStudentStreams.Controls)
+            {
+                if (controle is Panel p && p.Tag != null)
+                {
+                    dynamic dados = p.Tag;
+                    if (dados.Nome == nomeAluno)
+                    {
+                        painelParaRemover = p;
+                        break;
+                    }
+                }
+            }
+
+            if (painelParaRemover != null)
+            {
+                var videoView = painelParaRemover.Controls.OfType<VideoView>().FirstOrDefault();
+                if (videoView != null && videoView.MediaPlayer != null)
+                {
+                    var player = videoView.MediaPlayer;
+                    player.Stop();
+
+                    if (_activeMediaPlayers.Contains(player))
+                    {
+                        _activeMediaPlayers.Remove(player);
+                    }
+
+                    player.Dispose();
+                }
+
+                flpStudentStreams.Controls.Remove(painelParaRemover);
+                painelParaRemover.Dispose();
+            }
         }
     }
 }

@@ -27,6 +27,8 @@ namespace Professor
         private int _nextMonitoringPort = 5004;
         public event Action<string, int> NovoAlunoMonitoramentoIniciado;
 
+        public event Action<string> AlunoDesconectado;
+
         private ConexaoService() { }
 
         public void IniciarServidor()
@@ -162,6 +164,11 @@ namespace Professor
                 client.Close();
                 Log($"Aluno {clientIdentifier} desconectado.");
                 AtualizarListaAlunos();
+
+                if (!string.IsNullOrEmpty(clientIdentifier))
+                {
+                    AlunoDesconectado?.Invoke(clientIdentifier);
+                }
             }
         }
 
