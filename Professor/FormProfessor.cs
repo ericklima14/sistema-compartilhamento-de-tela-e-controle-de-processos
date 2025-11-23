@@ -52,8 +52,8 @@ c=IN IP4 {professorIp}
 t=0 0
 a=tool:libavformat 62.4.101
 m=video {chosenPort} RTP/AVP 96
-b=AS:6000
-a=framerate:30
+b=AS:1000
+a=framerate:5
 a=rtpmap:96 H264/90000
 a=fmtp:96 packetization-mode=1
 ".Trim();

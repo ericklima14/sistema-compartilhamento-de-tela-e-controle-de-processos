@@ -51,10 +51,10 @@ namespace Aluno
 
                 string ffmpegArguments = string.Join(" ",
                     "-f gdigrab",
-                    "-framerate 30",
+                    "-framerate 5",
                     "-i desktop",
                     "-c:v libx264",
-                    "-b:v 6000k",
+                    "-b:v 1000k",
                     "-preset ultrafast",
                     "-tune zerolatency",
                     "-an",
