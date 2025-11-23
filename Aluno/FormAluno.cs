@@ -286,10 +286,12 @@ a=fmtp:96 packetization-mode=1
 
                         this.Invoke(new Action(() =>
                         {
-                            if (wmiWatcher == null) {
+                            if (wmiWatcher == null)
+                            {
                                 IniciarVigiaDeProcessos();
                             }
-                            else {
+                            else
+                            {
                                 MatarProcessosInciais();
                             }
                         }));

@@ -34,14 +34,12 @@
             btnGerenciarBloqueios = new Button();
             btnIniciarTelas = new Button();
             btnPararTelas = new Button();
-            lblMonitorarTelas = new Label();
             lstLog = new ListBox();
             flpStudentStreams = new FlowLayoutPanel();
             tlpPrincipal = new TableLayoutPanel();
             groupBox1 = new GroupBox();
             groupBox2 = new GroupBox();
             groupBox3 = new GroupBox();
-            flpStudentStreams.SuspendLayout();
             tlpPrincipal.SuspendLayout();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -102,15 +100,6 @@
             btnPararTelas.UseVisualStyleBackColor = true;
             btnPararTelas.Click += btnPararTelas_Click;
             // 
-            // lblMonitorarTelas
-            // 
-            lblMonitorarTelas.AutoSize = true;
-            lblMonitorarTelas.Location = new Point(13, 10);
-            lblMonitorarTelas.Name = "lblMonitorarTelas";
-            lblMonitorarTelas.Size = new Size(89, 15);
-            lblMonitorarTelas.TabIndex = 19;
-            lblMonitorarTelas.Text = "Monitorar Telas";
-            // 
             // lstLog
             // 
             lstLog.Dock = DockStyle.Fill;
@@ -127,7 +116,6 @@
             // 
             flpStudentStreams.AutoScroll = true;
             flpStudentStreams.BorderStyle = BorderStyle.FixedSingle;
-            flpStudentStreams.Controls.Add(lblMonitorarTelas);
             flpStudentStreams.Dock = DockStyle.Fill;
             flpStudentStreams.Location = new Point(253, 147);
             flpStudentStreams.Name = "flpStudentStreams";
@@ -197,8 +185,6 @@
             Name = "FormProfessor";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Monitoramento de Laboratório - Professor";
-            flpStudentStreams.ResumeLayout(false);
-            flpStudentStreams.PerformLayout();
             tlpPrincipal.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
@@ -213,7 +199,6 @@
         private Button btnGerenciarBloqueios;
         private Button btnIniciarTelas;
         private Button btnPararTelas;
-        private Label lblMonitorarTelas;
         private ListBox lstLog;
         private FlowLayoutPanel flpStudentStreams;
         private TableLayoutPanel tlpPrincipal;
