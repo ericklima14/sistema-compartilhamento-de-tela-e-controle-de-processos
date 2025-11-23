@@ -13,6 +13,8 @@ namespace Professor
         private List<MediaPlayer> _activeMediaPlayers = new List<MediaPlayer>();
         private string? _sdpFilePath;
 
+        private List<FormFoco> _focosAbertos = new List<FormFoco>();
+
         public FormProfessor()
         {
             InitializeComponent();
@@ -306,6 +308,8 @@ a=fmtp:96 packetization-mode=1
             FormFoco formFoco = new FormFoco(_libVLC, port, nome);
             formFoco.FormClosed += FormFoco_FormClosed;
 
+            _focosAbertos.Add(formFoco);
+
             formFoco.Show();
             AdicionarLog($"Foco aberto para: {nome} na porta {port}");
         }
@@ -314,11 +318,26 @@ a=fmtp:96 packetization-mode=1
         {
             if (sender is FormFoco formFoco)
             {
+                _focosAbertos.Remove(formFoco);
+
                 int port = formFoco.Port;
                 string nome = formFoco.NomeAluno;
 
-                AdicionarLog($"Foco fechado. Restaurando stream de: {nome} (Porta {port})");
-                CriarPainelStream(nome, port);
+                bool alunoAindaConectado = false;
+                lock (ConexaoService.Instance.Clients)
+                {
+                    alunoAindaConectado = ConexaoService.Instance.Clients.Values.Contains(nome);
+                }
+
+                if (alunoAindaConectado)
+                {
+                    AdicionarLog($"Foco fechado. Restaurando stream de: {nome} (Porta {port})");
+                    CriarPainelStream(nome, port);
+                }
+                else
+                {
+                    AdicionarLog($"Foco de {nome} encerrado e aluno desconectado. Painel não será restaurado.");
+                }
             }
         }
 
@@ -372,6 +391,14 @@ a=fmtp:96 packetization-mode=1
             }
 
             AdicionarLog($"Aluno desconectou: {nomeAluno}. Removendo painel...");
+
+            var focosParaFechar = _focosAbertos.Where(f => f.NomeAluno == nomeAluno).ToList();
+
+            foreach (var form in focosParaFechar)
+            {
+                form.Close();
+            }
+
             Panel painelParaRemover = null;
 
             foreach (Control controle in flpStudentStreams.Controls)
