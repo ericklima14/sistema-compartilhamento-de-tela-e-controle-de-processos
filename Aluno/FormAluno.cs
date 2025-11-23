@@ -427,7 +427,7 @@ a=fmtp:96 packetization-mode=1
             {
                 lstBox.Items.Add(msg);
             }
-
+            lstBox.TopIndex = lstBox.Items.Count - 1;
         }
 
         private async void btnEnviar_Click(object sender, EventArgs e)

@@ -147,8 +147,12 @@ a=fmtp:96 packetization-mode=1
             }
 
             lvProcessos.EndUpdate();
-            if (lvProcessos.Items.Count > topIndex)
-                lvProcessos.EnsureVisible(topIndex);
+
+            if (lvProcessos.Items.Count > 0)
+            {
+                int indiceSeguro = Math.Min(topIndex, lvProcessos.Items.Count - 1);
+                lvProcessos.TopItem = lvProcessos.Items[indiceSeguro];
+            }
         }
     }
 }
