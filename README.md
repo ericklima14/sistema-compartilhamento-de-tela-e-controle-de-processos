@@ -77,7 +77,7 @@ Durante os testes de campo realizados nos laboratórios do SENAC, o protótipo a
 ### Passos
 1.  Clone este repositório:
     ```bash
-    git clone [https://github.com/ericklima14/sistema-compartilhamento-de-tela-e-controle-de-processos.git](https://github.com/ericklima14/sistema-compartilhamento-de-tela-e-controle-de-processos.git)
+    git clone https://github.com/ericklima14/sistema-compartilhamento-de-tela-e-controle-de-processos.git
     ```
 2.  Abra a solução no **Visual Studio**.
 3.  Instale os pacotes NuGet necessários.
