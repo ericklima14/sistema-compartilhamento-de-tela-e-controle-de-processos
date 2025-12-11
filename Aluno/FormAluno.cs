@@ -38,6 +38,36 @@ namespace Aluno
             videoView.MediaPlayer = _mediaPlayer;
         }
 
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+
+            string termoAceite =
+                "TERMO DE CONSENTIMENTO E PRIVACIDADE (LGPD)\n\n" +
+                "Para prosseguir com a utilização deste software de avaliação, é necessário o seu consentimento " +
+                "conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018):\n\n" +
+                "1. FINALIDADE: O software realizará o compartilhamento de tela e monitoramento de processos " +
+                "exclusivamente para fins de supervisão acadêmica e integridade da avaliação.\n\n" +
+                "2. NÃO ARMAZENAMENTO: Garantimos que NÃO haverá gravação, armazenamento ou persistência " +
+                "de vídeos, imagens ou dados pessoais em banco de dados. A transmissão ocorre em tempo real " +
+                "e é descartada imediatamente após a visualização.\n\n" +
+                "3. AUTORIZAÇÃO: Ao clicar em 'SIM', você autoriza o monitoramento da sua estação de trabalho " +
+                "durante o período desta aula/avaliação.\n\n" +
+                "Você concorda com estes termos?";
+
+            DialogResult resultado = MessageBox.Show(
+                termoAceite,
+                "Termo de Aceite - LGPD",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (resultado == DialogResult.No)
+            {
+                MessageBox.Show("O aplicativo será encerrado pois o monitoramento é obrigatório para a avaliação.", "Acesso Negado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Application.Exit();
+            }
+        }
 
         private void Vlc_Log(object? sender, LogEventArgs e)
         {
@@ -373,12 +403,22 @@ a=fmtp:96 packetization-mode=1
                 catch (Exception)
                 {
                     AtualizarLog("Conexão perdida.");
-                    if (processTimer.Enabled)
-                        this.Invoke(new Action(() =>
+
+                    if (client != null)
+                    {
+                        client.Close();
+                    }
+
+                    this.Invoke(new Action(() =>
+                    {
+                        if (processTimer.Enabled)
                         {
                             PararVigiaDeProcessos();
                             processTimer.Stop();
-                        }));
+                        }
+                        btnConectar.Enabled = true;
+                        txtIpProfessor.Enabled = true;
+                    }));
 
                     break;
                 }
